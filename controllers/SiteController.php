@@ -7,7 +7,8 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\RegisterForm;
+use app\models\Library;
 
 class SiteController extends Controller
 {
@@ -46,10 +47,6 @@ class SiteController extends Controller
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
         ];
     }
 
@@ -61,7 +58,19 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $this->layout = 'login';
-        return $this->render('index');
+
+        $loginModel = new LoginForm();
+        $registerModel = new RegisterForm();
+
+        if ($registerModel->load(Yii::$app->request->post()) && $registerModel->validate()) {
+            return $this->goBack();
+        }
+        
+        return $this->render('index', [
+            'loginModel' => $loginModel,
+            'registerModel' => $registerModel,
+            'libraries' => Library::getLibraryList(),
+        ]);
     }
 
     /**
@@ -97,30 +106,14 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
+     * Validate Signup action.
      *
      * @return string
      */
-    public function actionContact()
+    public function actionValidateSignup()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        Yii::$app->user->logout();
 
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
+        return $this->goHome();
     }
 }
