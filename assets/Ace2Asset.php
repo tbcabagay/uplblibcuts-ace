@@ -21,7 +21,4 @@ class Ace2Asset extends AssetBundle
     public $css = [
         'css/ace-part2.min.css',
     ];
-    public $depends = [
-        'app\assets\AppAsset',
-    ];
 }

@@ -14,6 +14,7 @@ use app\assets\AceSkinAsset;
 use app\assets\AppFontAsset;
 use app\assets\Ace2Asset;
 use app\assets\AceIeAsset;
+use yii\bootstrap\Modal;
 
 AppAsset::register($this);
 FontAwesomeAsset::register($this);
@@ -51,8 +52,8 @@ AceIeAsset::register($this);
             <div class="navbar-header pull-left">
                 <a href="index.html" class="navbar-brand">
                     <small>
-                        <i class="fa fa-leaf"></i>
-                        Ace Admin
+                        <i class="fa fa-desktop"></i>
+                        <?= Html::encode(Yii::$app->params['appName']) ?>
                     </small>
                 </a>
             </div>
@@ -316,10 +317,11 @@ AceIeAsset::register($this);
 
                     <li class="light-blue dropdown-modal">
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                            <?= Html::img('@web/img/avatars/user.jpg', ['class' => 'nav-user-photo']) ?>
+                            <?php // Html::img('@web/img/avatars/user.jpg', ['class' => 'nav-user-photo']) ?>
+                            <i class="ace-icon fa fa-user"></i>
                             <span class="user-info">
                                 <small>Welcome,</small>
-                                Jason
+                                <?= Html::encode(Yii::$app->user->identity->username) ?>
                             </span>
 
                             <i class="ace-icon fa fa-caret-down"></i>
@@ -343,10 +345,7 @@ AceIeAsset::register($this);
                             <li class="divider"></li>
 
                             <li>
-                                <a href="#">
-                                    <i class="ace-icon fa fa-power-off"></i>
-                                    Logout
-                                </a>
+                                <?= Html::a('<i class="ace-icon fa fa-power-off"></i> Logout', ['/site/logout'], ['data-method' => 'post']) ?>
                             </li>
                         </ul>
                     </li>
@@ -395,13 +394,37 @@ AceIeAsset::register($this);
             </div>
 
             <ul class="nav nav-list">
-                <li class="">
-                    <a href="index.html">
-                        <i class="menu-icon fa fa-tachometer"></i>
-                        <span class="menu-text"> Dashboard </span>
-                    </a>
-
+                <li class="<?= ($this->context->id === 'dashboard') ? 'active' : null ?>">
+                    <?= Html::a('<i class="menu-icon fa fa-tachometer"></i>
+                        <span class="menu-text"> Dashboard </span>', ['dashboard/index']) ?>
+            
                     <b class="arrow"></b>
+                </li>
+            
+                <li class="<?= (in_array($this->context->id, ['library', 'user'])) ? 'open active' : null ?>">
+                    <?= Html::a('<i class="menu-icon fa fa-cogs"></i>
+                        <span class="menu-text">
+                            Settings
+                        </span>
+            
+                        <b class="arrow fa fa-angle-down"></b>', '#', ['class' => 'dropdown-toggle']) ?>
+            
+                    <b class="arrow"></b>
+            
+                    <ul class="submenu">
+                        <li class="<?= ($this->context->id === 'library') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Libraries', ['/library/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'user') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Users', ['/user/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
                 </li>
             </ul>
 
@@ -419,9 +442,7 @@ AceIeAsset::register($this);
                 </div>
                 <div class="page-content">
                     <div class="row">
-                        <div class="col-xs-12">
-                            <?= $content ?>
-                        </div>
+                        <?= $content ?>
                     </div>
                 </div>
             </div>
@@ -429,7 +450,7 @@ AceIeAsset::register($this);
         <footer class="footer">
             <div class="footer-inner">
                 <div class="footer-content">
-                    <span class="bigger-120"><span class="blue bolder">Ace</span> Application &copy; 2013-2014</span>
+                    <span class="bigger-120"><span class="blue bolder"><?= Html::encode(Yii::$app->params['appName']) ?></span> Application &copy; 2016</span>
                 </div>
             </div>
         </footer>
@@ -437,6 +458,14 @@ AceIeAsset::register($this);
         <?= Html::a('<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>', '#', ['id' => 'btn-scroll-up', 'class' => 'btn-scroll-up btn btn-sm btn-inverse']) ?>
     </div>
 <?php $this->endBody() ?>
+<?php Modal::begin([
+    'size' => Modal::SIZE_LARGE,
+    'header' => '<span class="modal-header-content"></span>',
+    'clientOptions' => [
+        'backdrop' => 'static',
+    ],
+]);
+Modal::end(); ?>
 </body>
 </html>
 <?php $this->endPage() ?>

@@ -4,11 +4,18 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\helpers\Url;
+
+use app\models\User;
 use app\models\LoginForm;
 use app\models\RegisterForm;
 use app\models\Library;
+use kartik\form\ActiveForm;
+use kartik\widgets\Growl;
 
 class SiteController extends Controller
 {
@@ -57,39 +64,48 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['/dashboard/index']);
+        }
+
         $this->layout = 'login';
 
         $loginModel = new LoginForm();
         $registerModel = new RegisterForm();
 
-        if ($registerModel->load(Yii::$app->request->post()) && $registerModel->validate()) {
-            return $this->goBack();
+        $registerModel->library = 1;
+        $registerModel->name = 'tomas cabagay jr';
+        $registerModel->username = 'student';
+        $registerModel->password = 'student';
+        $registerModel->confirm_password = 'student';
+
+        $response = Yii::$app->response;
+
+        if (Yii::$app->request->isAjax && $registerModel->load(Yii::$app->request->post()) && $registerModel->signup()) {
+            $body = Yii::$app->params['autoConfirmAccount'] ?
+                Yii::t('app', 'The account has been successfully created. You may now login to the system using the registered credentials.'): Yii::t('app', 'The account has been successfully created. Please wait while the administrator approves your request.');
+            Yii::$app->session->setFlash('success', [
+                'title' => 'Congratulations!',
+                'body' => $body,
+            ]);
+            $response->format = Response::FORMAT_JSON;
+            return $response->data = [
+                'result' => 'success',
+                'href' => Url::toRoute(['/site/index'], true),
+            ];
+        } else if (Yii::$app->request->isAjax && $loginModel->load(Yii::$app->request->post()) && $loginModel->login()) {
+            $response->format = Response::FORMAT_JSON;
+            return $response->data = [
+                'result' => 'success',
+                'href' => Url::toRoute(['/site/index'], true),
+            ];
         }
         
         return $this->render('index', [
             'loginModel' => $loginModel,
             'registerModel' => $registerModel,
             'libraries' => Library::getLibraryList(),
-        ]);
-    }
-
-    /**
-     * Login action.
-     *
-     * @return string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-        return $this->render('login', [
-            'model' => $model,
+            'roles' => User::getRoleList(),
         ]);
     }
 
@@ -112,8 +128,38 @@ class SiteController extends Controller
      */
     public function actionValidateSignup()
     {
-        Yii::$app->user->logout();
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
 
-        return $this->goHome();
+        $model = new RegisterForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
+    }
+
+    /**
+     * Validate Login action.
+     *
+     * @return string
+     */
+    public function actionValidateLogin()
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new LoginForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
     }
 }

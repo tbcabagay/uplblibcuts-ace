@@ -21,7 +21,4 @@ class AceIeAsset extends AssetBundle
     public $css = [
         'css/ace-ie.min.css',
     ];
-    public $depends = [
-        'app\assets\AppAsset',
-    ];
 }

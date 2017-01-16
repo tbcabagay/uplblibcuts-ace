@@ -10,11 +10,13 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property string $location
- *
- * @property User[] $users
+ * @property integer $status
  */
 class Library extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 5;
+    const STATUS_DELETE = 10;
+
     private static $_list = [];
 
     /**
@@ -32,7 +34,10 @@ class Library extends \yii\db\ActiveRecord
     {
         return [
             [['location'], 'required'],
+            [['status'], 'integer'],
             [['location'], 'string', 'max' => 50],
+            ['location', 'filter', 'filter' => 'ucwords'],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
         ];
     }
 
@@ -44,20 +49,22 @@ class Library extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'location' => Yii::t('app', 'Location'),
+            'status' => Yii::t('app', 'Status'),
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsers()
-    {
-        return $this->hasMany(User::className(), ['library_id' => 'id']);
     }
 
     public static function getLibraryList()
     {
         self::$_list = ArrayHelper::map(self::find()->asArray()->all(), 'id', 'location');
         return self::$_list;
+    }
+
+    public static function findById($id)
+    {
+        $model = self::findOne($id);
+        if (!is_null($model)) {
+            return $model->location;
+        }
+        return null;
     }
 }

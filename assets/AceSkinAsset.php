@@ -17,11 +17,12 @@ class AceSkinAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
+    public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
     public $css = [
         'css/ace-skins.min.css',
         'css/ace-rtl.min.css',
     ];
-    public $depends = [
-        'app\assets\AppAsset',
+    public $js = [
+        'js/ace-extra.min.js',
     ];
 }

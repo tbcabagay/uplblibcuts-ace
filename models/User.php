@@ -3,6 +3,10 @@
 namespace app\models;
 
 use Yii;
+use yii\web\Application as WebApplication;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%user}}".
@@ -17,11 +21,14 @@ use Yii;
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
- *
- * @property Library $library
  */
-class User extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    const STATUS_NEW = 5;
+    const STATUS_ACTIVE = 10;
+
+    private static $_roles = [];
+
     /**
      * @inheritdoc
      */
@@ -36,13 +43,16 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['library_id', 'name', 'username', 'password_hash', 'auth_key', 'status', 'created_at', 'updated_at'], 'required'],
+            // [['library_id', 'name', 'username', 'password_hash', 'auth_key', 'status', 'created_at', 'updated_at'], 'required'],
+        [['library_id', 'name', 'username', 'password_hash', 'auth_key', 'status'], 'required'],
             [['library_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 80],
             [['username', 'password_hash'], 'string', 'max' => 60],
             [['auth_key'], 'string', 'max' => 32],
             [['registration_ip'], 'string', 'max' => 45],
-            [['library_id'], 'exist', 'skipOnError' => true, 'targetClass' => Library::className(), 'targetAttribute' => ['library_id' => 'id']],
+            ['name', 'filter', 'filter' => 'strtolower'],
+            ['name', 'filter', 'filter' => 'ucwords'],
+            ['status', 'default', 'value' => self::STATUS_NEW],
         ];
     }
 
@@ -66,10 +76,91 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @inheritdoc
      */
-    public function getLibrary()
+    public static function findIdentity($id)
     {
-        return $this->hasOne(Library::className(), ['id' => 'library_id']);
+        return static::findOne($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne([
+            'access_token' => $token,
+            'status' => self::STATUS_NEW,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->auth_key === $authKey;
+    }
+
+    public static function findByUsername($username)
+    {
+        return self::findOne(['username' => $username]);
+    }
+
+    public function generateAuthKey()
+    {
+        $this->setAttribute('auth_key', \Yii::$app->security->generateRandomString());
+    }
+
+    public function generatePassword($password)
+    {
+        $this->setAttribute('password_hash', Yii::$app->getSecurity()->generatePasswordHash($password));
+    }
+
+    public function generateIpAddress()
+    {
+        if (\Yii::$app instanceof WebApplication) {
+            $this->setAttribute('registration_ip', \Yii::$app->request->userIP);
+        }
+    }
+
+    public function validatePassword($password)
+    {
+        return Yii::$app->getSecurity()->validatePassword($password, $this->password_hash);
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+            ],
+        ];
+    }
+
+    public static function getRoleList()
+    {
+        self::$_roles = ArrayHelper::map(Yii::$app->authManager->getRoles(), 'name', 'name');
+        return self::$_roles;
     }
 }

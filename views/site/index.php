@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\form\ActiveForm;
 use kartik\widgets\Select2;
 
@@ -20,6 +21,12 @@ $this->title = 'Home';
 
             <?php $form = ActiveForm::begin([
                 'id' => 'login-form',
+                'enableAjaxValidation' => true,
+                'enableClientValidation' => false,
+                'validationUrl' => ['validate-login'],
+                'options' => [
+                    'autocomplete' => 'off',
+                ],
                 'formConfig' => [
                     'showLabels' => false,
                 ],
@@ -150,6 +157,14 @@ $this->title = 'Home';
                     ],
                 ]) ?>
 
+                <?= $form->field($registerModel, 'role')->widget(Select2::className(), [
+                    'data' => $roles,
+                    'options' => ['placeholder' => $registerModel->getAttributeLabel('role')],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]) ?>
+
                 <?= $form->field($registerModel, 'name', [
                     'feedbackIcon' => [
                         'prefix' => 'ace-icon fa fa-',
@@ -216,6 +231,8 @@ $this->title = 'Home';
         </div>
     </div>
 </div>
+
+<?php $this->render('@app/views/site/incl/growl.php') ?>
 
 <?php $this->registerJs('
 jQuery(function($) {

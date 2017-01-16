@@ -15,6 +15,7 @@ class m170113_062904_create_user_table extends Migration
         $this->createTable('{{%library}}', [
             'id' => $this->primaryKey(),
             'location' => $this->string(50)->notNull(),
+            'status' => $this->smallInteger()->notNull(),
         ]);
         $this->createTable('{{%user}}', [
             'id' => $this->primaryKey(),
@@ -29,7 +30,7 @@ class m170113_062904_create_user_table extends Migration
             'updated_at' => $this->integer()->notNull(),
         ]);
 
-        $this->addForeignKey('fk-user-library_id-library-id', '{{%user}}', 'library_id', '{{%library}}', 'id');
+        // $this->addForeignKey('fk-user-library_id-library-id', '{{%user}}', 'library_id', '{{%library}}', 'id');
     }
 
     /**
@@ -37,7 +38,7 @@ class m170113_062904_create_user_table extends Migration
      */
     public function down()
     {
-        $this->dropForeignKey('fk-user-library_id-library-id', '{{%user}}');
+        // $this->dropForeignKey('fk-user-library_id-library-id', '{{%user}}');
 
         $this->dropTable('{{%library}}');
         $this->dropTable('{{%user}}');

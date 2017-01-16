@@ -28,7 +28,4 @@ class AceAsset extends AssetBundle
         'js/ace-elements.min.js',
         'js/ace.min.js',
     ];
-    public $depends = [
-        'app\assets\AppAsset',
-    ];
 }

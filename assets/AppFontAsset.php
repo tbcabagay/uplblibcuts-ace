@@ -20,7 +20,4 @@ class AppFontAsset extends AssetBundle
     public $css = [
         'css/fonts.googleapis.com.css',
     ];
-    public $depends = [
-        'app\assets\AppAsset',
-    ];
 }
