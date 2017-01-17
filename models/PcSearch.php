@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\User;
+use app\models\Pc;
 
 /**
- * UserSearch represents the model behind the search form about `app\models\User`.
+ * PcSearch represents the model behind the search form about `app\models\Pc`.
  */
-class UserSearch extends User
+class PcSearch extends Pc
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'library', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'username', 'password_hash', 'auth_key', 'registration_ip'], 'safe'],
+            [['id', 'library', 'status'], 'integer'],
+            [['code', 'ip_address'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = Pc::find();
 
         // add conditions that should always apply here
 
@@ -62,15 +62,10 @@ class UserSearch extends User
             'id' => $this->id,
             'library' => $this->library,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'registration_ip', $this->registration_ip]);
+        $query->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'ip_address', $this->ip_address]);
 
         return $dataProvider;
     }

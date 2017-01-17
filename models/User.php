@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%user}}".
  *
  * @property integer $id
- * @property integer $library_id
+ * @property integer $library
  * @property string $name
  * @property string $username
  * @property string $password_hash
@@ -43,13 +43,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            // [['library_id', 'name', 'username', 'password_hash', 'auth_key', 'status', 'created_at', 'updated_at'], 'required'],
-        [['library_id', 'name', 'username', 'password_hash', 'auth_key', 'status'], 'required'],
-            [['library_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            // [['library', 'name', 'username', 'password_hash', 'auth_key', 'status', 'created_at', 'updated_at'], 'required'],
+        [['library', 'name', 'username', 'password_hash', 'auth_key', 'status'], 'required'],
+            [['library', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 80],
             [['username', 'password_hash'], 'string', 'max' => 60],
             [['auth_key'], 'string', 'max' => 32],
-            [['registration_ip'], 'string', 'max' => 45],
+            [['registration_ip'], 'string', 'max' => 15],
             ['name', 'filter', 'filter' => 'strtolower'],
             ['name', 'filter', 'filter' => 'ucwords'],
             ['status', 'default', 'value' => self::STATUS_NEW],
@@ -63,7 +63,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'library_id' => Yii::t('app', 'Library ID'),
+            'library' => Yii::t('app', 'Library ID'),
             'name' => Yii::t('app', 'Name'),
             'username' => Yii::t('app', 'Username'),
             'password_hash' => Yii::t('app', 'Password Hash'),

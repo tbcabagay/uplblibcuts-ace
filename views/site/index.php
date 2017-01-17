@@ -149,21 +149,25 @@ $this->title = 'Home';
                 ],
             ]); ?>
 
-                <?= $form->field($registerModel, 'library')->widget(Select2::className(), [
+                <?php /* $form->field($registerModel, 'library')->widget(Select2::className(), [
                     'data' => $libraries,
                     'options' => ['placeholder' => $registerModel->getAttributeLabel('library')],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
-                ]) ?>
+                ]) */ ?>
 
-                <?= $form->field($registerModel, 'role')->widget(Select2::className(), [
+                <?php /* $form->field($registerModel, 'role')->widget(Select2::className(), [
                     'data' => $roles,
                     'options' => ['placeholder' => $registerModel->getAttributeLabel('role')],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
-                ]) ?>
+                ]) */ ?>
+
+                <?= $form->field($registerModel, 'library')->dropDownList(['' => $registerModel->getAttributeLabel('library')] + $libraries) ?>
+
+                <?= $form->field($registerModel, 'role')->dropDownList(['' => $registerModel->getAttributeLabel('role')] + $roles) ?>
 
                 <?= $form->field($registerModel, 'name', [
                     'feedbackIcon' => [

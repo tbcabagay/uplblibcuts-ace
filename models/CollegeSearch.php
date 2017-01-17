@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\User;
+use app\models\College;
 
 /**
- * UserSearch represents the model behind the search form about `app\models\User`.
+ * CollegeSearch represents the model behind the search form about `app\models\College`.
  */
-class UserSearch extends User
+class CollegeSearch extends College
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'library', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'username', 'password_hash', 'auth_key', 'registration_ip'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['code', 'description'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = College::find();
 
         // add conditions that should always apply here
 
@@ -60,17 +60,11 @@ class UserSearch extends User
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'library' => $this->library,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'registration_ip', $this->registration_ip]);
+        $query->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
     }

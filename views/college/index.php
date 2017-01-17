@@ -3,13 +3,11 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-use app\models\Library;
-
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\UserSearch */
+/* @var $searchModel app\models\CollegeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Users');
+$this->title = Yii::t('app', 'Colleges');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-xs-12">
@@ -31,24 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'kartik\grid\SerialColumn'],
 
             // 'id',
-            [
-                'attribute' => 'library',
-                'value' => function($model, $key, $index, $column) {
-                    return Library::findById($model->library);
-                },
-                'filter' => $libraries,
-            ],
-            'name',
-            'username',
-            // 'password_hash',
-            // 'auth_key',
-            'registration_ip',
-            /*[
-                'attribute' => 'status',
-                'value' => 
-            ],*/
-            'created_at:datetime',
-            // 'updated_at',
+            'code',
+            'description',
+            // 'status',
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -68,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add User'), 
+                    'title' => Yii::t('app', 'Add College'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .

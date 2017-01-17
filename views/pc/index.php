@@ -6,10 +6,10 @@ use kartik\grid\GridView;
 use app\models\Library;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\UserSearch */
+/* @var $searchModel app\models\PcSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Users');
+$this->title = Yii::t('app', 'PCs');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-xs-12">
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
+            ['class' => 'yii\grid\SerialColumn'],
 
             // 'id',
             [
@@ -38,17 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => $libraries,
             ],
-            'name',
-            'username',
-            // 'password_hash',
-            // 'auth_key',
-            'registration_ip',
-            /*[
-                'attribute' => 'status',
-                'value' => 
-            ],*/
-            'created_at:datetime',
-            // 'updated_at',
+            'code',
+            'ip_address',
+            // 'status',
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -68,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add User'), 
+                    'title' => Yii::t('app', 'Add PC'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .

@@ -47,6 +47,13 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'session' => [
+            'class' => 'app\components\CustomDbSession',
+            'sessionTable' => '{{%session}}',
+        ],
+        'formatter' => [
+            'currencyCode' => 'PHP',
+       ],
     ],
     'params' => $params,
     'modules' => [

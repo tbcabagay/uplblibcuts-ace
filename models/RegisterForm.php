@@ -49,7 +49,7 @@ class RegisterForm extends Model
     public function signup()
     {
         $model = new User();
-        $model->library_id = $this->library;
+        $model->library = $this->library;
         $model->name = $this->name;
         $model->username = $this->username;
         $model->password_hash = $this->password;

@@ -401,7 +401,7 @@ AceIeAsset::register($this);
                     <b class="arrow"></b>
                 </li>
             
-                <li class="<?= (in_array($this->context->id, ['library', 'user'])) ? 'open active' : null ?>">
+                <li class="<?= (in_array($this->context->id, ['college', 'degree', 'library', 'service', 'pc', 'student', 'user'])) ? 'open active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-cogs"></i>
                         <span class="menu-text">
                             Settings
@@ -412,9 +412,39 @@ AceIeAsset::register($this);
                     <b class="arrow"></b>
             
                     <ul class="submenu">
+                        <li class="<?= ($this->context->id === 'college') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Colleges', ['/college/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'degree') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Degrees', ['/degree/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
                         <li class="<?= ($this->context->id === 'library') ? 'active' : null ?>">
                             <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
                                 Libraries', ['/library/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'service') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Services', ['/service/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'pc') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                PCs', ['/pc/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'student') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Students', ['/student/index']) ?>
             
                             <b class="arrow"></b>
                         </li>
