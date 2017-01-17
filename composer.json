@@ -24,6 +24,7 @@
         "kartik-v/yii2-widgets": "*",
         "kartik-v/yii2-widget-growl": "*",
         "kartik-v/yii2-detail-view": "*",
+        "kartik-v/yii2-money": "dev-master",
 
         "bower-asset/font-awesome": ">=4.6.3",
         "bower-asset/bootbox": "~4.4.0"

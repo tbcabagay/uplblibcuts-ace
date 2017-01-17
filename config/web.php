@@ -17,6 +17,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => ['/site/index'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -48,8 +49,15 @@ $config = [
             'class' => 'yii\rbac\DbManager',
         ],
         'session' => [
-            'class' => 'app\components\CustomDbSession',
+            // 'class' => 'app\components\CustomDbSession',
+            'class' => 'yii\web\DbSession',
             'sessionTable' => '{{%session}}',
+            'writeCallback' => function($session) {
+                return [
+                    'user' => (Yii::$app->user->getIdentity(false) === null) ? null : Yii::$app->user->getIdentity(false)->id,
+                    'ip_address' => $_SERVER['REMOTE_ADDR']
+                ];
+            }
         ],
         'formatter' => [
             'currencyCode' => 'PHP',

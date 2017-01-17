@@ -9,6 +9,11 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\web\Response;
+use kartik\form\ActiveForm;
+use app\models\College;
+use app\models\Degree;
+
 /**
  * StudentController implements the CRUD actions for Student model.
  */
@@ -66,10 +71,17 @@ class StudentController extends Controller
         $model = new Student();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return $response->data = [
+                'result' => 'success',
+            ];
         } else {
-            return $this->render('create', [
+            return $this->renderAjax('create', [
                 'model' => $model,
+                'colleges' => College::getCollegeList(),
+                'degrees' => Degree::getDegreeList(),
             ]);
         }
     }
@@ -85,10 +97,17 @@ class StudentController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return $response->data = [
+                'result' => 'success',
+            ];
         } else {
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
+                'colleges' => College::getCollegeList(),
+                'degrees' => Degree::getDegreeList(),
             ]);
         }
     }
@@ -104,6 +123,26 @@ class StudentController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionValidate($id = null)
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        if ($id === null) {
+            $model = new Student();
+        } else {
+            $model = $this->findModel($id);
+        }
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
     }
 
     /**

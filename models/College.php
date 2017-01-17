@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%college}}".
@@ -16,6 +17,8 @@ class College extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 5;
     const STATUS_DELETE = 10;
+
+    private static $_list = [];
 
     /**
      * @inheritdoc
@@ -53,5 +56,11 @@ class College extends \yii\db\ActiveRecord
             'description' => Yii::t('app', 'Description'),
             'status' => Yii::t('app', 'Status'),
         ];
+    }
+
+    public static function getCollegeList()
+    {
+        self::$_list = ArrayHelper::map(self::find()->asArray()->all(), 'id', 'description');
+        return self::$_list;
     }
 }

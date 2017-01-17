@@ -64,6 +64,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        // Yii::$app->session['timeZone'] = 'Asia/Manila';
+
         if (!Yii::$app->user->isGuest) {
             return $this->redirect(['/dashboard/index']);
         }
@@ -117,6 +119,7 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
+        Yii::$app->session->destroy();
 
         return $this->goHome();
     }

@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use app\components\StudentNumberValidator;
 
 /**
  * This is the model class for table "{{%student}}".
@@ -20,6 +23,13 @@ use Yii;
  */
 class Student extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 5;
+    const STATUS_DELETE = 10;
+
+    public $firstname;
+    public $lastname;
+    public $middlename;
+
     /**
      * @inheritdoc
      */
@@ -34,11 +44,21 @@ class Student extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'name', 'sex', 'degree', 'college', 'status', 'rent_time', 'created_at', 'updated_at'], 'required'],
+            [['number', 'firstname', 'lastname', 'middlename', 'sex', 'degree', 'college'], 'required'],
             [['degree', 'college', 'status', 'rent_time', 'created_at', 'updated_at'], 'integer'],
             [['number'], 'string', 'max' => 10],
             [['name'], 'string', 'max' => 150],
             [['sex'], 'string', 'max' => 1],
+            [['firstname', 'lastname', 'middlename'], 'trim'],
+            [['firstname', 'lastname', 'middlename'], 'filter', 'filter' => 'strtolower'],
+            [['firstname', 'lastname', 'middlename'], 'filter', 'filter' => 'ucwords'],
+            [['firstname', 'lastname'], 'string', 'max' => 70],
+            ['middlename', 'string', 'max' => 10],
+            ['number', 'unique'],
+            ['number', StudentNumberValidator::classname()],
+            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => 'Student number is invalid'],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['rent_time', 'default', 'value' => Yii::$app->params['studentRentTime']]
         ];
     }
 
@@ -58,6 +78,44 @@ class Student extends \yii\db\ActiveRecord
             'rent_time' => Yii::t('app', 'Rent Time'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
+            'firstname' => Yii::t('app', 'Given Name'),
+            'lastname' => Yii::t('app', 'Family Name'),
+            'middlename' => Yii::t('app', 'Middle Initial'),
         ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+            ],
+        ];
+    }
+
+    public function beforeSave($insert)
+    {
+        $name = $this->lastname . ' ' . $this->firstname . ' ' . $this->middlename;
+        $this->setAttribute('name', $name);
+
+        return parent::beforeSave($insert);
+    }
+
+    public function formatRentTime()
+    {
+        $rentTime = null;
+        if ($this->rent_time) {
+            $seconds = $this->rent_time;
+            $hours = floor($seconds / 3600);
+            $mins = str_pad(floor($seconds / 60 % 60), 2, '0', STR_PAD_LEFT);
+            $secs = str_pad(floor($seconds % 60), 2, '0', STR_PAD_LEFT);
+
+            $rentTime = "{$hours}:{$mins}:{$secs}";
+        }
+        return $rentTime;
     }
 }
