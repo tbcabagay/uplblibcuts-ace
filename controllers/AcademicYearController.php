@@ -3,21 +3,19 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Student;
-use app\models\StudentSearch;
+use app\models\AcademicYear;
+use app\models\AcademicYearSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
-use app\models\College;
-use app\models\Degree;
 
 /**
- * StudentController implements the CRUD actions for Student model.
+ * AcademicYearController implements the CRUD actions for AcademicYear model.
  */
-class StudentController extends Controller
+class AcademicYearController extends Controller
 {
     /**
      * @inheritdoc
@@ -35,49 +33,42 @@ class StudentController extends Controller
     }
 
     /**
-     * Lists all Student models.
+     * Lists all AcademicYear models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new StudentSearch();
+        $searchModel = new AcademicYearSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'colleges' => College::getCollegeList(),
+            'semesters' => AcademicYear::getSemesterList(),
         ]);
     }
 
     /**
-     * Displays a single Student model.
+     * Displays a single AcademicYear model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        return $this->renderAjax('view', [
+        return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Student model.
+     * Creates a new AcademicYear model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Student();
-
-        $model->number = '2011-97548';
-        $model->firstname = 'tomas';
-        $model->middlename = 'b';
-        $model->lastname = 'cabagay';
-        $model->sex = 'M';
-        $model->college = 1;
-        $model->degree = 2;
+        $model = new AcademicYear();
+        $model->scenario = AcademicYear::SCENARIO_CREATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $response = Yii::$app->response;
@@ -89,14 +80,13 @@ class StudentController extends Controller
         } else {
             return $this->renderAjax('create', [
                 'model' => $model,
-                'colleges' => College::getCollegeList(),
-                'degrees' => Degree::getDegreeList(),
+                'semesters' => AcademicYear::getSemesterList(),
             ]);
         }
     }
 
     /**
-     * Updates an existing Student model.
+     * Updates an existing AcademicYear model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -115,14 +105,13 @@ class StudentController extends Controller
         } else {
             return $this->renderAjax('update', [
                 'model' => $model,
-                'colleges' => College::getCollegeList(),
-                'degrees' => Degree::getDegreeList(),
+                'semesters' => AcademicYear::getSemesterList(),
             ]);
         }
     }
 
     /**
-     * Deletes an existing Student model.
+     * Deletes an existing AcademicYear model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -141,7 +130,7 @@ class StudentController extends Controller
         }
 
         if ($id === null) {
-            $model = new Student();
+            $model = new AcademicYear();
         } else {
             $model = $this->findModel($id);
         }
@@ -155,15 +144,15 @@ class StudentController extends Controller
     }
 
     /**
-     * Finds the Student model based on its primary key value.
+     * Finds the AcademicYear model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Student the loaded model
+     * @return AcademicYear the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Student::findOne($id)) !== null) {
+        if (($model = AcademicYear::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

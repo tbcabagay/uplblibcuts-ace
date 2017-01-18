@@ -3,24 +3,20 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-use app\models\College;
+use app\models\AcademicYear;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\StudentSearch */
+/* @var $searchModel app\models\AcademicYearSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Students');
+$this->title = Yii::t('app', 'Academic Years');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-xs-12">
 
     <div class="page-header">
         <h1>
-            Settings
-            <small>
-                <i class="ace-icon fa fa-angle-double-right"></i>
-                <?= Html::encode($this->title) ?>
-            </small>        
+            <?= Html::encode($this->title) ?>
         </h1>
     </div>
 
@@ -31,39 +27,29 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'kartik\grid\SerialColumn'],
 
             // 'id',
-            'number',
-            'lastname',
-            'firstname',
-            'middlename',
-            // 'sex',
-            // 'degree',
             [
-                'attribute' => 'college',
+                'attribute' => 'semester',
                 'value' => function($model, $key, $index, $column) {
-                    return College::findById($model->college);
+                    return AcademicYear::findBySemester($model->semester);
                 },
-                'filter' => $colleges,
+                'filter' => $semesters,
             ],
-            // 'status',
+            'date_start:date',
+            'date_end:date',
             [
-                'attribute' => 'rent_time',
+                'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
-                    return $model->formatRentTime();
+                    return AcademicYear::findByStatus($model->status);
                 },
+                'format' => 'html',
                 'filter' => false,
             ],
-            [
-                'attribute' => 'created_at',
-                'value' => function($model, $key, $index, $column) {
-                    // Yii::$app->formatter->timeZone = Yii::$app->session->get('timeZone');
-                    return Yii::$app->formatter->asDateTime($model->created_at);
-                },
-                'filter' => false,
-            ],
-            // 'updated_at',
+            // 'created_by',
+            // 'updated_by',
 
             [
                 'class' => 'kartik\grid\ActionColumn',
+                'template' => '{update} {delete}',
                 'viewOptions' => ['class' => 'btn-modal'],
                 'updateOptions' => ['class' => 'btn-modal'],
             ],
@@ -79,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add Student'), 
+                    'title' => Yii::t('app', 'Add Academic Calendar'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .

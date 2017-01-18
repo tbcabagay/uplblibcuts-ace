@@ -15,7 +15,9 @@ class m170117_004352_create_student_table extends Migration
         $this->createTable('{{%student}}', [
             'id' => $this->primaryKey(),
             'number' => $this->char(10)->notNull(),
-            'name' => $this->string(150)->notNull(),
+            'firstname' => $this->string(40)->notNull(),
+            'middlename' => $this->string(40)->notNull(),
+            'lastname' => $this->string(10)->notNull(),
             'sex' => $this->char(1)->notNull(),
             'degree' => $this->integer()->notNull(),
             'college' => $this->integer()->notNull(),

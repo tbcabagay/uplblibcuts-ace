@@ -55,7 +55,7 @@ $config = [
             'writeCallback' => function($session) {
                 return [
                     'user' => (Yii::$app->user->getIdentity(false) === null) ? null : Yii::$app->user->getIdentity(false)->id,
-                    'ip_address' => $_SERVER['REMOTE_ADDR']
+                    'ip_address' => Yii::$app->request->userIP,
                 ];
             }
         ],

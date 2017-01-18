@@ -3,41 +3,67 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
+use app\models\College;
+use app\models\Degree;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Student */
 
-$this->title = $model->name;
+$this->title = "{$model->lastname} {$model->firstname} {$model->middlename}";
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Students'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="student-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="page-header">
+        <h1>
+            Student
+            <small>
+                <i class="ace-icon fa fa-angle-double-right"></i>
+                <?= Html::encode($this->title) ?>
+            </small>        
+        </h1>
+    </div>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'number',
-            'name',
+            'firstname',
+            'middlename',
+            'lastname',
             'sex',
-            'degree',
-            'college',
-            'status',
-            'rent_time:datetime',
-            'created_at',
-            'updated_at',
+            [
+                'attribute' => 'college',
+                'value' => call_user_func(function ($data) {
+                    return College::findById($data->college);
+                }, $model),
+            ],
+            [
+                'attribute' => 'degree',
+                'value' => call_user_func(function ($data) {
+                    return Degree::findById($data->degree);
+                }, $model),
+            ],
+            // 'status',
+            [
+                'attribute' => 'rent_time',
+                'value' => $model->formatRentTime(),
+            ],
+            [
+                'attribute' => 'created_at',
+                'value' => call_user_func(function ($data) {
+                    return Yii::$app->formatter->asDateTime($data->created_at);
+                }, $model),
+            ],
+            [
+                'attribute' => 'updated_at',
+                'value' => call_user_func(function ($data) {
+                    // Yii::$app->formatter->timeZone = 'Asia/Manila';
+                    return Yii::$app->formatter->asDateTime($data->updated_at);
+                }, $model),
+            ],
         ],
     ]) ?>
 

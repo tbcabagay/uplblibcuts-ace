@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Student;
+use app\models\Rent;
 
 /**
- * StudentSearch represents the model behind the search form about `app\models\Student`.
+ * RentSearch represents the model behind the search form about `app\models\Rent`.
  */
-class StudentSearch extends Student
+class RentSearch extends Rent
 {
     /**
      * @inheritdoc
@@ -18,8 +18,9 @@ class StudentSearch extends Student
     public function rules()
     {
         return [
-            [['id', 'degree', 'college', 'status', 'rent_time', 'created_at', 'updated_at'], 'integer'],
-            [['number', 'firstname', 'middlename', 'lastname', 'sex'], 'safe'],
+            [['id', 'student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
+            [['topic'], 'safe'],
+            [['amount'], 'number'],
         ];
     }
 
@@ -41,7 +42,7 @@ class StudentSearch extends Student
      */
     public function search($params)
     {
-        $query = Student::find();
+        $query = Rent::find();
 
         // add conditions that should always apply here
 
@@ -60,19 +61,22 @@ class StudentSearch extends Student
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'degree' => $this->degree,
+            'student' => $this->student,
             'college' => $this->college,
+            'degree' => $this->degree,
+            'pc' => $this->pc,
+            'service' => $this->service,
+            'amount' => $this->amount,
             'status' => $this->status,
+            'time_in' => $this->time_in,
+            'time_out' => $this->time_out,
             'rent_time' => $this->rent_time,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'time_diff' => $this->time_diff,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'number', $this->number])
-            ->andFilterWhere(['like', 'firstname', $this->firstname])
-            ->andFilterWhere(['like', 'middlename', $this->middlename])
-            ->andFilterWhere(['like', 'lastname', $this->lastname])
-            ->andFilterWhere(['like', 'sex', $this->sex]);
+        $query->andFilterWhere(['like', 'topic', $this->topic]);
 
         return $dataProvider;
     }

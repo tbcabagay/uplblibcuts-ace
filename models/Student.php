@@ -12,7 +12,9 @@ use app\components\StudentNumberValidator;
  *
  * @property integer $id
  * @property string $number
- * @property string $name
+ * @property string $firstname
+ * @property string $middlename
+ * @property string $lastname
  * @property string $sex
  * @property integer $degree
  * @property integer $college
@@ -25,10 +27,6 @@ class Student extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 5;
     const STATUS_DELETE = 10;
-
-    public $firstname;
-    public $lastname;
-    public $middlename;
 
     /**
      * @inheritdoc
@@ -44,10 +42,10 @@ class Student extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'firstname', 'lastname', 'middlename', 'sex', 'degree', 'college'], 'required'],
+            [['number', 'firstname', 'middlename', 'lastname', 'sex', 'degree', 'college'], 'required'],
             [['degree', 'college', 'status', 'rent_time', 'created_at', 'updated_at'], 'integer'],
-            [['number'], 'string', 'max' => 10],
-            [['name'], 'string', 'max' => 150],
+            [['number', 'lastname'], 'string', 'max' => 10],
+            [['firstname', 'middlename'], 'string', 'max' => 40],
             [['sex'], 'string', 'max' => 1],
             [['firstname', 'lastname', 'middlename'], 'trim'],
             [['firstname', 'lastname', 'middlename'], 'filter', 'filter' => 'strtolower'],
@@ -70,7 +68,9 @@ class Student extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'number' => Yii::t('app', 'Number'),
-            'name' => Yii::t('app', 'Name'),
+            'firstname' => Yii::t('app', 'Firstname'),
+            'middlename' => Yii::t('app', 'Middlename'),
+            'lastname' => Yii::t('app', 'Lastname'),
             'sex' => Yii::t('app', 'Sex'),
             'degree' => Yii::t('app', 'Degree'),
             'college' => Yii::t('app', 'College'),
@@ -78,9 +78,6 @@ class Student extends \yii\db\ActiveRecord
             'rent_time' => Yii::t('app', 'Rent Time'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'firstname' => Yii::t('app', 'Given Name'),
-            'lastname' => Yii::t('app', 'Family Name'),
-            'middlename' => Yii::t('app', 'Middle Initial'),
         ];
     }
 
@@ -95,14 +92,6 @@ class Student extends \yii\db\ActiveRecord
                 ],
             ],
         ];
-    }
-
-    public function beforeSave($insert)
-    {
-        $name = $this->lastname . ' ' . $this->firstname . ' ' . $this->middlename;
-        $this->setAttribute('name', $name);
-
-        return parent::beforeSave($insert);
     }
 
     public function formatRentTime()

@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use app\models\College;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CollegeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -31,7 +33,16 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'id',
             'code',
             'description',
-            // 'status',
+            [
+                'attribute' => 'status',
+                'value' => function($model, $key, $index, $column) {
+                    return College::findByStatus($model->status);
+                },
+                'label' => 'Charge Students',
+                'format' => 'html',
+                'hAlign' => GridView::ALIGN_CENTER,
+                'filter' => false,
+            ],
 
             [
                 'class' => 'kartik\grid\ActionColumn',

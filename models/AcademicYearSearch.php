@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Student;
+use app\models\AcademicYear;
 
 /**
- * StudentSearch represents the model behind the search form about `app\models\Student`.
+ * AcademicYearSearch represents the model behind the search form about `app\models\AcademicYear`.
  */
-class StudentSearch extends Student
+class AcademicYearSearch extends AcademicYear
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class StudentSearch extends Student
     public function rules()
     {
         return [
-            [['id', 'degree', 'college', 'status', 'rent_time', 'created_at', 'updated_at'], 'integer'],
-            [['number', 'firstname', 'middlename', 'lastname', 'sex'], 'safe'],
+            [['id', 'status', 'created_at', 'created_by'], 'integer'],
+            [['semester', 'date_start', 'date_end'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class StudentSearch extends Student
      */
     public function search($params)
     {
-        $query = Student::find();
+        $query = AcademicYear::find();
 
         // add conditions that should always apply here
 
@@ -60,19 +60,14 @@ class StudentSearch extends Student
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'degree' => $this->degree,
-            'college' => $this->college,
+            'date_start' => $this->date_start,
+            'date_end' => $this->date_end,
             'status' => $this->status,
-            'rent_time' => $this->rent_time,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_by' => $this->created_by,
         ]);
 
-        $query->andFilterWhere(['like', 'number', $this->number])
-            ->andFilterWhere(['like', 'firstname', $this->firstname])
-            ->andFilterWhere(['like', 'middlename', $this->middlename])
-            ->andFilterWhere(['like', 'lastname', $this->lastname])
-            ->andFilterWhere(['like', 'sex', $this->sex]);
+        $query->andFilterWhere(['like', 'semester', $this->semester]);
 
         return $dataProvider;
     }

@@ -8,7 +8,9 @@ use Yii;
  * This is the model class for table "{{%rent}}".
  *
  * @property integer $id
- * @property string $student
+ * @property integer $student
+ * @property integer $college
+ * @property integer $degree
  * @property integer $pc
  * @property integer $service
  * @property string $topic
@@ -37,10 +39,9 @@ class Rent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['student', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
-            [['pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
+            [['student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
+            [['student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
             [['amount'], 'number'],
-            [['student'], 'string', 'max' => 10],
             [['topic'], 'string', 'max' => 30],
         ];
     }
@@ -53,6 +54,8 @@ class Rent extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'student' => Yii::t('app', 'Student'),
+            'college' => Yii::t('app', 'College'),
+            'degree' => Yii::t('app', 'Degree'),
             'pc' => Yii::t('app', 'Pc'),
             'service' => Yii::t('app', 'Service'),
             'topic' => Yii::t('app', 'Topic'),

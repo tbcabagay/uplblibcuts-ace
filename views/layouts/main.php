@@ -456,6 +456,18 @@ AceIeAsset::register($this);
                         </li>
                     </ul>
                 </li>
+                <li class="<?= ($this->context->id === 'dashboard') ? 'active' : null ?>">
+                    <?= Html::a('<i class="menu-icon fa fa-calendar"></i>
+                        <span class="menu-text"> Academic Year </span>', ['academic-year/index']) ?>
+            
+                    <b class="arrow"></b>
+                </li>
+                <li class="<?= ($this->context->id === 'dashboard') ? 'active' : null ?>">
+                    <?= Html::a('<i class="menu-icon fa fa-sign-in"></i>
+                        <span class="menu-text"> Rent </span>', ['rent/index']) ?>
+            
+                    <b class="arrow"></b>
+                </li>
             </ul>
 
             <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
