@@ -377,20 +377,23 @@
         },
         {
             "name": "ezyang/htmlpurifier",
-            "version": "v4.8.0",
+            "version": "v4.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "d0c392f77d2f2a3dcf7fcb79e2a1e2b8804e75b2"
+                "reference": "a1c09b09e398687deeb8e309a6305def4b43439b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/d0c392f77d2f2a3dcf7fcb79e2a1e2b8804e75b2",
-                "reference": "d0c392f77d2f2a3dcf7fcb79e2a1e2b8804e75b2",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/a1c09b09e398687deeb8e309a6305def4b43439b",
+                "reference": "a1c09b09e398687deeb8e309a6305def4b43439b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2"
+            },
+            "require-dev": {
+                "simpletest/simpletest": "^1.1"
             },
             "type": "library",
             "autoload": {
@@ -417,7 +420,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2016-07-16T12:58:58+00:00"
+            "time": "2017-01-13T12:31:37+00:00"
         },
         {
             "name": "kartik-v/bootstrap-fileinput",
@@ -1130,16 +1133,16 @@
         },
         {
             "name": "kartik-v/yii2-widget-datetimepicker",
-            "version": "v1.4.2",
+            "version": "v1.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-widget-datetimepicker.git",
-                "reference": "f4e7024e31da40460d1b36dc880c2ec20a21bf6e"
+                "reference": "41f849f90b41e94221b1f4e4589bba19bcfed16c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widget-datetimepicker/zipball/f4e7024e31da40460d1b36dc880c2ec20a21bf6e",
-                "reference": "f4e7024e31da40460d1b36dc880c2ec20a21bf6e",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-datetimepicker/zipball/41f849f90b41e94221b1f4e4589bba19bcfed16c",
+                "reference": "41f849f90b41e94221b1f4e4589bba19bcfed16c",
                 "shasum": ""
             },
             "require": {
@@ -1175,7 +1178,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2016-01-10T12:18:38+00:00"
+            "time": "2017-01-19T15:04:42+00:00"
         },
         {
             "name": "kartik-v/yii2-widget-depdrop",
@@ -2237,16 +2240,16 @@
         },
         {
             "name": "codeception/base",
-            "version": "2.2.7",
+            "version": "2.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/base.git",
-                "reference": "74f2c1aa2cf7ce78b41a5caacc63fafc636193eb"
+                "reference": "cd71c312909aa2998e931d04c9057995bcf49185"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/base/zipball/74f2c1aa2cf7ce78b41a5caacc63fafc636193eb",
-                "reference": "74f2c1aa2cf7ce78b41a5caacc63fafc636193eb",
+                "url": "https://api.github.com/repos/Codeception/base/zipball/cd71c312909aa2998e931d04c9057995bcf49185",
+                "reference": "cd71c312909aa2998e931d04c9057995bcf49185",
                 "shasum": ""
             },
             "require": {
@@ -2323,7 +2326,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2016-12-05T04:22:42+00:00"
+            "time": "2017-01-20T01:01:44+00:00"
         },
         {
             "name": "codeception/specify",

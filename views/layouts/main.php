@@ -37,7 +37,7 @@ AceIeAsset::register($this);
 <body class="no-skin">
 <?php $this->beginBody() ?>
 
-    <div id="navbar" class="navbar navbar-default          ace-save-state">
+    <div id="navbar" class="navbar navbar-default ace-save-state">
         <div class="navbar-container ace-save-state" id="navbar-container">
             <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
                 <span class="sr-only">Toggle sidebar</span>
@@ -456,13 +456,13 @@ AceIeAsset::register($this);
                         </li>
                     </ul>
                 </li>
-                <li class="<?= ($this->context->id === 'dashboard') ? 'active' : null ?>">
+                <li class="<?= ($this->context->id === 'academic-year') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-calendar"></i>
                         <span class="menu-text"> Academic Year </span>', ['academic-year/index']) ?>
             
                     <b class="arrow"></b>
                 </li>
-                <li class="<?= ($this->context->id === 'dashboard') ? 'active' : null ?>">
+                <li class="<?= ($this->context->id === 'rent') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-sign-in"></i>
                         <span class="menu-text"> Rent </span>', ['rent/index']) ?>
             

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%pc}}".
@@ -17,6 +18,8 @@ class Pc extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 5;
     const STATUS_DELETE = 10;
+
+    private static $_list = [];
 
     /**
      * @inheritdoc
@@ -54,5 +57,16 @@ class Pc extends \yii\db\ActiveRecord
             'ip_address' => Yii::t('app', 'Ip Address'),
             'status' => Yii::t('app', 'Status'),
         ];
+    }
+
+    public static function getPcList($library = null, $status = null)
+    {
+        $library = ['library' => is_null($library) ?
+            Yii::$app->user->identity->library : $library];
+        $status = ['status' => is_null($status) ?
+            self::STATUS_ACTIVE : $status];
+        $where = ArrayHelper::merge($library, $status);
+        self::$_list = ArrayHelper::map(self::find()->where($where)->all(), 'id', 'code');
+        return self::$_list;
     }
 }

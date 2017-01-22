@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%service}}".
@@ -18,7 +19,8 @@ class Service extends \yii\db\ActiveRecord
     const STATUS_SALE = 10;
     const STATUS_DELETE = 15;
 
-    private static $_statuses = [];
+    private static $_status = [];
+    private static $_list = [];
 
     /**
      * @inheritdoc
@@ -57,13 +59,24 @@ class Service extends \yii\db\ActiveRecord
 
     public static function getStatusList()
     {
-        if (empty(self::$_statuses)) {
-            self::$_statuses = [
+        if (empty(self::$_status)) {
+            self::$_status = [
                 self::STATUS_MAIN => 'MAIN',
                 self::STATUS_SALE => 'SALE',
             ];
         }
-        return self::$_statuses;
+        return self::$_status;
+    }
+
+    public static function getServiceList($status = null)
+    {
+        $statuses = self::getStatusList();
+        $model = self::find();
+        if (!is_null($status) && isset($statuses[$status])) {
+            $model->where(['status' => $status]);
+        }
+        self::$_list = ArrayHelper::map($model->all(), 'id', 'name');
+        return self::$_list;
     }
 
     public static function findByStatus($status)

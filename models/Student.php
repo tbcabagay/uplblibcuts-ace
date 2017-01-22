@@ -107,4 +107,9 @@ class Student extends \yii\db\ActiveRecord
         }
         return $rentTime;
     }
+
+    public static function findByNumber($number)
+    {
+        return static findOne(['number' => $number]);
+    }
 }
