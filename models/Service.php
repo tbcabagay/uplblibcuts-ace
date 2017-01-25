@@ -15,8 +15,8 @@ use yii\helpers\ArrayHelper;
  */
 class Service extends \yii\db\ActiveRecord
 {
-    const STATUS_MAIN = 5;
-    const STATUS_SALE = 10;
+    const STATUS_FEATURED = 5;
+    const STATUS_REGULAR = 10;
     const STATUS_DELETE = 15;
 
     private static $_status = [];
@@ -61,8 +61,8 @@ class Service extends \yii\db\ActiveRecord
     {
         if (empty(self::$_status)) {
             self::$_status = [
-                self::STATUS_MAIN => 'MAIN',
-                self::STATUS_SALE => 'SALE',
+                self::STATUS_FEATURED => 'FEATURED',
+                self::STATUS_REGULAR => 'REGULAR',
             ];
         }
         return self::$_status;
@@ -77,6 +77,11 @@ class Service extends \yii\db\ActiveRecord
         }
         self::$_list = ArrayHelper::map($model->all(), 'id', 'name');
         return self::$_list;
+    }
+
+    public static function findById($id)
+    {
+        return self::findOne($id);
     }
 
     public static function findByStatus($status)

@@ -10,12 +10,9 @@ use app\components\StudentNumberValidator;
  * TimeInRentForm is the model behind the login form.
  *
  */
-class TimeInRentForm extends Model
+class TimeOutRentForm extends Model
 {
     public $number;
-    public $pc;
-    public $service;
-    public $topic;
 
     private $_student = false;
     private $_rent = false;
@@ -26,13 +23,11 @@ class TimeInRentForm extends Model
     public function rules()
     {
         return [
-            [['number', 'pc', 'service'], 'required'],
+            ['number', 'required'],
             ['number', 'string', 'max' => 10],
             ['number', StudentNumberValidator::classname()],
             ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => Yii::t('app', 'Student number is invalid.')],
             ['number', 'validateStudent'],
-            [['pc', 'service'], 'integer'],
-            ['topic', 'string', 'max' => 30],
         ];
     }
 
@@ -43,9 +38,6 @@ class TimeInRentForm extends Model
     {
         return [
             'number' => Yii::t('app', 'Student Number'),
-            'pc' => Yii::t('app', 'PC'),
-            'service' => Yii::t('app', 'Service'),
-            'topic' => Yii::t('app', 'Topic'),
         ];
     }
 
@@ -58,8 +50,8 @@ class TimeInRentForm extends Model
                 $this->addError($attribute, Yii::t('app', 'Student number does not exist.'));
             } else {
                 $rent = $this->getRent();
-                if ($rent) {
-                    $this->addError($attribute, Yii::t('app', 'Student is already logged in.'));
+                if (!$rent) {
+                    $this->addError($attribute, Yii::t('app', 'Student is not logged in.'));
                 }
             }
         }
@@ -85,26 +77,22 @@ class TimeInRentForm extends Model
         return $this->_student;
     }
 
-    public function signin()
+    public function signout()
     {
         $student = $this->getStudent();
-        $service = Service::findById($this->service);
+        $rent = $this->getRent();
+        $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        $rent = new Rent();
-        $rent->setAttribute('student', $student->id);
-        $rent->setAttribute('college', $student->college);
-        $rent->setAttribute('degree', $student->degree);
-        $rent->setAttribute('pc', $this->pc);
-        $rent->setAttribute('service', $this->service);
-        $rent->setAttribute('topic', !$this->topic ? $service->name : $this->topic);
-        $rent->setAttribute('amount', 0);
-        $rent->setAttribute('rent_time', $student->rent_time);
-        $rent->setAttribute('time_diff', 0);
-
         try {
-            if ($rent->save() && Pc::setOccupied($this->pc)) {
+            if ($rent->update() && Pc::setVacant($rent->pc)) {
+                $rent->computeTimeDiff();
+                $student->setRentTime($rent->time_diff);
+                if ($student->isChargeable() || ($student->rent_time < 1)) {
+                    $rent->computeRentFee();
+                }
+
                 $transaction->commit();
                 return true;
             }

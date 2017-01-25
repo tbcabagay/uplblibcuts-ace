@@ -76,7 +76,7 @@ class StudentController extends Controller
         $model->middlename = 'b';
         $model->lastname = 'cabagay';
         $model->sex = 'M';
-        $model->college = 1;
+        $model->college = 3;
         $model->degree = 2;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

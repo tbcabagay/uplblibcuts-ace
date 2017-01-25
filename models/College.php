@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
  */
 class College extends \yii\db\ActiveRecord
 {
-    const STATUS_REGULAR = 5;
+    const STATUS_FREE = 5;
     const STATUS_CHARGE = 10;
     const STATUS_DELETE = 15;
 
@@ -45,7 +45,7 @@ class College extends \yii\db\ActiveRecord
             ['code', 'filter', 'filter' => 'strtoupper'],
             ['description', 'filter', 'filter' => 'strtolower'],
             ['description', 'filter', 'filter' => 'ucwords'],
-            ['status', 'default', 'value' => self::STATUS_REGULAR],
+            ['status', 'default', 'value' => self::STATUS_FREE],
         ];
     }
 
@@ -67,7 +67,7 @@ class College extends \yii\db\ActiveRecord
         if (intval($this->switch) === 1) {
             $this->setAttribute('status', self::STATUS_CHARGE);
         } else {
-            $this->setAttribute('status', self::STATUS_REGULAR);
+            $this->setAttribute('status', self::STATUS_FREE);
         }
 
         return parent::beforeSave($insert);
@@ -75,7 +75,7 @@ class College extends \yii\db\ActiveRecord
 
     public function afterFind()
     {
-        if ($this->status === self::STATUS_REGULAR) {
+        if ($this->status === self::STATUS_FREE) {
             $this->switch = 0;
         } else if ($this->status === self::STATUS_CHARGE) {
             $this->switch = 1;
@@ -94,7 +94,7 @@ class College extends \yii\db\ActiveRecord
     {
         if (empty(self::$_statuses)) {
             self::$_statuses = [
-                self::STATUS_REGULAR => 'REGULAR',
+                self::STATUS_FREE => 'FREE',
                 self::STATUS_CHARGE => 'CHARGE',
             ];
         }
@@ -107,7 +107,7 @@ class College extends \yii\db\ActiveRecord
         if (isset($statuses[$status])) {
             if ($status === self::STATUS_CHARGE) {
                 return '<i class="fa fa-check text-success"></i>';
-            } else if ($status === self::STATUS_REGULAR) {
+            } else if ($status === self::STATUS_FREE) {
                 return '<i class="fa fa-times text-danger"></i>';
             }
         }

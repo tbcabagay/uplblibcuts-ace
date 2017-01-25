@@ -54,7 +54,7 @@ class Student extends \yii\db\ActiveRecord
             ['middlename', 'string', 'max' => 10],
             ['number', 'unique'],
             ['number', StudentNumberValidator::classname()],
-            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => 'Student number is invalid'],
+            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => Yii::t('app', 'Student number is invalid.')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['rent_time', 'default', 'value' => Yii::$app->params['studentRentTime']]
         ];
@@ -81,6 +81,18 @@ class Student extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            if ($this->isChargeable()) {
+                $this->setAttribute('rent_time', 0);
+            }
+            
+        }
+
+        return parent::beforeSave($insert);
+    }
+
     public function behaviors()
     {
         return [
@@ -92,6 +104,24 @@ class Student extends \yii\db\ActiveRecord
                 ],
             ],
         ];
+    }
+
+    public function isChargeable()
+    {
+        return College::find()->where([
+            'id' => $this->college,
+            'status' => College::STATUS_CHARGE,
+        ])->exists();
+    }
+
+    public function setRentTime($timeDiff)
+    {
+        /*if ($this->rent_time > 0) {*/
+            $rentTime = $this->rent_time - $timeDiff;
+            $this->setAttribute('rent_time', $rentTime);
+            return $this->update();
+        /*}
+        return true;*/
     }
 
     public function formatRentTime()
@@ -110,6 +140,11 @@ class Student extends \yii\db\ActiveRecord
 
     public static function findByNumber($number)
     {
-        return static findOne(['number' => $number]);
+        return self::findOne(['number' => $number]);
+    }
+
+    public function getFullname()
+    {
+        return "{$this->lastname}, {$this->firstname} {$this->middlename}";
     }
 }

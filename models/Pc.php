@@ -16,10 +16,12 @@ use yii\helpers\ArrayHelper;
  */
 class Pc extends \yii\db\ActiveRecord
 {
-    const STATUS_ACTIVE = 5;
-    const STATUS_DELETE = 10;
+    const STATUS_VACANT = 5;
+    const STATUS_OCCUPIED = 10;
+    const STATUS_DELETE = 20;
 
     private static $_list = [];
+    private static $_status = [];
 
     /**
      * @inheritdoc
@@ -40,7 +42,7 @@ class Pc extends \yii\db\ActiveRecord
             [['code'], 'string', 'max' => 20],
             [['ip_address'], 'string', 'max' => 15],
             ['code', 'filter', 'filter' => 'strtoupper'],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'default', 'value' => self::STATUS_VACANT],
             ['library', 'default', 'value' => Yii::$app->user->identity->library],
         ];
     }
@@ -59,14 +61,55 @@ class Pc extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function getStatusList()
+    {
+        if (empty(self::$_status)) {
+            self::$_status = [
+                self::STATUS_VACANT => 'VACANT',
+                self::STATUS_OCCUPIED => 'OCCUPIED',
+            ];
+        }
+        return self::$_status;
+    }
+
+    public static function setOccupied($id)
+    {
+        $model = self::findOne($id);
+        if (!is_null($model)) {
+            $model->setAttribute('status', self::STATUS_OCCUPIED);
+            return $model->update();
+        }
+        return false;
+    }
+
+    public static function setVacant($id)
+    {
+        $model = self::findOne($id);
+        if (!is_null($model)) {
+            $model->setAttribute('status', self::STATUS_VACANT);
+            return $model->update();
+        }
+        return false;
+    }
+
     public static function getPcList($library = null, $status = null)
     {
-        $library = ['library' => is_null($library) ?
-            Yii::$app->user->identity->library : $library];
-        $status = ['status' => is_null($status) ?
-            self::STATUS_ACTIVE : $status];
-        $where = ArrayHelper::merge($library, $status);
-        self::$_list = ArrayHelper::map(self::find()->where($where)->all(), 'id', 'code');
+        $statuses = self::getStatusList();
+        $model = self::find();
+
+        if (!is_null($status) && isset($statuses[$status])) {
+            $model->where(['status' => $status]);
+        } else {
+            $model->where(['status' => self::STATUS_VACANT]);
+        }
+
+        if (!is_null($library)) {
+            $model->andWhere(['library' => $library]);
+        } else {
+            $model->andWhere(['library' => Yii::$app->user->identity->library]);
+        }
+
+        self::$_list = ArrayHelper::map($model->all(), 'id', 'code');
         return self::$_list;
     }
 }
