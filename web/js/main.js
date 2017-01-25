@@ -42,27 +42,25 @@ var timeIn = {
     numberId: null,
     pcId: null,
     pcAjaxUrl: null,
-    widgetStudentOnlineId: null,
-    widgetStudentOnlineUrl: null,
-    pjaxRentStudentOnline: null,
+    recentTabId: null,
+    recentTabUrl: null,
     init: function(e) {
         timeIn.numberId = e.numberId;
         timeIn.pcId = e.pcId;
         timeIn.pcAjaxUrl = e.pcAjaxUrl;
-        timeIn.widgetStudentOnlineId = e.widgetStudentOnlineId;
-        timeIn.widgetStudentOnlineUrl = e.widgetStudentOnlineUrl;
-        timeIn.pjaxRentStudentOnline = e.pjaxRentStudentOnline;
+        timeIn.recentTabId = e.recentTabId;
+        timeIn.recentTabUrl = e.recentTabUrl;
         timeIn.populatePcData();
-        timeIn.displayWidget();
+        timeIn.displayRecentTab();
         jQuery(document).on('beforeSubmit', '#time-in-rent-form', timeIn.submit);
     },
-    displayWidget: function() {
+    displayRecentTab: function() {
         jQuery.ajax({
             type: 'get',
-            url: timeIn.widgetStudentOnlineUrl,
+            url: timeIn.recentTabUrl,
             dataType: 'html',
             success: function(r) {
-                jQuery(timeIn.widgetStudentOnlineId).html(r);
+                jQuery(timeIn.recentTabId).html(r);
             },
         });
     },

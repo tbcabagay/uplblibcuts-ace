@@ -88,7 +88,8 @@ class TimeInRentForm extends Model
     public function signin()
     {
         $student = $this->getStudent();
-        $service = Service::findById($this->service);
+        $service = Service::findOne($this->service);
+        $academicYear = AcademicYear::findActiveAcademicYear();
 
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -102,6 +103,8 @@ class TimeInRentForm extends Model
         $rent->setAttribute('amount', 0);
         $rent->setAttribute('rent_time', $student->rent_time);
         $rent->setAttribute('time_diff', 0);
+        $rent->setAttribute('academic_year', $academicYear->id);
+        $rent->setAttribute('library', Yii::$app->user->identity->library);
 
         try {
             if ($rent->save() && Pc::setOccupied($this->pc)) {

@@ -36,6 +36,8 @@ class m170117_010303_create_rent_table extends Migration
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->createTable('{{%rent}}', [
             'id' => $this->bigPrimaryKey(),
+            'academic_year' => $this->integer()->notNull(),
+            'library' => $this->integer()->notNull(),
             'student' => $this->integer()->notNull(),
             'college' => $this->integer()->notNull(),
             'degree' => $this->integer()->notNull(),
@@ -53,6 +55,7 @@ class m170117_010303_create_rent_table extends Migration
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->createTable('{{%sale}}', [
             'id' => $this->primaryKey(),
+            'academic_year' => $this->integer()->notNull(),
             'library' => $this->integer()->notNull(),
             'student' => $this->char(10)->notNull(),
             'service' => $this->integer()->notNull(),

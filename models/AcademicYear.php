@@ -75,7 +75,7 @@ class AcademicYear extends \yii\db\ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios[self::SCENARIO_CREATE] = ['semester', 'date_start', 'date_end'];
+        $scenarios[self::SCENARIO_CREATE] = ['semester', 'date_start', 'date_end', 'status'];
         return $scenarios;
     }
 
@@ -128,6 +128,14 @@ class AcademicYear extends \yii\db\ActiveRecord
             ];
         }
         return self::$_statuses;
+    }
+
+    public static function findActiveAcademicYear()
+    {
+        return self::find()
+            ->where(['status' => self::STATUS_ACTIVE])
+            ->limit(1)
+            ->one();
     }
 
     public static function findBySemester($semester)

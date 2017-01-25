@@ -11,6 +11,8 @@ use yii\behaviors\BlameableBehavior;
  * This is the model class for table "{{%rent}}".
  *
  * @property integer $id
+ * @property integer $academic_year
+ * @property integer $library
  * @property integer $student
  * @property integer $college
  * @property integer $degree
@@ -45,9 +47,9 @@ class Rent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
+            //[['academic_year', 'library', 'student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
             [['student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'rent_time', 'time_diff'], 'required'],
-            [['student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
+            [['academic_year', 'library', 'student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
             [['amount'], 'number'],
             [['topic'], 'string', 'max' => 30],
             ['status', 'default', 'value' => self::STATUS_TIME_IN],
@@ -61,6 +63,8 @@ class Rent extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'academic_year' => Yii::t('app', 'Academic Year'),
+            'library' => Yii::t('app', 'Library'),
             'student' => Yii::t('app', 'Student'),
             'college' => Yii::t('app', 'College'),
             'degree' => Yii::t('app', 'Degree'),
@@ -131,5 +135,10 @@ class Rent extends \yii\db\ActiveRecord
             ];
         }
         return $rentTime;
+    }
+
+    public function getStudent()
+    {
+        return Student::findOne($this->student);
     }
 }

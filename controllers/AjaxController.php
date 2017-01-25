@@ -42,28 +42,26 @@ class AjaxController extends Controller
         ];
     }
 
-    public function actionRentListStudent($status)
+    public function actionRecent()
     {
         if (!Yii::$app->request->isAjax) {
             $this->redirect(['/dashboard/index']);
         }
 
-        $query = Rent::find();
-        $query->where(['status' => $status]);
+        return $this->renderAjax('recent', [
+            'studentDataProvider' => $this->searchRentTimeInModel(),
+        ]);
+    }
+
+    protected function searchRentTimeInModel($limit = 5)
+    {
+        $query = Rent::find()->where(['status' => Rent::STATUS_TIME_IN]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 5,
-            ],
-            'sort' => [
-                'defaultOrder' => ['time_in' => SORT_ASC],
-            ],
         ]);
 
-        return $this->renderAjax('rent-list-student', [
-            'dataProvider' => $dataProvider,
-        ]);
+        return $dataProvider;
     }
 
 }

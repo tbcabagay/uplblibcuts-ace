@@ -106,17 +106,15 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="col-xs-12 col-sm-4 widget-container-col">
-        <?php Pjax::begin([
-            'id' => 'pjax-rent-student-online',
-        ]); ?>
-            <div id="widget-rent-student-online"></div>
+        <?php Pjax::begin(); ?>
+            <div id="recent-tab"></div>
         <?php Pjax::end(); ?>
         </div>
     </div>
 </div>
 
 <?php $this->registerJs('
-timeIn.init({ numberId: "#' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "#' . Html::getInputId($timeInRentModel, 'pc') . '", pcAjaxUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", widgetStudentOnlineId: "#widget-rent-student-online", widgetStudentOnlineUrl: "' . Url::toRoute(['/ajax/rent-list-student', 'status' => Rent::STATUS_TIME_IN]) . '", pjaxRentStudentOnline: "#pjax-rent-student-online" });
+timeIn.init({ numberId: "#' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "#' . Html::getInputId($timeInRentModel, 'pc') . '", pcAjaxUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", recentTabId: "#recent-tab", recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '" });
 timeOut.init({ numberId: "#' . Html::getInputId($timeOutRentModel, 'number') . '" });
 ',
 View::POS_READY,
