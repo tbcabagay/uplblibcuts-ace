@@ -92,7 +92,7 @@ var timeIn = {
             success: function(r) {
                 if (r.result == 'success') {
                     jQuery(timeIn.numberId).val('');
-                    timeIn.displayWidget();
+                    timeIn.displayRecentTab();
                     timeIn.populatePcData();
                 } else {
                     location.reload(true);

@@ -7,7 +7,6 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\data\ActiveDataProvider;
 
 use app\models\Pc;
 use app\models\Rent;
@@ -49,19 +48,13 @@ class AjaxController extends Controller
         }
 
         return $this->renderAjax('recent', [
-            'studentDataProvider' => $this->searchRentTimeInModel(),
+            'students' => $this->searchRentTimeInModel(),
         ]);
     }
 
     protected function searchRentTimeInModel($limit = 5)
     {
-        $query = Rent::find()->where(['status' => Rent::STATUS_TIME_IN]);
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        return $dataProvider;
+        return Rent::find()->where(['status' => Rent::STATUS_TIME_IN])->orderBy('time_in DESC')->limit(5)->all();
     }
 
 }

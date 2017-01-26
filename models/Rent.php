@@ -139,6 +139,16 @@ class Rent extends \yii\db\ActiveRecord
 
     public function getStudent()
     {
-        return Student::findOne($this->student);
+        return Student::find()->where(['id' => $this->student])->limit(1)->one();
+    }
+
+    public function getPc()
+    {
+        return Pc::find()->where(['id' => $this->student])->limit(1)->one();
+    }
+
+    public function getService()
+    {
+        return Service::find()->where(['id' => $this->student])->limit(1)->one();
     }
 }

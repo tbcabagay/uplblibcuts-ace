@@ -2,8 +2,10 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use yii\web\View;
 
 use app\models\AcademicYear;
+use kartik\widgets\Growl;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AcademicYearSearch */
@@ -49,9 +51,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template' => '{update} {delete}',
+                'template' => '{toggle-status} {update} {delete}',
                 'viewOptions' => ['class' => 'btn-modal'],
                 'updateOptions' => ['class' => 'btn-modal'],
+                'buttons' => [
+                    'toggle-status' => function ($url, $model, $key) {
+                        if ($model->status === AcademicYear::STATUS_ACTIVE) {
+                            return Html::a('<i class="fa fa-toggle-off"></i>', ['/academic-year/toggle-status', 'id' => $model->id], ['data-pjax' => 'false', 'title' => Yii::t('app', 'Toggle Off'), 'class' => 'btn-toggle']);
+                        }                        
+                    },
+                ],
             ],
         ],
         'pjax' => true,
@@ -83,3 +92,48 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 </div>
+
+<?php
+$session = Yii::$app->session;
+
+if ($session->hasFlash('setAcademicYear')) {
+    echo Growl::widget([
+        'type' => Growl::TYPE_INFO,
+        'title' => $session->getFlash('flashTitle'),
+        'body' => $session->getFlash('setAcademicYear'),
+        'showSeparator' => true,
+        'delay' => 0,
+        'pluginOptions' => [
+            'placement' => [
+                'from' => 'top',
+                'align' => 'right',
+            ],
+            'timer' => 5000,
+        ],
+    ]);
+} ?>
+
+<?php $this->registerJs('
+jQuery(".btn-toggle").on("click", function() {
+    var $btn = jQuery(this);
+    BootstrapDialog.confirm({
+        title: "Confirmation",
+        message: "Are you sure you want to deactivate this item?",
+        type: BootstrapDialog.TYPE_WARNING,
+        callback: function(result) {
+            if (result) {
+                jQuery.ajax({
+                    url: $btn.attr("href"),
+                    type: "post",
+
+                }).done(function (data) {
+                    jQuery.pjax.reload({ container: "#app-pjax-container" });
+                });
+            }
+        },
+    });
+    return false;
+});
+',
+View::POS_READY,
+'academic-year-index') ?>

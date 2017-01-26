@@ -61,6 +61,11 @@ class Pc extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getLibrary()
+    {
+        return Library::find()->where(['id' => $this->library])->limit(1)->one();
+    }
+
     public static function getStatusList()
     {
         if (empty(self::$_status)) {

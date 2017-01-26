@@ -101,8 +101,7 @@ class AcademicYear extends \yii\db\ActiveRecord
 
     public function validateStatus($attribute, $params)
     {
-        echo $this->scenario;
-        $model = self::findOne(['status' => self::STATUS_ACTIVE]);
+        $model = self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
         if (!is_null($model)) {
             $this->addError($attribute, Yii::t('app', 'Please change the status of the active academic year first.'));
         }
@@ -132,10 +131,7 @@ class AcademicYear extends \yii\db\ActiveRecord
 
     public static function findActiveAcademicYear()
     {
-        return self::find()
-            ->where(['status' => self::STATUS_ACTIVE])
-            ->limit(1)
-            ->one();
+        return self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
     }
 
     public static function findBySemester($semester)

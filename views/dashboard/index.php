@@ -107,14 +107,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="col-xs-12 col-sm-4 widget-container-col">
         <?php Pjax::begin(); ?>
-            <div id="recent-tab"></div>
+            <div id="recent-box"></div>
         <?php Pjax::end(); ?>
         </div>
     </div>
 </div>
 
 <?php $this->registerJs('
-timeIn.init({ numberId: "#' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "#' . Html::getInputId($timeInRentModel, 'pc') . '", pcAjaxUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", recentTabId: "#recent-tab", recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '" });
+timeIn.init({ numberId: "#' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "#' . Html::getInputId($timeInRentModel, 'pc') . '", pcAjaxUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", recentTabId: "#recent-box", recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '" });
 timeOut.init({ numberId: "#' . Html::getInputId($timeOutRentModel, 'number') . '" });
 ',
 View::POS_READY,

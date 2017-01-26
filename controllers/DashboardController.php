@@ -9,6 +9,7 @@ use app\models\TimeInRentForm;
 use app\models\TimeOutRentForm;
 use app\models\Pc;
 use app\models\Service;
+use app\models\AcademicYear;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
@@ -17,6 +18,7 @@ class DashboardController extends Controller
 {
     public function actionIndex()
     {
+        $this->checkSettings();
         $timeInRentModel = new TimeInRentForm();
         $timeOutRentModel = new TimeOutRentForm();
 
@@ -82,6 +84,18 @@ class DashboardController extends Controller
             $response->format = Response::FORMAT_JSON;
 
             return ActiveForm::validate($model);
+        }
+    }
+
+    protected function checkSettings()
+    {
+        $session = Yii::$app->session;
+
+        if (!AcademicYear::findActiveAcademicYear()) {
+            $session->setFlash('flashTitle', '<i class="ace-icon fa fa-exclamation-circle"></i>
+                ' . Yii::t('app', 'System Information'));
+            $session->setFlash('setAcademicYear', Yii::t('app', 'Academic Year has not been set. Please create a new one below.'));
+            $this->redirect(['/academic-year/index']);
         }
     }
 }

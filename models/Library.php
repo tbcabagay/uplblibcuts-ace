@@ -58,13 +58,4 @@ class Library extends \yii\db\ActiveRecord
         self::$_list = ArrayHelper::map(self::find()->asArray()->all(), 'id', 'location');
         return self::$_list;
     }
-
-    public static function findById($id)
-    {
-        $model = self::findOne($id);
-        if (!is_null($model)) {
-            return $model->location;
-        }
-        return null;
-    }
 }

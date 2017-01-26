@@ -27,6 +27,7 @@ class AcademicYearController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'toggle-status' => ['POST'],
                 ],
             ],
         ];
@@ -131,6 +132,7 @@ class AcademicYearController extends Controller
 
         if ($id === null) {
             $model = new AcademicYear();
+            $model->scenario = AcademicYear::SCENARIO_CREATE;
         } else {
             $model = $this->findModel($id);
         }
@@ -141,6 +143,15 @@ class AcademicYearController extends Controller
 
             return ActiveForm::validate($model);
         }
+    }
+
+    public function actionToggleStatus($id)
+    {
+        $model = $this->findModel($id);
+        $model->setAttribute('status', AcademicYear::STATUS_INACTIVE);
+        $model->update();
+
+        return $this->redirect(['index']);
     }
 
     /**
