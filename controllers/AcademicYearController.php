@@ -46,6 +46,7 @@ class AcademicYearController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'semesters' => AcademicYear::getSemesterList(),
+            'statuses' => AcademicYear::getStatusList(),
         ]);
     }
 

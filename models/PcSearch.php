@@ -42,6 +42,7 @@ class PcSearch extends Pc
     public function search($params)
     {
         $query = Pc::find();
+        $query->where(['library' => Yii::$app->user->identity->library]);
 
         // add conditions that should always apply here
 

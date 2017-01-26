@@ -40,7 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'college',
                 'value' => function($model, $key, $index, $column) {
-                    return College::findById($model->college);
+                    $college = $model->getCollege();
+                    return Html::encode($college->description);
                 },
                 'filter' => $colleges,
             ],

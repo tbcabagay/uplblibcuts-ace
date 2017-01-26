@@ -36,8 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
-                    return Service::findByStatus($model->status);
+                    return $model->getTextStatus();
                 },
+                'hAlign' => GridView::ALIGN_CENTER,
+                'filter' => $statuses,
             ],
 
             [
@@ -47,6 +49,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'updateOptions' => ['class' => 'btn-modal'],
             ],
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->status === Service::STATUS_FEATURED) {
+                return ['class' => 'success'];
+            }
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [

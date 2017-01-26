@@ -134,25 +134,15 @@ class AcademicYear extends \yii\db\ActiveRecord
         return self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
     }
 
-    public static function findBySemester($semester)
+    public function getTextSemester()
     {
         $semesters = self::getSemesterList();
-        if (isset($semesters[$semester])) {
-            return $semesters[$semester];
-        }
-        return null;
+        return $semesters[$this->semester];
     }
 
-    public static function findByStatus($status)
+    public function getTextStatus()
     {
         $statuses = self::getStatusList();
-        if (isset($statuses[$status])) {
-            if ($status === self::STATUS_ACTIVE) {
-                return "<span class=\"label label-success\">{$statuses[$status]}</span>";
-            } else if ($status === self::STATUS_INACTIVE) {
-                return "<span class=\"label label-danger\">{$statuses[$status]}</span>";
-            }
-        }
-        return null;
+        return $statuses[$this->status];
     }
 }

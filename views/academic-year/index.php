@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'semester',
                 'value' => function($model, $key, $index, $column) {
-                    return AcademicYear::findBySemester($model->semester);
+                    return $model->getTextSemester();
                 },
                 'filter' => $semesters,
             ],
@@ -41,10 +41,11 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
-                    return AcademicYear::findByStatus($model->status);
+                    return $model->getTextStatus();
                 },
                 'format' => 'html',
-                'filter' => false,
+                'hAlign' => GridView::ALIGN_CENTER,
+                'filter' => $statuses,
             ],
             // 'created_by',
             // 'updated_by',
@@ -63,6 +64,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->status === AcademicYear::STATUS_ACTIVE) {
+                return ['class' => 'success'];
+            }
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [

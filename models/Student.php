@@ -143,6 +143,16 @@ class Student extends \yii\db\ActiveRecord
         return self::findOne(['number' => $number]);
     }
 
+    public function getCollege()
+    {
+        return College::find()->where(['id' => $this->college])->limit(1)->one();
+    }
+
+    public function getDegree()
+    {
+        return Degree::find()->where(['id' => $this->college])->limit(1)->one();
+    }
+
     public function getFullname()
     {
         return "{$this->lastname}, {$this->firstname} {$this->middlename}";

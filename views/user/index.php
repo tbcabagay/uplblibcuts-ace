@@ -34,7 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'library',
                 'value' => function($model, $key, $index, $column) {
-                    return Library::findById($model->library);
+                    $library = $model->getLibrary();
+                    return Html::encode($library->location);
                 },
                 'filter' => $libraries,
             ],

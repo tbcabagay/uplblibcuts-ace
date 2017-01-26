@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
-                    return College::findByStatus($model->status);
+                    return $model->iconifyStatus();
                 },
                 'label' => 'Charge Students',
                 'format' => 'html',

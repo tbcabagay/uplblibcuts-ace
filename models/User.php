@@ -158,6 +158,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
+    public function getLibrary()
+    {
+        return Library::find()->where(['id' => $this->library])->limit(1)->one();
+    }
+
     public static function getRoleList()
     {
         self::$_roles = ArrayHelper::map(Yii::$app->authManager->getRoles(), 'name', 'name');

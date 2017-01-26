@@ -79,17 +79,12 @@ class Service extends \yii\db\ActiveRecord
         return self::$_list;
     }
 
-    public static function findById($id)
+    public function getTextStatus()
     {
-        return self::findOne($id);
-    }
-
-    public static function findByStatus($status)
-    {
-        $statuses = self::getStatusList();
-        if (isset($statuses[$status])) {
-            return $statuses[$status];
+        if ($this->status === self::STATUS_FEATURED) {
+            return 'FEATURED';
+        } else if ($this->status === self::STATUS_REGULAR) {
+            return 'REGULAR';
         }
-        return null;
     }
 }

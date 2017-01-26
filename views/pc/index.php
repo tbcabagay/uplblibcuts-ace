@@ -31,14 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             // 'id',
-            [
-                'attribute' => 'library',
-                'value' => function($model, $key, $index, $column) {
-                    $library = $model->getLibrary();
-                    return Html::encode($library->location);
-                },
-                'filter' => $libraries,
-            ],
+            // [
+            //     'attribute' => 'library',
+            //     'value' => function($model, $key, $index, $column) {
+            //         $library = $model->getLibrary();
+            //         return Html::encode($library->location);
+            //     },
+            //     'filter' => $libraries,
+            // ],
             'code',
             'ip_address',
             // 'status',

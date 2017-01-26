@@ -44,6 +44,7 @@ class ServiceController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'statuses' => Service::getStatusList(),
         ]);
     }
 
