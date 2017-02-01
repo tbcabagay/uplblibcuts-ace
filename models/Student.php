@@ -25,8 +25,9 @@ use app\components\StudentNumberValidator;
  */
 class Student extends \yii\db\ActiveRecord
 {
-    const STATUS_ACTIVE = 5;
-    const STATUS_DELETE = 10;
+    const STATUS_REGULAR = 5;
+    const STATUS_CHARGE = 10;    
+    const STATUS_DELETE = 15;
 
     /**
      * @inheritdoc
@@ -55,7 +56,7 @@ class Student extends \yii\db\ActiveRecord
             ['number', 'unique'],
             ['number', StudentNumberValidator::classname()],
             ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => Yii::t('app', 'Student number is invalid.')],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'default', 'value' => self::STATUS_REGULAR],
             ['rent_time', 'default', 'value' => Yii::$app->params['studentRentTime']]
         ];
     }
@@ -85,6 +86,7 @@ class Student extends \yii\db\ActiveRecord
     {
         if ($insert) {
             if ($this->isChargeable()) {
+                $this->setAttribute('status', self::STATUS_CHARGE);
                 $this->setAttribute('rent_time', 0);
             }
             
@@ -108,20 +110,22 @@ class Student extends \yii\db\ActiveRecord
 
     public function isChargeable()
     {
-        return College::find()->where([
-            'id' => $this->college,
-            'status' => College::STATUS_CHARGE,
-        ])->exists();
+        $college = $this->getCollege();
+
+        return ($this->status === self::STATUS_CHARGE) || ($college->status === College::STATUS_CHARGE);
     }
 
-    public function setRentTime($timeDiff)
+    public function updateRentTime($timeDiff)
     {
-        /*if ($this->rent_time > 0) {*/
+        if (!$this->isChargeable()) {
             $rentTime = $this->rent_time - $timeDiff;
             $this->setAttribute('rent_time', $rentTime);
-            return $this->update();
-        /*}
-        return true;*/
+        }
+        if ($this->rent_time < 1) {
+            $this->setAttribute('status', self::STATUS_CHARGE);
+            $this->setAttribute('rent_time', $timeDiff);
+        }
+        return $this->update();
     }
 
     public function formatRentTime()

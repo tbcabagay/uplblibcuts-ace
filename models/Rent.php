@@ -89,7 +89,7 @@ class Rent extends \yii\db\ActiveRecord
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['time_in', 'time_out'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => 'time_out',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => false, // 'time_out',
                 ],
             ],
             [
@@ -102,37 +102,51 @@ class Rent extends \yii\db\ActiveRecord
         ];
     }
 
-    public function computeTimeDiff()
+    public function updateAmount()
     {
-        $timeDiff = $this->time_out - $this->time_in;
-        $this->setAttribute('time_diff', $timeDiff);
-        $this->update();
-    }
+        $service = $this->getService();
+        $student = $this->getStudent();
 
-    public function computeRentFee()
-    {
-        $service = Service::findOne($this->service);
-        $formatTime = $this->formatTimeDiff();
-        if (is_array($formatTime) && !is_null($service)) {
-            $hourFee = $service->amount * $formatTime['hours'];
-            $secondFee = (60 / $service->amount)* $formatTime['mins'];
-            $this->setAttribute('amount', ($hourFee + $secondFee));
-            $this->update();
+        if ($student->rent_time < 1) {
+            $this->setAttribute('time_diff', abs($student->rent_time));
         }
+        $rentTime = $this->formatTimeDiffAsArray();
+
+        if (is_array($rentTime) && !is_null($service)) {
+            $formula = $service->getFormula()->formula;
+            $formula = str_replace('{service_amount}', $service->amount, $formula);
+            $formula = str_replace('{hours}', $rentTime['hours'], $formula);
+            $formula = str_replace('{minutes}', $rentTime['minutes'], $formula);
+            $amount = eval("return {$formula};");
+
+            $this->setAttribute('amount', round($amount));
+            return $this->update();
+        }
+        return false;
     }
 
-    public function formatTimeDiff()
+    public function formatTimeDiffAsArray()
     {
-        $rentTime = 0;
+        $rentTime = $this->getTimeDiff();
+        $pieces = explode(':', $rentTime);
+        if (is_array($pieces)) {
+            $rentTime = [
+                'hours' => $pieces[0],
+                'minutes' => $pieces[1],
+            ];
+        }        
+        return $rentTime;
+    }
+
+    public function getTimeDiff()
+    {
+        $rentTime = null;
         if ($this->time_diff > 0) {
             $seconds = $this->time_diff;
             $hours = floor($seconds / 3600);
-            $mins = str_pad(floor($seconds / 60 % 60), 2, '0', STR_PAD_LEFT);
+            $minutes = str_pad(floor($seconds / 60 % 60), 2, '0', STR_PAD_LEFT);
 
-            $rentTime = [
-                'hours' => $hours,
-                'mins' => $mins,
-            ];
+            $rentTime = "{$hours}:{$minutes}";
         }
         return $rentTime;
     }
@@ -149,6 +163,6 @@ class Rent extends \yii\db\ActiveRecord
 
     public function getService()
     {
-        return Service::find()->where(['id' => $this->student])->limit(1)->one();
+        return Service::find()->where(['id' => $this->service])->limit(1)->one();
     }
 }

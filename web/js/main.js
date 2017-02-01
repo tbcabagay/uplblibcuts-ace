@@ -120,9 +120,10 @@ var timeOut = {
             success: function(r) {
                 if (r.result == 'success') {
                     jQuery(timeOut.numberId).val('');
-                } else {
+                    timeIn.displayRecentTab();
+                } /*else {
                     location.reload(true);
-                }
+                }*/
             },
         });
 
@@ -149,10 +150,25 @@ var f = {
     },
 };
 
+var s = {
+    vacate: function(e) {
+        var button = jQuery(this);
+        jQuery.ajax({
+            url: button.data('value'),
+            type: 'post',
+            success: function(r) {
+                jQuery.pjax.reload({ container: '#app-pjax-container' });
+            },
+        });
+        return false;
+    },
+};
+
 jQuery(document).on('click', '.btn-modal', m.modalDisplay);
 jQuery(document).on('beforeSubmit', '#app-form', m.modalSubmit);
 jQuery(document).on('beforeSubmit', '#signup-form', f.submit);
 jQuery(document).on('beforeSubmit', '#login-form', f.submit);
+jQuery(document).on('click', '#vacate-pcs', s.vacate);
 /*jQuery(function($) {
     var m = {
         modalClass: '.modal',

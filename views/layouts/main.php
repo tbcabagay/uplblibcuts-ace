@@ -60,18 +60,19 @@ AceIeAsset::register($this);
 
             <div class="navbar-buttons navbar-header pull-right" role="navigation">
                 <ul class="nav ace-nav">
+                <!--
                     <li class="grey dropdown-modal">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="ace-icon fa fa-tasks"></i>
                             <span class="badge badge-grey">4</span>
                         </a>
-
+                
                         <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
                             <li class="dropdown-header">
                                 <i class="ace-icon fa fa-check"></i>
                                 4 Tasks to complete
                             </li>
-
+                
                             <li class="dropdown-content">
                                 <ul class="dropdown-menu dropdown-navbar">
                                     <li>
@@ -80,46 +81,46 @@ AceIeAsset::register($this);
                                                 <span class="pull-left">Software Update</span>
                                                 <span class="pull-right">65%</span>
                                             </div>
-
+                
                                             <div class="progress progress-mini">
                                                 <div style="width:65%" class="progress-bar"></div>
                                             </div>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#">
                                             <div class="clearfix">
                                                 <span class="pull-left">Hardware Upgrade</span>
                                                 <span class="pull-right">35%</span>
                                             </div>
-
+                
                                             <div class="progress progress-mini">
                                                 <div style="width:35%" class="progress-bar progress-bar-danger"></div>
                                             </div>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#">
                                             <div class="clearfix">
                                                 <span class="pull-left">Unit Testing</span>
                                                 <span class="pull-right">15%</span>
                                             </div>
-
+                
                                             <div class="progress progress-mini">
                                                 <div style="width:15%" class="progress-bar progress-bar-warning"></div>
                                             </div>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#">
                                             <div class="clearfix">
                                                 <span class="pull-left">Bug Fixes</span>
                                                 <span class="pull-right">90%</span>
                                             </div>
-
+                
                                             <div class="progress progress-mini progress-striped active">
                                                 <div style="width:90%" class="progress-bar progress-bar-success"></div>
                                             </div>
@@ -127,7 +128,7 @@ AceIeAsset::register($this);
                                     </li>
                                 </ul>
                             </li>
-
+                
                             <li class="dropdown-footer">
                                 <a href="#">
                                     See tasks with details
@@ -136,19 +137,19 @@ AceIeAsset::register($this);
                             </li>
                         </ul>
                     </li>
-
+                
                     <li class="purple dropdown-modal">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="ace-icon fa fa-bell icon-animated-bell"></i>
                             <span class="badge badge-important">8</span>
                         </a>
-
+                
                         <ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
                             <li class="dropdown-header">
                                 <i class="ace-icon fa fa-exclamation-triangle"></i>
                                 8 Notifications
                             </li>
-
+                
                             <li class="dropdown-content">
                                 <ul class="dropdown-menu dropdown-navbar navbar-pink">
                                     <li>
@@ -162,14 +163,14 @@ AceIeAsset::register($this);
                                             </div>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#">
                                             <i class="btn btn-xs btn-primary fa fa-user"></i>
                                             Bob just signed up as an editor ...
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#">
                                             <div class="clearfix">
@@ -181,7 +182,7 @@ AceIeAsset::register($this);
                                             </div>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#">
                                             <div class="clearfix">
@@ -195,7 +196,7 @@ AceIeAsset::register($this);
                                     </li>
                                 </ul>
                             </li>
-
+                
                             <li class="dropdown-footer">
                                 <a href="#">
                                     See all notifications
@@ -204,19 +205,19 @@ AceIeAsset::register($this);
                             </li>
                         </ul>
                     </li>
-
+                
                     <li class="green dropdown-modal">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
                             <span class="badge badge-success">5</span>
                         </a>
-
+                
                         <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
                             <li class="dropdown-header">
                                 <i class="ace-icon fa fa-envelope-o"></i>
                                 5 Messages
                             </li>
-
+                
                             <li class="dropdown-content">
                                 <ul class="dropdown-menu dropdown-navbar">
                                     <li>
@@ -227,7 +228,7 @@ AceIeAsset::register($this);
                                                     <span class="blue">Alex:</span>
                                                     Ciao sociis natoque penatibus et auctor ...
                                                 </span>
-
+                
                                                 <span class="msg-time">
                                                     <i class="ace-icon fa fa-clock-o"></i>
                                                     <span>a moment ago</span>
@@ -235,7 +236,7 @@ AceIeAsset::register($this);
                                             </span>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#" class="clearfix">
                                             <img src="assets/images/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar" />
@@ -244,7 +245,7 @@ AceIeAsset::register($this);
                                                     <span class="blue">Susan:</span>
                                                     Vestibulum id ligula porta felis euismod ...
                                                 </span>
-
+                
                                                 <span class="msg-time">
                                                     <i class="ace-icon fa fa-clock-o"></i>
                                                     <span>20 minutes ago</span>
@@ -252,7 +253,7 @@ AceIeAsset::register($this);
                                             </span>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#" class="clearfix">
                                             <img src="assets/images/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar" />
@@ -261,7 +262,7 @@ AceIeAsset::register($this);
                                                     <span class="blue">Bob:</span>
                                                     Nullam quis risus eget urna mollis ornare ...
                                                 </span>
-
+                
                                                 <span class="msg-time">
                                                     <i class="ace-icon fa fa-clock-o"></i>
                                                     <span>3:15 pm</span>
@@ -269,7 +270,7 @@ AceIeAsset::register($this);
                                             </span>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#" class="clearfix">
                                             <img src="assets/images/avatars/avatar2.png" class="msg-photo" alt="Kate's Avatar" />
@@ -278,7 +279,7 @@ AceIeAsset::register($this);
                                                     <span class="blue">Kate:</span>
                                                     Ciao sociis natoque eget urna mollis ornare ...
                                                 </span>
-
+                
                                                 <span class="msg-time">
                                                     <i class="ace-icon fa fa-clock-o"></i>
                                                     <span>1:33 pm</span>
@@ -286,7 +287,7 @@ AceIeAsset::register($this);
                                             </span>
                                         </a>
                                     </li>
-
+                
                                     <li>
                                         <a href="#" class="clearfix">
                                             <img src="assets/images/avatars/avatar5.png" class="msg-photo" alt="Fred's Avatar" />
@@ -295,7 +296,7 @@ AceIeAsset::register($this);
                                                     <span class="blue">Fred:</span>
                                                     Vestibulum id penatibus et auctor  ...
                                                 </span>
-
+                
                                                 <span class="msg-time">
                                                     <i class="ace-icon fa fa-clock-o"></i>
                                                     <span>10:09 am</span>
@@ -305,7 +306,7 @@ AceIeAsset::register($this);
                                     </li>
                                 </ul>
                             </li>
-
+                
                             <li class="dropdown-footer">
                                 <a href="inbox.html">
                                     See all messages
@@ -313,8 +314,8 @@ AceIeAsset::register($this);
                                 </a>
                             </li>
                         </ul>
-                    </li>
-
+                    </li>-->
+                
                     <li class="light-blue dropdown-modal">
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                             <?php // Html::img('@web/img/avatars/user.jpg', ['class' => 'nav-user-photo']) ?>
@@ -323,10 +324,10 @@ AceIeAsset::register($this);
                                 <small>Welcome,</small>
                                 <?= Html::encode(Yii::$app->user->identity->username) ?>
                             </span>
-
+                
                             <i class="ace-icon fa fa-caret-down"></i>
                         </a>
-
+                
                         <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                             <li>
                                 <a href="#">
@@ -334,16 +335,16 @@ AceIeAsset::register($this);
                                     Settings
                                 </a>
                             </li>
-
+                
                             <li>
                                 <a href="profile.html">
                                     <i class="ace-icon fa fa-user"></i>
                                     Profile
                                 </a>
                             </li>
-
+                
                             <li class="divider"></li>
-
+                
                             <li>
                                 <?= Html::a('<i class="ace-icon fa fa-power-off"></i> Logout', ['/site/logout'], ['data-method' => 'post']) ?>
                             </li>
@@ -401,7 +402,7 @@ AceIeAsset::register($this);
                     <b class="arrow"></b>
                 </li>
             
-                <li class="<?= (in_array($this->context->id, ['college', 'degree', 'library', 'service', 'pc', 'student', 'user'])) ? 'open active' : null ?>">
+                <li class="<?= (in_array($this->context->id, ['college', 'degree', 'library', 'service', 'formula', 'pc', 'student', 'user'])) ? 'open active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-cogs"></i>
                         <span class="menu-text">
                             Settings
@@ -433,6 +434,12 @@ AceIeAsset::register($this);
                         <li class="<?= ($this->context->id === 'service') ? 'active' : null ?>">
                             <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
                                 Services', ['/service/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'formula') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Formulas', ['/formula/index']) ?>
             
                             <b class="arrow"></b>
                         </li>

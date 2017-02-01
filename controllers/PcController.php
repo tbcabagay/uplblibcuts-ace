@@ -28,6 +28,7 @@ class PcController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'vacate' => ['POST'],
                 ],
             ],
         ];
@@ -41,10 +42,11 @@ class PcController extends Controller
     {
         $searchModel = new PcSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'statuses' => Pc::getStatusList(),
+            'occupiedPcs' => Pc::countByStatus(Pc::STATUS_OCCUPIED),
             'libraries' => Library::getLibraryList(),
         ]);
     }
@@ -119,6 +121,17 @@ class PcController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionVacate()
+    {
+        if (Pc::vacateAll()) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+            return $response->data = [
+                'result' => 'success',
+            ];
+        }
     }
 
     public function actionValidate($id = null)

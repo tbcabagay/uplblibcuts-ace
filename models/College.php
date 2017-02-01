@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
  */
 class College extends \yii\db\ActiveRecord
 {
-    const STATUS_FREE = 5;
+    const STATUS_REGULAR = 5;
     const STATUS_CHARGE = 10;
     const STATUS_DELETE = 15;
     const SWITCH_ON = 1;
@@ -47,7 +47,7 @@ class College extends \yii\db\ActiveRecord
             ['code', 'filter', 'filter' => 'strtoupper'],
             ['description', 'filter', 'filter' => 'strtolower'],
             ['description', 'filter', 'filter' => 'ucwords'],
-            ['status', 'default', 'value' => self::STATUS_FREE],
+            ['status', 'default', 'value' => self::STATUS_REGULAR],
         ];
     }
 
@@ -66,7 +66,7 @@ class College extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-        $status = (intval($this->switch)) ? self::STATUS_CHARGE : self::STATUS_FREE;
+        $status = (intval($this->switch)) ? self::STATUS_CHARGE : self::STATUS_REGULAR;
         $this->setAttribute('status', $status);
 
         return parent::beforeSave($insert);
@@ -74,7 +74,7 @@ class College extends \yii\db\ActiveRecord
 
     public function afterFind()
     {
-        $this->switch = ($this->status === self::STATUS_FREE) ? self::SWITCH_OFF : self::SWITCH_ON;
+        $this->switch = ($this->status === self::STATUS_REGULAR) ? self::SWITCH_OFF : self::SWITCH_ON;
 
         return parent::afterFind();
     }
@@ -89,7 +89,7 @@ class College extends \yii\db\ActiveRecord
     {
         if (empty(self::$_statuses)) {
             self::$_statuses = [
-                self::STATUS_FREE => 'FREE',
+                self::STATUS_REGULAR => 'REGULAR',
                 self::STATUS_CHARGE => 'CHARGE',
             ];
         }
@@ -100,7 +100,7 @@ class College extends \yii\db\ActiveRecord
     {
         if ($this->status === self::STATUS_CHARGE) {
             return '<i class="fa fa-check text-success"></i>';
-        } else if ($this->status === self::STATUS_FREE) {
+        } else if ($this->status === self::STATUS_REGULAR) {
             return '<i class="fa fa-times text-danger"></i>';
         }
     }

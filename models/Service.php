@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * @property string $name
  * @property string $amount
  * @property integer $status
+ * @property integer $formula
  */
 class Service extends \yii\db\ActiveRecord
 {
@@ -36,9 +37,9 @@ class Service extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'amount', 'status'], 'required'],
+            [['name', 'amount', 'status', 'formula'], 'required'],
             [['amount'], 'number'],
-            [['status'], 'integer'],
+            [['status', 'formula'], 'integer'],
             [['name'], 'string', 'max' => 30],
             ['name', 'filter', 'filter' => 'ucwords'],
         ];
@@ -54,6 +55,7 @@ class Service extends \yii\db\ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'amount' => Yii::t('app', 'Amount'),
             'status' => Yii::t('app', 'Status'),
+            'formula' => Yii::t('app', 'Formula'),
         ];
     }
 
@@ -86,5 +88,10 @@ class Service extends \yii\db\ActiveRecord
         } else if ($this->status === self::STATUS_REGULAR) {
             return 'REGULAR';
         }
+    }
+
+    public function getFormula()
+    {
+        return Formula::find()->where(['id' => $this->formula])->limit(1)->one();
     }
 }

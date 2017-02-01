@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Service;
+use app\models\Formula;
 
 /**
- * ServiceSearch represents the model behind the search form about `app\models\Service`.
+ * FormulaSearch represents the model behind the search form about `app\models\Formula`.
  */
-class ServiceSearch extends Service
+class FormulaSearch extends Formula
 {
     /**
      * @inheritdoc
@@ -18,9 +18,8 @@ class ServiceSearch extends Service
     public function rules()
     {
         return [
-            [['id', 'status', 'formula'], 'integer'],
-            [['name'], 'safe'],
-            [['amount'], 'number'],
+            [['id', 'status'], 'integer'],
+            [['unit', 'formula'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class ServiceSearch extends Service
      */
     public function search($params)
     {
-        $query = Service::find();
+        $query = Formula::find();
 
         // add conditions that should always apply here
 
@@ -61,12 +60,11 @@ class ServiceSearch extends Service
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'amount' => $this->amount,
             'status' => $this->status,
-            'formula' => $this->formula,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'unit', $this->unit])
+            ->andFilterWhere(['like', 'formula', $this->formula]);
 
         return $dataProvider;
     }

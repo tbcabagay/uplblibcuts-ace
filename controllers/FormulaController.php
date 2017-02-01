@@ -3,20 +3,19 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Service;
-use app\models\ServiceSearch;
+use app\models\Formula;
+use app\models\FormulaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
-use app\models\Formula;
 
 /**
- * ServiceController implements the CRUD actions for Service model.
+ * FormulaController implements the CRUD actions for Formula model.
  */
-class ServiceController extends Controller
+class FormulaController extends Controller
 {
     /**
      * @inheritdoc
@@ -34,24 +33,22 @@ class ServiceController extends Controller
     }
 
     /**
-     * Lists all Service models.
+     * Lists all Formula models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ServiceSearch();
+        $searchModel = new FormulaSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'formulas' => Formula::getFormulaList(),
-            'statuses' => Service::getStatusList(),
         ]);
     }
 
     /**
-     * Displays a single Service model.
+     * Displays a single Formula model.
      * @param integer $id
      * @return mixed
      */
@@ -63,13 +60,17 @@ class ServiceController extends Controller
     }
 
     /**
-     * Creates a new Service model.
+     * Creates a new Formula model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Service();
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new Formula();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $response = Yii::$app->response;
@@ -81,20 +82,22 @@ class ServiceController extends Controller
         } else {
             return $this->renderAjax('create', [
                 'model' => $model,
-                'formulas' => Formula::getFormulaList(),
-                'statuses' => Service::getStatusList(),
             ]);
         }
     }
 
     /**
-     * Updates an existing Service model.
+     * Updates an existing Formula model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -107,14 +110,12 @@ class ServiceController extends Controller
         } else {
             return $this->renderAjax('update', [
                 'model' => $model,
-                'formulas' => Formula::getFormulaList(),
-                'statuses' => Service::getStatusList(),
             ]);
         }
     }
 
     /**
-     * Deletes an existing Service model.
+     * Deletes an existing Formula model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -133,7 +134,7 @@ class ServiceController extends Controller
         }
 
         if ($id === null) {
-            $model = new Service();
+            $model = new Formula();
         } else {
             $model = $this->findModel($id);
         }
@@ -147,15 +148,15 @@ class ServiceController extends Controller
     }
 
     /**
-     * Finds the Service model based on its primary key value.
+     * Finds the Formula model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Service the loaded model
+     * @return Formula the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Service::findOne($id)) !== null) {
+        if (($model = Formula::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -91,8 +91,6 @@ class TimeInRentForm extends Model
         $service = Service::findOne($this->service);
         $academicYear = AcademicYear::findActiveAcademicYear();
 
-        $transaction = Yii::$app->db->beginTransaction();
-
         $rent = new Rent();
         $rent->setAttribute('student', $student->id);
         $rent->setAttribute('college', $student->college);
@@ -106,17 +104,6 @@ class TimeInRentForm extends Model
         $rent->setAttribute('academic_year', $academicYear->id);
         $rent->setAttribute('library', Yii::$app->user->identity->library);
 
-        try {
-            if ($rent->save() && Pc::setOccupied($this->pc)) {
-                $transaction->commit();
-                return true;
-            }
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-            return false;
-        } catch(\Throwable $e) {
-            $transaction->rollBack();
-            return false;
-        }        
+        return $rent->save() && Pc::setOccupied($this->pc); 
     }
 }

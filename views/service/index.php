@@ -34,6 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'amount:currency',
             [
+                'attribute' => 'formula',
+                'value' => function($model, $key, $index, $column) {
+                    $formula = $model->getFormula();
+                    return $formula->unit;
+                },
+                'hAlign' => GridView::ALIGN_CENTER,
+                'filter' => $formulas,
+            ],
+            [
                 'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
                     return $model->getTextStatus();

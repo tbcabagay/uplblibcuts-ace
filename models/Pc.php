@@ -66,6 +66,34 @@ class Pc extends \yii\db\ActiveRecord
         return Library::find()->where(['id' => $this->library])->limit(1)->one();
     }
 
+    public function getStatusValue()
+    {
+        $statuses = self::getStatusList();
+        if (isset($statuses[$this->status])) {
+            return $statuses[$this->status];
+        }
+    }
+
+    public static function vacateAll()
+    {
+        return self::updateAll(
+            ['status' => self::STATUS_VACANT],
+            ['library' => Yii::$app->user->identity->library]
+        );
+    }
+
+    public static function countByStatus($status, $library = null)
+    {
+        $model = self::find()->where(['status' => $status]);
+
+        if (is_null($library)) {
+            $model->andWhere(['library' => Yii::$app->user->identity->library]);
+        } else {
+            $model->andWhere(['library' => $library]);
+        }
+        return intval($model->count());
+    }
+
     public static function getStatusList()
     {
         if (empty(self::$_status)) {
@@ -79,7 +107,7 @@ class Pc extends \yii\db\ActiveRecord
 
     public static function setOccupied($id)
     {
-        $model = self::findOne($id);
+        $model = self::findOne(['id' => $id, 'status' => self::STATUS_VACANT]);
         if (!is_null($model)) {
             $model->setAttribute('status', self::STATUS_OCCUPIED);
             return $model->update();
@@ -89,7 +117,7 @@ class Pc extends \yii\db\ActiveRecord
 
     public static function setVacant($id)
     {
-        $model = self::findOne($id);
+        $model = self::findOne(['id' => $id, 'status' => self::STATUS_OCCUPIED]);
         if (!is_null($model)) {
             $model->setAttribute('status', self::STATUS_VACANT);
             return $model->update();

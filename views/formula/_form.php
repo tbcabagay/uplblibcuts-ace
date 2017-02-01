@@ -2,14 +2,13 @@
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
-use kartik\money\MaskMoney;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Service */
+/* @var $model app\models\Formula */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="service-form">
+<div class="formula-form">
 
     <?php $form = ActiveForm::begin([
         'id' => 'app-form',
@@ -21,13 +20,9 @@ use kartik\money\MaskMoney;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'amount')->widget(MaskMoney::classname()) ?>
-
-    <?= $form->field($model, 'formula')->dropDownList(['' => '- Select -'] + $formulas) ?>
-
-    <?= $form->field($model, 'status')->dropDownList(['' => '- Select -'] + $statuses) ?>
+    <?= $form->field($model, 'formula')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

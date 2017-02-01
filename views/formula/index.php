@@ -1,16 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\Url;
 use kartik\grid\GridView;
 
-use app\models\Library;
-
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\PcSearch */
+/* @var $searchModel app\models\FormulaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'PCs');
+$this->title = Yii::t('app', 'Formulas');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-xs-12">
@@ -29,32 +26,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'kartik\grid\SerialColumn'],
 
             // 'id',
-            // [
-            //     'attribute' => 'library',
-            //     'value' => function($model, $key, $index, $column) {
-            //         $library = $model->getLibrary();
-            //         return Html::encode($library->location);
-            //     },
-            //     'filter' => $libraries,
-            // ],
-            'code',
-            'ip_address',
-            [
-                'attribute' => 'status',
-                'value' => function($model, $key, $index, $column) {
-                    return $model->getStatusValue();
-                },
-                'hAlign' => GridView::ALIGN_CENTER,
-                'filter' => $statuses,
-            ],
+            'unit',
+            'formula',
+            // 'status',
 
             [
                 'class' => 'kartik\grid\ActionColumn',
                 'template' => '{update} {delete}',
-                'viewOptions' => ['class' => 'btn-modal'],
                 'updateOptions' => ['class' => 'btn-modal'],
             ],
         ],
@@ -69,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add PC'), 
+                    'title' => Yii::t('app', 'Add Forumla'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .
@@ -84,14 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
             'heading' => 'Grid View',
-            'before' => Html::button('<i class="fa fa-desktop"></i>
-                ' . Yii::t('app', 'Vacate {n, plural, =0{} =1{(#) PC} other{(#) PCs}}', ['n' => $occupiedPcs]), [
-                'id' => 'vacate-pcs',
-                'class' => 'btn btn-danger',
-                'data-value' => Url::to(['vacate']),
-                'value' => 0,
-                'disabled' => ($occupiedPcs < 1) ? true : false,
-            ])
         ],
     ]); ?>
 </div>

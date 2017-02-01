@@ -79,29 +79,18 @@ class TimeOutRentForm extends Model
 
     public function signout()
     {
-        $student = $this->getStudent();
         $rent = $this->getRent();
+        $student = $this->getStudent();
+
+        $rent->touch('time_out');
         $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
+        $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
 
-        $transaction = Yii::$app->db->beginTransaction();
+        // $student->updateRentTime($rent->time_diff);
 
-        try {
-            if ($rent->update() && Pc::setVacant($rent->pc)) {
-                $rent->computeTimeDiff();
-                $student->setRentTime($rent->time_diff);
-                if ($student->isChargeable() || ($student->rent_time < 1)) {
-                    $rent->computeRentFee();
-                }
-
-                $transaction->commit();
-                return true;
-            }
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-            return false;
-        } catch(\Throwable $e) {
-            $transaction->rollBack();
-            return false;
-        }        
+        if ($rent->update() && Pc::setVacant($rent->pc)) {
+            return $rent->updateAmount()/* && $student->updateRentTime(0)*/;
+        }
+        return false;
     }
 }
