@@ -46,7 +46,6 @@ class PcController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'statuses' => Pc::getStatusList(),
-            'occupiedPcs' => Pc::countByStatus(Pc::STATUS_OCCUPIED),
             'libraries' => Library::getLibraryList(),
         ]);
     }

@@ -471,7 +471,7 @@ AceIeAsset::register($this);
                 </li>
                 <li class="<?= ($this->context->id === 'rent') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-sign-in"></i>
-                        <span class="menu-text"> Rent </span>', ['rent/index']) ?>
+                        <span class="menu-text"> Rent </span>', ['/rent/index']) ?>
             
                     <b class="arrow"></b>
                 </li>
@@ -498,8 +498,12 @@ AceIeAsset::register($this);
         </div>
         <footer class="footer">
             <div class="footer-inner">
-                <div class="footer-content">
+                <div class="footer-content clearfix">
                     <span class="bigger-120"><span class="blue bolder"><?= Html::encode(Yii::$app->params['appName']) ?></span> Application &copy; 2016</span>
+                    <span class="pull-left smaller-80">
+                        <?= Html::a('Asia/Manila', ['/site/set-timezone', 'timezone' => 'Manila'], ['class' => 'change-timezone', 'data-method' => 'post']) ?>
+                        <?= Html::a('UTC', ['/site/set-timezone', 'timezone' => 'UTC'], ['class' => 'change-timezone', 'data-method' => 'post']) ?>
+                    </span>
                 </div>
             </div>
         </footer>

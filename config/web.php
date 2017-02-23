@@ -69,6 +69,12 @@ $config = [
             'class' => '\kartik\grid\Module',
         ]
     ],
+    'on beforeRequest' => function () {        
+        $user = Yii::$app->user->getIdentity();
+        if ($user && $user->timezone) {
+            Yii::$app->setTimeZone($user->timezone);
+        }
+    },
 ];
 
 if (YII_ENV_DEV) {

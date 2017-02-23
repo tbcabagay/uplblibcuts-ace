@@ -3,8 +3,6 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-use app\models\College;
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CollegeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -33,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'id',
             'code',
             'description',
-            [
+            /*[
                 'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
                     return $model->iconifyStatus();
@@ -42,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'html',
                 'hAlign' => GridView::ALIGN_CENTER,
                 'filter' => false,
-            ],
+            ],*/
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -51,6 +49,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'updateOptions' => ['class' => 'btn-modal'],
             ],
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->isCharged()) {
+                return ['class' => 'success'];
+            }
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [

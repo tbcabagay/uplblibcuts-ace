@@ -3,8 +3,6 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-use app\models\Service;
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ServiceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -42,14 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'hAlign' => GridView::ALIGN_CENTER,
                 'filter' => $formulas,
             ],
-            [
-                'attribute' => 'status',
-                'value' => function($model, $key, $index, $column) {
-                    return $model->getTextStatus();
-                },
-                'hAlign' => GridView::ALIGN_CENTER,
-                'filter' => $statuses,
-            ],
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -59,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
-            if ($model->status === Service::STATUS_FEATURED) {
+            if ($model->isFeatured()) {
                 return ['class' => 'success'];
             }
         },

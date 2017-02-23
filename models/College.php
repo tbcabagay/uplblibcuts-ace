@@ -18,13 +18,13 @@ class College extends \yii\db\ActiveRecord
     const STATUS_REGULAR = 5;
     const STATUS_CHARGE = 10;
     const STATUS_DELETE = 15;
+
     const SWITCH_ON = 1;
     const SWITCH_OFF = 0;
 
     public $switch;
 
     private static $_list = [];
-    private static $_statuses = [];
 
     /**
      * @inheritdoc
@@ -79,13 +79,18 @@ class College extends \yii\db\ActiveRecord
         return parent::afterFind();
     }
 
+    public function isCharged()
+    {
+        return $this->status === self::STATUS_CHARGE;
+    }
+
     public static function getCollegeList()
     {
         self::$_list = ArrayHelper::map(self::find()->asArray()->all(), 'id', 'description');
         return self::$_list;
     }
 
-    public static function getStatusList()
+    /*public static function getStatusList()
     {
         if (empty(self::$_statuses)) {
             self::$_statuses = [
@@ -94,14 +99,5 @@ class College extends \yii\db\ActiveRecord
             ];
         }
         return self::$_statuses;
-    }
-
-    public function iconifyStatus()
-    {
-        if ($this->status === self::STATUS_CHARGE) {
-            return '<i class="fa fa-check text-success"></i>';
-        } else if ($this->status === self::STATUS_REGULAR) {
-            return '<i class="fa fa-times text-danger"></i>';
-        }
-    }
+    }*/
 }

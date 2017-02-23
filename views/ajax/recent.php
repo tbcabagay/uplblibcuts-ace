@@ -1,6 +1,7 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
+use kartik\helpers\Enum;
 
 /* @var $this yii\web\View */
 
@@ -39,7 +40,7 @@ use yii\helpers\Html;
                                 </div>
                                 <div class="time">
                                     <i class="ace-icon fa fa-clock-o"></i>
-                                    <span class="green"><?= Yii::$app->formatter->asRelativeTime($student->time_in) ?></span>
+                                    <span class="green"><?= Enum::timeElapsed(Yii::$app->formatter->asDateTime($student->time_in)) // Yii::$app->formatter->asRelativeTime($student->time_in) ?></span>
                                 </div>
                                 <div class="text">
                                     <?= Html::encode($student->getStudent()->fullname) ?>

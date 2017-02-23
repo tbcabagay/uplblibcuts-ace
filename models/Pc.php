@@ -20,9 +20,6 @@ class Pc extends \yii\db\ActiveRecord
     const STATUS_OCCUPIED = 10;
     const STATUS_DELETE = 20;
 
-    private static $_list = [];
-    private static $_status = [];
-
     /**
      * @inheritdoc
      */
@@ -74,15 +71,26 @@ class Pc extends \yii\db\ActiveRecord
         }
     }
 
-    public static function vacateAll()
+    public function isVacant()
     {
-        return self::updateAll(
-            ['status' => self::STATUS_VACANT],
-            ['library' => Yii::$app->user->identity->library]
-        );
+        return $this->status === self::STATUS_VACANT;
     }
 
-    public static function countByStatus($status, $library = null)
+    public function isOccupied()
+    {
+        return $this->status === self::STATUS_OCCUPIED;
+    }
+
+    public function getStatusList()
+    {
+        $status = [
+            self::STATUS_VACANT => 'VACANT',
+            self::STATUS_OCCUPIED => 'OCCUPIED',
+        ];
+        return $status;
+    }
+
+    public function countByStatus($status, $library = null)
     {
         $model = self::find()->where(['status' => $status]);
 
@@ -94,35 +102,12 @@ class Pc extends \yii\db\ActiveRecord
         return intval($model->count());
     }
 
-    public static function getStatusList()
+    public static function vacateAll()
     {
-        if (empty(self::$_status)) {
-            self::$_status = [
-                self::STATUS_VACANT => 'VACANT',
-                self::STATUS_OCCUPIED => 'OCCUPIED',
-            ];
-        }
-        return self::$_status;
-    }
-
-    public static function setOccupied($id)
-    {
-        $model = self::findOne(['id' => $id, 'status' => self::STATUS_VACANT]);
-        if (!is_null($model)) {
-            $model->setAttribute('status', self::STATUS_OCCUPIED);
-            return $model->update();
-        }
-        return false;
-    }
-
-    public static function setVacant($id)
-    {
-        $model = self::findOne(['id' => $id, 'status' => self::STATUS_OCCUPIED]);
-        if (!is_null($model)) {
-            $model->setAttribute('status', self::STATUS_VACANT);
-            return $model->update();
-        }
-        return false;
+        return self::updateAll(
+            ['status' => self::STATUS_VACANT],
+            ['library' => Yii::$app->user->identity->library]
+        );
     }
 
     public static function getPcList($library = null, $status = null)
@@ -142,7 +127,41 @@ class Pc extends \yii\db\ActiveRecord
             $model->andWhere(['library' => Yii::$app->user->identity->library]);
         }
 
-        self::$_list = ArrayHelper::map($model->all(), 'id', 'code');
-        return self::$_list;
+        $list = ArrayHelper::map($model->all(), 'id', 'code');
+        return $list;
     }
+
+    public function setVacant()
+    {
+        $this->setAttribute('status', self::STATUS_VACANT);
+        return $this->update();
+    }
+
+    public function setOccupied()
+    {
+        $this->setAttribute('status', self::STATUS_OCCUPIED);
+        return $this->update();
+    }
+
+    /*public static function setOccupied($id)
+    {
+        $model = self::findOne(['id' => $id, 'status' => self::STATUS_VACANT]);
+        if (!is_null($model)) {
+            $model->setAttribute('status', self::STATUS_OCCUPIED);
+            return $model->update();
+        }
+        return false;
+    }
+
+    public static function setVacant($id)
+    {
+        $model = self::findOne(['id' => $id, 'status' => self::STATUS_OCCUPIED]);
+        if (!is_null($model)) {
+            $model->setAttribute('status', self::STATUS_VACANT);
+            return $model->update();
+        }
+        return false;
+    }
+
+    */
 }

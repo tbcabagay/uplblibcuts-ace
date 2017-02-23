@@ -40,6 +40,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
+                    'set_timezone' => ['post'],
                 ],
             ],
         ];
@@ -142,6 +143,23 @@ class SiteController extends Controller
             $response->format = Response::FORMAT_JSON;
 
             return ActiveForm::validate($model);
+        }
+    }
+
+    /*
+     *
+     */
+    public function actionSetTimezone($timezone)
+    {
+        $timezones = [
+            'Manila' => 'Asia/Manila',
+            'UTC' => 'UTC',
+        ];
+        if (isset($timezones[$timezone])) {
+            $model = User::findOne(Yii::$app->user->identity->getId());
+            $model->setAttribute('timezone', $timezones[$timezone]);
+            $model->update();
+            var_dump($this->goBack());
         }
     }
 

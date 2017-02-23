@@ -26,7 +26,7 @@ class TimeOutRentForm extends Model
             ['number', 'required'],
             ['number', 'string', 'max' => 10],
             ['number', StudentNumberValidator::classname()],
-            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => Yii::t('app', 'Student number is invalid.')],
+            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/'],
             ['number', 'validateStudent'],
         ];
     }
@@ -83,14 +83,14 @@ class TimeOutRentForm extends Model
         $student = $this->getStudent();
 
         $rent->touch('time_out');
+
         $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
         $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
 
-        // $student->updateRentTime($rent->time_diff);
-
-        if ($rent->update() && Pc::setVacant($rent->pc)) {
-            return $rent->updateAmount()/* && $student->updateRentTime(0)*/;
-        }
-        return false;
+        $student->updateRentTime($rent->time_diff);
+        $rent->getPc()->setVacant();
+        $rent->update();
+        $rent->updateAmount();
+        return true;
     }
 }

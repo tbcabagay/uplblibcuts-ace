@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\web\View;
 
-use app\models\AcademicYear;
 use kartik\widgets\Growl;
 
 /* @var $this yii\web\View */
@@ -34,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function($model, $key, $index, $column) {
                     return $model->getTextSemester();
                 },
-                'filter' => $semesters,
+                'filter' => $searchModel->getSemesterList(),
             ],
             'date_start:date',
             'date_end:date',
@@ -45,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'format' => 'html',
                 'hAlign' => GridView::ALIGN_CENTER,
-                'filter' => $statuses,
+                'filter' => $searchModel->getStatusList(),
             ],
             // 'created_by',
             // 'updated_by',
@@ -57,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'updateOptions' => ['class' => 'btn-modal'],
                 'buttons' => [
                     'toggle-status' => function ($url, $model, $key) {
-                        if ($model->status === AcademicYear::STATUS_ACTIVE) {
+                        if ($model->isActive()) {
                             return Html::a('<i class="fa fa-toggle-off"></i>', ['/academic-year/toggle-status', 'id' => $model->id], ['data-pjax' => 'false', 'title' => Yii::t('app', 'Toggle Off'), 'class' => 'btn-toggle']);
                         }                        
                     },
@@ -65,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
-            if ($model->status === AcademicYear::STATUS_ACTIVE) {
+            if ($model->isActive()) {
                 return ['class' => 'success'];
             }
         },

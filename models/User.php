@@ -21,6 +21,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * @property string $timezone
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -44,12 +45,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             // [['library', 'name', 'username', 'password_hash', 'auth_key', 'status', 'created_at', 'updated_at'], 'required'],
-        [['library', 'name', 'username', 'password_hash', 'auth_key', 'status'], 'required'],
+            [['library', 'name', 'username', 'password_hash', 'auth_key', 'status', 'timezone'], 'required'],
             [['library', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 80],
             [['username', 'password_hash'], 'string', 'max' => 60],
             [['auth_key'], 'string', 'max' => 32],
             [['registration_ip'], 'string', 'max' => 15],
+            [['timezone'], 'string', 'max' => 40],
             ['name', 'filter', 'filter' => 'strtolower'],
             ['name', 'filter', 'filter' => 'ucwords'],
             ['status', 'default', 'value' => self::STATUS_NEW],
@@ -63,7 +65,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'library' => Yii::t('app', 'Library ID'),
+            'library' => Yii::t('app', 'Library'),
             'name' => Yii::t('app', 'Name'),
             'username' => Yii::t('app', 'Username'),
             'password_hash' => Yii::t('app', 'Password Hash'),
@@ -72,6 +74,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'status' => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
+            'timezone' => Yii::t('app', 'Timezone'),
         ];
     }
 

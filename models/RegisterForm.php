@@ -53,6 +53,7 @@ class RegisterForm extends Model
         $model->name = $this->name;
         $model->username = $this->username;
         $model->password_hash = $this->password;
+        $model->timezone = 'Asia/Manila';
 
         $model->setAttribute('status', (Yii::$app->params['autoConfirmAccount'])
             ? User::STATUS_ACTIVE : User::STATUS_NEW);

@@ -104,13 +104,20 @@ class Rent extends \yii\db\ActiveRecord
 
     public function updateAmount()
     {
-        $service = $this->getService();
         $student = $this->getStudent();
+        $service = $this->getService();
 
-        if ($student->rent_time < 1) {
-            $this->setAttribute('time_diff', abs($student->rent_time));
+        if ($student->isChargeableByCollege()) {
+            $rentTime = $this->formatTimeDiffAsArray();
+        } else if ($student->isChargeable()) {
+            $rentTime = $this->formatTimeDiffAsArray();
+
+            if ($student->rent_time < 0) {
+                $rentTime = $student->formatRentTimeAsArray();
+                $student->setAttribute('rent_time', 0);
+                $student->update();
+            }
         }
-        $rentTime = $this->formatTimeDiffAsArray();
 
         if (is_array($rentTime) && !is_null($service)) {
             $formula = $service->getFormula()->formula;
@@ -122,7 +129,6 @@ class Rent extends \yii\db\ActiveRecord
             $this->setAttribute('amount', round($amount));
             return $this->update();
         }
-        return false;
     }
 
     public function formatTimeDiffAsArray()
@@ -164,5 +170,10 @@ class Rent extends \yii\db\ActiveRecord
     public function getService()
     {
         return Service::find()->where(['id' => $this->service])->limit(1)->one();
+    }
+
+    public function getCollege()
+    {
+        return College::find()->where(['id' => $this->college])->limit(1)->one();
     }
 }

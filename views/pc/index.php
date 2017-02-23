@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
 
-use app\models\Library;
+use app\models\Pc;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PcSearch */
@@ -42,14 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
             // ],
             'code',
             'ip_address',
-            [
-                'attribute' => 'status',
-                'value' => function($model, $key, $index, $column) {
-                    return $model->getStatusValue();
-                },
-                'hAlign' => GridView::ALIGN_CENTER,
-                'filter' => $statuses,
-            ],
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -58,6 +50,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'updateOptions' => ['class' => 'btn-modal'],
             ],
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->isVacant()) {
+                return ['class' => 'success'];
+            } else if ($model->isOccupied()) {
+                return ['class' => 'danger'];
+            }
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [
@@ -85,12 +84,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'type' => GridView::TYPE_DEFAULT,
             'heading' => 'Grid View',
             'before' => Html::button('<i class="fa fa-desktop"></i>
-                ' . Yii::t('app', 'Vacate {n, plural, =0{} =1{(#) PC} other{(#) PCs}}', ['n' => $occupiedPcs]), [
+                ' . Yii::t('app', 'Vacate {n, plural, =0{} =1{(#) PC} other{(#) PCs}}', ['n' => $searchModel->countByStatus(Pc::STATUS_OCCUPIED)]), [
                 'id' => 'vacate-pcs',
                 'class' => 'btn btn-danger',
                 'data-value' => Url::to(['vacate']),
                 'value' => 0,
-                'disabled' => ($occupiedPcs < 1) ? true : false,
+                'disabled' => ($searchModel->countByStatus(Pc::STATUS_OCCUPIED) < 1) ? true : false,
             ])
         ],
     ]); ?>

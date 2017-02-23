@@ -55,7 +55,7 @@ class Student extends \yii\db\ActiveRecord
             ['middlename', 'string', 'max' => 10],
             ['number', 'unique'],
             ['number', StudentNumberValidator::classname()],
-            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => Yii::t('app', 'Student number is invalid.')],
+            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/'],
             ['status', 'default', 'value' => self::STATUS_REGULAR],
             ['rent_time', 'default', 'value' => Yii::$app->params['studentRentTime']]
         ];
@@ -85,7 +85,7 @@ class Student extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if ($insert) {
-            if ($this->isChargeable()) {
+            if ($this->isChargeableByCollege()) {
                 $this->setAttribute('status', self::STATUS_CHARGE);
                 $this->setAttribute('rent_time', 0);
             }
@@ -110,25 +110,59 @@ class Student extends \yii\db\ActiveRecord
 
     public function isChargeable()
     {
+        return $this->status === self::STATUS_CHARGE;
+    }
+
+    public function isChargeableByCollege()
+    {
         $college = $this->getCollege();
 
-        return ($this->status === self::STATUS_CHARGE) || ($college->status === College::STATUS_CHARGE);
+        return $college->status === College::STATUS_CHARGE;
     }
 
     public function updateRentTime($timeDiff)
     {
-        if (!$this->isChargeable()) {
-            $rentTime = $this->rent_time - $timeDiff;
-            $this->setAttribute('rent_time', $rentTime);
+        if ($this->isChargeableByCollege()) {
+            return;
         }
-        if ($this->rent_time < 1) {
+
+        $rentTime = $this->rent_time - $timeDiff;
+        
+        $this->setAttribute('rent_time', $rentTime);
+
+        if ($rentTime < 1) {
             $this->setAttribute('status', self::STATUS_CHARGE);
-            $this->setAttribute('rent_time', $timeDiff);
         }
+
         return $this->update();
     }
 
-    public function formatRentTime()
+    public function formatRentTimeAsArray()
+    {
+        $rentTime = $this->getRentTime();
+        $pieces = explode(':', $rentTime);
+        if (is_array($pieces)) {
+            $rentTime = [
+                'hours' => $pieces[0],
+                'minutes' => $pieces[1],
+            ];
+        }        
+        return $rentTime;
+    }
+
+    public function getRentTime()
+    {
+        $rentTime = null;
+        $seconds = abs($this->rent_time);
+        $hours = str_pad(floor($seconds / 3600), 2, '0', STR_PAD_LEFT);
+        $mins = str_pad(floor($seconds / 60 % 60), 2, '0', STR_PAD_LEFT);
+
+        $rentTime = "{$hours}:{$mins}";
+
+        return $rentTime;
+    }
+
+    /*public function formatRentTime()
     {
         $rentTime = null;
         if ($this->rent_time) {
@@ -140,7 +174,7 @@ class Student extends \yii\db\ActiveRecord
             $rentTime = "{$hours}:{$mins}:{$secs}";
         }
         return $rentTime;
-    }
+    }*/
 
     public static function findByNumber($number)
     {

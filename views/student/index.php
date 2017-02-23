@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'rent_time',
                 'value' => function($model, $key, $index, $column) {
-                    return $model->formatRentTime();
+                    return $model->getRentTime();
                 },
                 'filter' => false,
             ],

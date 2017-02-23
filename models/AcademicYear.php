@@ -107,31 +107,22 @@ class AcademicYear extends \yii\db\ActiveRecord
         }
     }
 
-    public static function getSemesterList()
+    public function getSemesterList()
     {
-        if (empty(self::$_list)) {
-            self::$_list = [
-                self::SEMESTER_FIRST => 'First',
-                self::SEMESTER_SECOND => 'Second',
-            ];
-        }
-        return self::$_list;
+        $semester = [
+            self::SEMESTER_FIRST => 'First',
+            self::SEMESTER_SECOND => 'Second',
+        ];
+        return $semester;
     }
 
-    public static function getStatusList()
+    public function getStatusList()
     {
-        if (empty(self::$_statuses)) {
-            self::$_statuses = [
-                self::STATUS_ACTIVE => 'ACTIVE',
-                self::STATUS_INACTIVE => 'INACTIVE',
-            ];
-        }
-        return self::$_statuses;
-    }
-
-    public static function findActiveAcademicYear()
-    {
-        return self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
+        $status = [
+            self::STATUS_ACTIVE => 'ACTIVE',
+            self::STATUS_INACTIVE => 'INACTIVE',
+        ];
+        return $status;
     }
 
     public function getTextSemester()
@@ -144,5 +135,15 @@ class AcademicYear extends \yii\db\ActiveRecord
     {
         $statuses = self::getStatusList();
         return $statuses[$this->status];
+    }
+
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public static function findActiveAcademicYear()
+    {
+        return self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
     }
 }

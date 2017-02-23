@@ -29,7 +29,7 @@ class TimeInRentForm extends Model
             [['number', 'pc', 'service'], 'required'],
             ['number', 'string', 'max' => 10],
             ['number', StudentNumberValidator::classname()],
-            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/', 'message' => Yii::t('app', 'Student number is invalid.')],
+            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/'],
             ['number', 'validateStudent'],
             [['pc', 'service'], 'integer'],
             ['topic', 'string', 'max' => 30],
@@ -104,6 +104,6 @@ class TimeInRentForm extends Model
         $rent->setAttribute('academic_year', $academicYear->id);
         $rent->setAttribute('library', Yii::$app->user->identity->library);
 
-        return $rent->save() && Pc::setOccupied($this->pc); 
+        return $rent->save() && $rent->getPc()->setOccupied();
     }
 }

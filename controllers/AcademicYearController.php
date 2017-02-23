@@ -45,8 +45,6 @@ class AcademicYearController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'semesters' => AcademicYear::getSemesterList(),
-            'statuses' => AcademicYear::getStatusList(),
         ]);
     }
 

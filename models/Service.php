@@ -20,9 +20,6 @@ class Service extends \yii\db\ActiveRecord
     const STATUS_REGULAR = 10;
     const STATUS_DELETE = 15;
 
-    private static $_status = [];
-    private static $_list = [];
-
     /**
      * @inheritdoc
      */
@@ -59,15 +56,29 @@ class Service extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function getStatusList()
+    public function getFormula()
     {
-        if (empty(self::$_status)) {
-            self::$_status = [
-                self::STATUS_FEATURED => 'FEATURED',
-                self::STATUS_REGULAR => 'REGULAR',
-            ];
-        }
-        return self::$_status;
+        return Formula::find()->where(['id' => $this->formula])->limit(1)->one();
+    }
+
+    public function isFeatured()
+    {
+        return $this->status === self::STATUS_FEATURED;
+    }
+
+    public function isRegular()
+    {
+        return $this->status === self::STATUS_REGULAR;
+    }
+
+    public function getStatusList()
+    {
+        $status = [
+            self::STATUS_FEATURED => 'FEATURED',
+            self::STATUS_REGULAR => 'REGULAR',
+        ];
+
+        return $status;
     }
 
     public static function getServiceList($status = null)
@@ -77,21 +88,8 @@ class Service extends \yii\db\ActiveRecord
         if (!is_null($status) && isset($statuses[$status])) {
             $model->where(['status' => $status]);
         }
-        self::$_list = ArrayHelper::map($model->all(), 'id', 'name');
-        return self::$_list;
+        $list = ArrayHelper::map($model->all(), 'id', 'name');
+        return $list;
     }
 
-    public function getTextStatus()
-    {
-        if ($this->status === self::STATUS_FEATURED) {
-            return 'FEATURED';
-        } else if ($this->status === self::STATUS_REGULAR) {
-            return 'REGULAR';
-        }
-    }
-
-    public function getFormula()
-    {
-        return Formula::find()->where(['id' => $this->formula])->limit(1)->one();
-    }
 }

@@ -46,7 +46,6 @@ class ServiceController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'formulas' => Formula::getFormulaList(),
-            'statuses' => Service::getStatusList(),
         ]);
     }
 
@@ -82,7 +81,6 @@ class ServiceController extends Controller
             return $this->renderAjax('create', [
                 'model' => $model,
                 'formulas' => Formula::getFormulaList(),
-                'statuses' => Service::getStatusList(),
             ]);
         }
     }
