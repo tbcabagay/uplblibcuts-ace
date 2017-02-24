@@ -20,6 +20,8 @@ class Pc extends \yii\db\ActiveRecord
     const STATUS_OCCUPIED = 10;
     const STATUS_DELETE = 20;
 
+    const SCENARIO_VALIDATE_CODE = 'validate_code';
+
     /**
      * @inheritdoc
      */
@@ -39,6 +41,7 @@ class Pc extends \yii\db\ActiveRecord
             [['code'], 'string', 'max' => 20],
             [['ip_address'], 'string', 'max' => 15],
             ['code', 'filter', 'filter' => 'strtoupper'],
+            ['code', 'validateUnique', 'on' => self::SCENARIO_VALIDATE_CODE],
             ['status', 'default', 'value' => self::STATUS_VACANT],
             ['library', 'default', 'value' => Yii::$app->user->identity->library],
         ];
@@ -56,6 +59,24 @@ class Pc extends \yii\db\ActiveRecord
             'ip_address' => Yii::t('app', 'Ip Address'),
             'status' => Yii::t('app', 'Status'),
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_VALIDATE_CODE] = ['code'];
+        return $scenarios;
+    }
+
+    public function validateUnique($attribute, $params)
+    {
+        $model = self::find()->where(['code' => $this->$attribute, 'library' => Yii::$app->user->identity->library])->limit(1)->one();
+        if (!is_null($model)) {
+            $this->addError($attribute, Yii::t('app', 'Code "{code}" has already been taken.', ['code' => $this->$attribute]));
+        }
     }
 
     public function getLibrary()
@@ -110,22 +131,22 @@ class Pc extends \yii\db\ActiveRecord
         );
     }
 
-    public static function getPcList($library = null, $status = null)
+    public static function getPcList($status = null, $library = null)
     {
         $statuses = self::getStatusList();
         $model = self::find();
 
         if (!is_null($status) && isset($statuses[$status])) {
             $model->where(['status' => $status]);
-        } else {
+        }/* else {
             $model->where(['status' => self::STATUS_VACANT]);
-        }
+        }*/
 
         if (!is_null($library)) {
             $model->andWhere(['library' => $library]);
-        } else {
+        }/* else {
             $model->andWhere(['library' => Yii::$app->user->identity->library]);
-        }
+        }*/
 
         $list = ArrayHelper::map($model->all(), 'id', 'code');
         return $list;
@@ -142,26 +163,4 @@ class Pc extends \yii\db\ActiveRecord
         $this->setAttribute('status', self::STATUS_OCCUPIED);
         return $this->update();
     }
-
-    /*public static function setOccupied($id)
-    {
-        $model = self::findOne(['id' => $id, 'status' => self::STATUS_VACANT]);
-        if (!is_null($model)) {
-            $model->setAttribute('status', self::STATUS_OCCUPIED);
-            return $model->update();
-        }
-        return false;
-    }
-
-    public static function setVacant($id)
-    {
-        $model = self::findOne(['id' => $id, 'status' => self::STATUS_OCCUPIED]);
-        if (!is_null($model)) {
-            $model->setAttribute('status', self::STATUS_VACANT);
-            return $model->update();
-        }
-        return false;
-    }
-
-    */
 }

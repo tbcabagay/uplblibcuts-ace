@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Formula;
+use app\models\Sale;
 
 /**
- * FormulaSearch represents the model behind the search form about `app\models\Formula`.
+ * SaleSearch represents the model behind the search form about `app\models\Sale`.
  */
-class FormulaSearch extends Formula
+class SaleSearch extends Sale
 {
     /**
      * @inheritdoc
@@ -18,8 +18,9 @@ class FormulaSearch extends Formula
     public function rules()
     {
         return [
-            [['id', 'status'], 'integer'],
-            [['unit', 'formula'], 'safe'],
+            [['id', 'academic_calendar', 'library', 'service', 'quantity', 'created_at', 'created_by'], 'integer'],
+            [['student'], 'safe'],
+            [['amount', 'total'], 'number'],
         ];
     }
 
@@ -41,7 +42,7 @@ class FormulaSearch extends Formula
      */
     public function search($params)
     {
-        $query = Formula::find();
+        $query = Sale::find();
 
         // add conditions that should always apply here
 
@@ -60,11 +61,17 @@ class FormulaSearch extends Formula
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status' => $this->status,
+            'academic_calendar' => $this->academic_calendar,
+            'library' => $this->library,
+            'service' => $this->service,
+            'quantity' => $this->quantity,
+            'amount' => $this->amount,
+            'total' => $this->total,
+            'created_at' => $this->created_at,
+            'created_by' => $this->created_by,
         ]);
 
-        $query->andFilterWhere(['like', 'unit', $this->unit])
-            ->andFilterWhere(['like', 'formula', $this->formula]);
+        $query->andFilterWhere(['like', 'student', $this->student]);
 
         return $dataProvider;
     }

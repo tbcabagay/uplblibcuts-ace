@@ -5,9 +5,7 @@ use yii\web\View;
 use yii\widgets\Pjax;
 use kartik\form\ActiveForm;
 use kartik\helpers\Html;
-
-use app\models\Pc;
-use app\models\Rent;
+use kartik\widgets\TouchSpin;
 
 /* @var $this yii\web\View */
 
@@ -25,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-xs-12 col-sm-4">
             <div class="widget-box">
-                <div class="widget-header">
-                    <h4 class="widget-title"><i class="ace-icon fa fa-sign-in"></i> <?= Yii::t('app', 'Time In') ?></h4>
+                <div class="widget-header widget-header-flat widget-header-small">
+                    <h5 class="widget-title"><i class="ace-icon fa fa-sign-in"></i> <?= Yii::t('app', 'Time In') ?></h5>
 
                     <div class="widget-toolbar">
                         <?= Html::a('<i class="ace-icon fa fa-chevron-up"></i>', '#', ['data-action' => 'collapse']) ?>
@@ -34,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <div class="widget-body">
-                    <div class="widget-main">
+                    <div class="widget-main no-padding">
                         <?php $form = ActiveForm::begin([
                             'id' => 'time-in-rent-form',
                             'action' => ['/dashboard/time-in'],
@@ -46,21 +44,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ]); ?>
 
-                        <?= $form->field($timeInRentModel, 'number')->textInput(['maxlength' => true]) ?>
+                        <fieldset>
+                            <?= $form->field($timeInRentModel, 'number')->textInput(['maxlength' => true]) ?>
 
+                            <?= $form->field($timeInRentModel, 'service')->radioList($featuredServices) ?>
 
-                        <?= $form->field($timeInRentModel, 'service')->radioButtonGroup($services, [
-                            'class' => 'btn-group-sm',
-                            'itemOptions' => ['labelOptions' => ['class' => 'btn btn-default']]
-                        ]) ?>
+                            <?= $form->field($timeInRentModel, 'pc')->dropDownList(['' => '- Select -']) ?>
 
-                        <?= $form->field($timeInRentModel, 'pc')->dropDownList(['' => '- Select -']) ?>
+                            <?= $form->field($timeInRentModel, 'topic')->textInput(['maxlength' => true]) ?>
+                        </fieldset>
 
-                        <?= $form->field($timeInRentModel, 'topic')->textInput(['maxlength' => true]) ?>
-
-                        <div class="form-actions no-padding">
+                        <div class="form-actions center">
                             <?= Html::submitButton(Yii::t('app', 'Submit') . '
-                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-success width-100', 'name' => 'time-in-rent-button']) ?>
+                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-sm btn-success', 'name' => 'time-in-rent-button']) ?>
                         </div>
 
                         <?php ActiveForm::end(); ?>
@@ -71,8 +67,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="col-xs-12 col-sm-4">
             <div class="widget-box">
-                <div class="widget-header">
-                    <h4 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Time Out') ?></h4>
+                <div class="widget-header widget-header-flat widget-header-small">
+                    <h5 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Time Out') ?></h5>
 
                     <div class="widget-toolbar">
                         <?= Html::a('<i class="ace-icon fa fa-chevron-up"></i>', '#', ['data-action' => 'collapse']) ?>
@@ -80,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <div class="widget-body">
-                    <div class="widget-main">
+                    <div class="widget-main no-padding">
                         <?php $form = ActiveForm::begin([
                             'id' => 'time-out-rent-form',
                             'action' => ['/dashboard/time-out'],
@@ -92,11 +88,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ]); ?>
 
-                        <?= $form->field($timeOutRentModel, 'number')->textInput(['maxlength' => true]) ?>
+                        <fieldset>
+                            <?= $form->field($timeOutRentModel, 'number')->textInput(['maxlength' => true]) ?>
+                        </fieldset>
 
-                        <div class="form-group">
+                        <div class="form-actions center">
                             <?= Html::submitButton(Yii::t('app', 'Submit') . '
-                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-success width-100', 'name' => 'time-out-rent-button']) ?>
+                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-sm btn-success', 'name' => 'time-out-rent-button']) ?>
                         </div>
 
                         <?php ActiveForm::end(); ?>
@@ -109,6 +107,60 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::begin(); ?>
             <div id="recent-box"></div>
         <?php Pjax::end(); ?>
+        </div>
+    </div>
+
+    <div class="hr hr32 hr-dotted"></div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-4">
+            <div class="widget-box">
+                <div class="widget-header widget-header-flat widget-header-small">
+                    <h5 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Sale') ?></h5>
+
+                    <div class="widget-toolbar">
+                        <?= Html::a('<i class="ace-icon fa fa-chevron-up"></i>', '#', ['data-action' => 'collapse']) ?>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="widget-main no-padding">
+                        <?php $form = ActiveForm::begin([
+                            'id' => 'sale-form',
+                            'action' => ['/dashboard/sale'],
+                            'enableAjaxValidation' => true,
+                            'enableClientValidation' => false,
+                            'validationUrl' => ['validate-sale'],
+                            'options' => [
+                                'autocomplete' => 'off',
+                            ],
+                        ]); ?>
+
+                        <fieldset>
+                            <?= $form->field($saleModel, 'number')->textInput(['maxlength' => true]) ?>
+
+                            <?= $form->field($saleModel, 'service')->radioList($regularServices) ?>
+
+                            <?= $form->field($saleModel, 'quantity')->widget(TouchSpin::classname(), [
+                                'pluginOptions' => [
+                                    'initval' => 1,
+                                    'min' => 1,
+                                    'max' => 100,
+                                    'step' => 1,
+                                    'buttonup_class' => 'btn btn-sm btn-primary',
+                                    'buttondown_class' => 'btn btn-sm btn-danger',
+                                ],
+                            ]) ?>
+                        </fieldset>
+
+                        <div class="form-actions center">
+                            <?= Html::submitButton(Yii::t('app', 'Submit') . '
+                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-sm btn-success', 'name' => 'sale-button']) ?>
+                        </div>
+
+                        <?php ActiveForm::end(); ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

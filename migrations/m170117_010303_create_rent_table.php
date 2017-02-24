@@ -25,7 +25,7 @@ class m170117_010303_create_rent_table extends Migration
             'amount' => $this->money(7, 2)->notNull(),
             'status' => $this->smallInteger()->notNull(),
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
-        $this->createTable('{{%academic_year}}', [
+        $this->createTable('{{%academic_calendar}}', [
             'id' => $this->bigPrimaryKey(),
             'semester' => $this->char(1)->notNull(),
             'date_start' => $this->date()->notNull(),
@@ -36,7 +36,7 @@ class m170117_010303_create_rent_table extends Migration
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->createTable('{{%rent}}', [
             'id' => $this->bigPrimaryKey(),
-            'academic_year' => $this->integer()->notNull(),
+            'academic_calendar' => $this->integer()->notNull(),
             'library' => $this->integer()->notNull(),
             'student' => $this->integer()->notNull(),
             'college' => $this->integer()->notNull(),
@@ -55,7 +55,7 @@ class m170117_010303_create_rent_table extends Migration
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->createTable('{{%sale}}', [
             'id' => $this->primaryKey(),
-            'academic_year' => $this->integer()->notNull(),
+            'academic_calendar' => $this->integer()->notNull(),
             'library' => $this->integer()->notNull(),
             'student' => $this->char(10)->notNull(),
             'service' => $this->integer()->notNull(),

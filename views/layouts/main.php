@@ -9,6 +9,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 use app\assets\FontAwesomeAsset;
+use app\assets\FlagIconAsset;
 use app\assets\AceAsset;
 use app\assets\AceSkinAsset;
 use app\assets\AppFontAsset;
@@ -18,6 +19,7 @@ use yii\bootstrap\Modal;
 
 AppAsset::register($this);
 FontAwesomeAsset::register($this);
+FlagIconAsset::register($this);
 AppFontAsset::register($this);
 AceAsset::register($this);
 Ace2Asset::register($this);
@@ -431,15 +433,15 @@ AceIeAsset::register($this);
             
                             <b class="arrow"></b>
                         </li>
-                        <li class="<?= ($this->context->id === 'service') ? 'active' : null ?>">
-                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
-                                Services', ['/service/index']) ?>
-            
-                            <b class="arrow"></b>
-                        </li>
                         <li class="<?= ($this->context->id === 'formula') ? 'active' : null ?>">
                             <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
                                 Formulas', ['/formula/index']) ?>
+            
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="<?= ($this->context->id === 'service') ? 'active' : null ?>">
+                            <?= Html::a('<i class="menu-icon fa fa-caret-right"></i>
+                                Services', ['/service/index']) ?>
             
                             <b class="arrow"></b>
                         </li>
@@ -463,15 +465,15 @@ AceIeAsset::register($this);
                         </li>
                     </ul>
                 </li>
-                <li class="<?= ($this->context->id === 'academic-year') ? 'active' : null ?>">
+                <li class="<?= ($this->context->id === 'academic-calendar') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-calendar"></i>
-                        <span class="menu-text"> Academic Year </span>', ['academic-year/index']) ?>
+                        <span class="menu-text"> Academic Calendars </span>', ['academic-calendar/index']) ?>
             
                     <b class="arrow"></b>
                 </li>
                 <li class="<?= ($this->context->id === 'rent') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-sign-in"></i>
-                        <span class="menu-text"> Rent </span>', ['/rent/index']) ?>
+                        <span class="menu-text"> Rents </span>', ['/rent/index']) ?>
             
                     <b class="arrow"></b>
                 </li>
@@ -500,9 +502,10 @@ AceIeAsset::register($this);
             <div class="footer-inner">
                 <div class="footer-content clearfix">
                     <span class="bigger-120"><span class="blue bolder"><?= Html::encode(Yii::$app->params['appName']) ?></span> Application &copy; 2016</span>
-                    <span class="pull-left smaller-80">
-                        <?= Html::a('Asia/Manila', ['/site/set-timezone', 'timezone' => 'Manila'], ['class' => 'change-timezone', 'data-method' => 'post']) ?>
-                        <?= Html::a('UTC', ['/site/set-timezone', 'timezone' => 'UTC'], ['class' => 'change-timezone', 'data-method' => 'post']) ?>
+                    <span class="pull-left smaller-90">
+                        Set Time Zone: 
+                        <?= Html::a('UTC', ['/site/set-timezone', 'timezone' => 'UTC'], ['class' => 'change-timezone']) ?>
+                        <?= Html::a('<span class="flag-icon flag-icon-ph"></span>', ['/site/set-timezone', 'timezone' => 'Manila'], ['class' => 'change-timezone']) ?>
                     </span>
                 </div>
             </div>

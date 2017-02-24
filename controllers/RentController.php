@@ -9,6 +9,11 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\web\Response;
+use kartik\form\ActiveForm;
+use app\models\Pc;
+use app\models\Service;
+
 /**
  * RentController implements the CRUD actions for Rent model.
  */
@@ -41,6 +46,8 @@ class RentController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'pcs' => Pc::getPcList(null, Yii::$app->user->identity->library),
+            'services' => Service::getServiceList(Service::STATUS_FEATURED),
         ]);
     }
 
@@ -51,7 +58,7 @@ class RentController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -101,7 +108,7 @@ class RentController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->rentRollBack();
 
         return $this->redirect(['index']);
     }

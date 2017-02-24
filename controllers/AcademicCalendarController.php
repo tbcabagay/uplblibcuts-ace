@@ -3,21 +3,19 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Student;
-use app\models\StudentSearch;
+use app\models\AcademicCalendar;
+use app\models\AcademicCalendarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
-use app\models\College;
-use app\models\Degree;
 
 /**
- * StudentController implements the CRUD actions for Student model.
+ * AcademicCalendarController implements the CRUD actions for AcademicCalendar model.
  */
-class StudentController extends Controller
+class AcademicCalendarController extends Controller
 {
     /**
      * @inheritdoc
@@ -29,56 +27,48 @@ class StudentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'toggle-status' => ['POST'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all Student models.
+     * Lists all AcademicCalendar models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new StudentSearch();
+        $searchModel = new AcademicCalendarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'colleges' => College::getCollegeList(),
-            'degrees' => Degree::getDegreeList(),
         ]);
     }
 
     /**
-     * Displays a single Student model.
+     * Displays a single AcademicCalendar model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        return $this->renderAjax('view', [
+        return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Student model.
+     * Creates a new AcademicCalendar model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Student();
-
-        $model->number = '2011-97548';
-        $model->firstname = 'tomas';
-        $model->middlename = 'b';
-        $model->lastname = 'cabagay';
-        $model->sex = 'M';
-        $model->college = 3;
-        $model->degree = 2;
+        $model = new AcademicCalendar();
+        $model->scenario = AcademicCalendar::SCENARIO_CREATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $response = Yii::$app->response;
@@ -90,14 +80,13 @@ class StudentController extends Controller
         } else {
             return $this->renderAjax('create', [
                 'model' => $model,
-                'colleges' => College::getCollegeList(),
-                'degrees' => Degree::getDegreeList(),
+                'semesters' => AcademicCalendar::getSemesterList(),
             ]);
         }
     }
 
     /**
-     * Updates an existing Student model.
+     * Updates an existing AcademicCalendar model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -116,14 +105,13 @@ class StudentController extends Controller
         } else {
             return $this->renderAjax('update', [
                 'model' => $model,
-                'colleges' => College::getCollegeList(),
-                'degrees' => Degree::getDegreeList(),
+                'semesters' => AcademicCalendar::getSemesterList(),
             ]);
         }
     }
 
     /**
-     * Deletes an existing Student model.
+     * Deletes an existing AcademicCalendar model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -142,7 +130,8 @@ class StudentController extends Controller
         }
 
         if ($id === null) {
-            $model = new Student();
+            $model = new AcademicCalendar();
+            $model->scenario = AcademicCalendar::SCENARIO_CREATE;
         } else {
             $model = $this->findModel($id);
         }
@@ -155,16 +144,25 @@ class StudentController extends Controller
         }
     }
 
+    public function actionToggleStatus($id)
+    {
+        $model = $this->findModel($id);
+        $model->setAttribute('status', AcademicCalendar::STATUS_INACTIVE);
+        $model->update();
+
+        return $this->redirect(['index']);
+    }
+
     /**
-     * Finds the Student model based on its primary key value.
+     * Finds the AcademicCalendar model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Student the loaded model
+     * @return AcademicCalendar the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Student::findOne($id)) !== null) {
+        if (($model = AcademicCalendar::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

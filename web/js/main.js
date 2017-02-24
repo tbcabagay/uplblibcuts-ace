@@ -121,6 +121,7 @@ var timeOut = {
                 if (r.result == 'success') {
                     jQuery(timeOut.numberId).val('');
                     timeIn.displayRecentTab();
+                    timeIn.populatePcData();
                 } /*else {
                     location.reload(true);
                 }*/
@@ -151,96 +152,44 @@ var f = {
 };
 
 var s = {
+    pjaxContainer: '#app-pjax-container',
     vacate: function(e) {
         var button = jQuery(this);
         jQuery.ajax({
             url: button.data('value'),
             type: 'post',
             success: function(r) {
-                jQuery.pjax.reload({ container: '#app-pjax-container' });
+                if (r.result == 'success') {
+                    s.pjaxReload();
+                }
             },
         });
         return false;
     },
+    changeTimeZone: function(e) {
+        var link = jQuery(this);
+        jQuery.ajax({
+            url: link.attr('href'),
+            type: 'post',
+            success: function(r) {
+                if (r.result == 'success') {
+                    s.pjaxReload();
+                }
+            },
+        });
+        return false;
+    },
+    pjaxReload: function() {
+        jQuery.pjax.reload({ container: s.pjaxContainer });
+    },
 };
 
-jQuery(document).on('click', '.btn-modal', m.modalDisplay);
-jQuery(document).on('beforeSubmit', '#app-form', m.modalSubmit);
-jQuery(document).on('beforeSubmit', '#signup-form', f.submit);
-jQuery(document).on('beforeSubmit', '#login-form', f.submit);
-jQuery(document).on('click', '#vacate-pcs', s.vacate);
-/*jQuery(function($) {
-    var m = {
-        modalClass: '.modal',
-        modalBody: '.modal-body',
-        modalHeaderClass: '.modal-header-content',
-        modalHeaderTitle: 'Window',
-        pjaxContainer: '#app-pjax-container',
-        modalDisplay: function(e) {
-            var href = $(this).attr('href');
-
-            $(m.modalHeaderClass).text(m.modalHeaderTitle);
-            $(m.modalClass).modal('show').find(m.modalBody).load(href);
-
-            return false;
-        },
-        modalClose: function(e) {
-            $(m.modalClass).modal('hide');
-        },
-        modalSubmit: function(e) {
-            var form = $(this);
-
-            $.ajax({
-                url: form.attr('action'),
-                type: 'post',
-                data: form.serialize(),
-                success: function(r) {
-                    m.modalClose();
-
-                    if (r.result == 'success') {
-                        m.pjaxReload();
-                    }
-                },
-            });
-
-            return false;
-        },
-        pjaxReload: function() {
-            $.pjax.reload({ container: m.pjaxContainer });
-        },
-    };
-
-    var f = {
-        selectData: function(e, u) {
-            $.ajax({
-                type: "get",
-                url: u,
-                dataType: "json",
-                success: function(response) {
-
-                },
-            });
-        },
-        submit: function(e) {
-            var form = $(this);
-
-            $.ajax({
-                url: form.attr('action'),
-                type: 'post',
-                data: form.serialize(),
-                success: function(r) {
-                    if (r.result == 'success') {
-                        location.href = r.href;
-                    }
-                },
-            });
-
-            return false;
-        },
-    };
-
-    $(document).on('click', '.btn-modal', m.modalDisplay);
-    $(document).on('beforeSubmit', '#app-form', m.modalSubmit);
-    $(document).on('beforeSubmit', '#signup-form', f.submit);
-    $(document).on('beforeSubmit', '#login-form', f.submit);
-});*/
+function init() {
+    jQuery(document).on('click', '.btn-modal', m.modalDisplay);
+    jQuery(document).on('click', '.change-timezone', s.changeTimeZone);
+    jQuery(document).on('click', '#vacate-pcs', s.vacate);
+    jQuery(document).on('beforeSubmit', '#app-form', m.modalSubmit);
+    jQuery(document).on('beforeSubmit', '#signup-form', f.submit);
+    jQuery(document).on('beforeSubmit', '#login-form', f.submit);
+}
+jQuery(document).ready(init);

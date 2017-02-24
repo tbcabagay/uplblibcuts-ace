@@ -7,18 +7,16 @@ use yii\base\Model;
 use app\components\StudentNumberValidator;
 
 /**
- * TimeInRentForm is the model behind the login form.
+ * SaleForm is the model behind the login form.
  *
  */
-class TimeInRentForm extends Model
+class SaleForm extends Model
 {
     public $number;
-    public $pc;
     public $service;
-    public $topic;
+    public $quantity;
 
     private $_student = false;
-    private $_rent = false;
 
     /**
      * @return array the validation rules.
@@ -26,13 +24,12 @@ class TimeInRentForm extends Model
     public function rules()
     {
         return [
-            [['number', 'pc', 'service'], 'required'],
+            [['number', 'service', 'quantity'], 'required'],
             ['number', 'string', 'max' => 10],
             ['number', StudentNumberValidator::classname()],
             ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/'],
             ['number', 'validateStudent'],
-            [['pc', 'service'], 'integer'],
-            ['topic', 'string', 'max' => 30],
+            [['service', 'quantity'], 'integer'],
         ];
     }
 
@@ -43,9 +40,8 @@ class TimeInRentForm extends Model
     {
         return [
             'number' => Yii::t('app', 'Student Number'),
-            'pc' => Yii::t('app', 'PC'),
             'service' => Yii::t('app', 'Service'),
-            'topic' => Yii::t('app', 'Topic'),
+            'quantity' => Yii::t('app', 'Quantity'),
         ];
     }
 
@@ -63,18 +59,6 @@ class TimeInRentForm extends Model
                 }
             }
         }
-    }
-
-    public function getRent()
-    {
-        $student = $this->getStudent();
-        if ($this->_rent === false) {
-            $this->_rent = Rent::findOne([
-                'student' => $student->id,
-                'status' => Rent::STATUS_TIME_IN,
-            ]);
-        }
-        return $this->_rent;
     }
 
     public function getStudent()

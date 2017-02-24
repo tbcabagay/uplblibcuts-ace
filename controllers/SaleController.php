@@ -3,19 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\AcademicYear;
-use app\models\AcademicYearSearch;
+use app\models\Sale;
+use app\models\SaleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-use yii\web\Response;
-use kartik\form\ActiveForm;
-
 /**
- * AcademicYearController implements the CRUD actions for AcademicYear model.
+ * SaleController implements the CRUD actions for Sale model.
  */
-class AcademicYearController extends Controller
+class SaleController extends Controller
 {
     /**
      * @inheritdoc
@@ -27,19 +24,18 @@ class AcademicYearController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
-                    'toggle-status' => ['POST'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all AcademicYear models.
+     * Lists all Sale models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new AcademicYearSearch();
+        $searchModel = new SaleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -49,7 +45,7 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Displays a single AcademicYear model.
+     * Displays a single Sale model.
      * @param integer $id
      * @return mixed
      */
@@ -61,32 +57,25 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Creates a new AcademicYear model.
+     * Creates a new Sale model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new AcademicYear();
-        $model->scenario = AcademicYear::SCENARIO_CREATE;
+        $model = new Sale();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $response = Yii::$app->response;
-            $response->format = Response::FORMAT_JSON;
-
-            return $response->data = [
-                'result' => 'success',
-            ];
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->renderAjax('create', [
+            return $this->render('create', [
                 'model' => $model,
-                'semesters' => AcademicYear::getSemesterList(),
             ]);
         }
     }
 
     /**
-     * Updates an existing AcademicYear model.
+     * Updates an existing Sale model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -96,22 +85,16 @@ class AcademicYearController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $response = Yii::$app->response;
-            $response->format = Response::FORMAT_JSON;
-
-            return $response->data = [
-                'result' => 'success',
-            ];
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->renderAjax('update', [
+            return $this->render('update', [
                 'model' => $model,
-                'semesters' => AcademicYear::getSemesterList(),
             ]);
         }
     }
 
     /**
-     * Deletes an existing AcademicYear model.
+     * Deletes an existing Sale model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -123,46 +106,16 @@ class AcademicYearController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate($id = null)
-    {
-        if (!Yii::$app->request->isAjax) {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-
-        if ($id === null) {
-            $model = new AcademicYear();
-            $model->scenario = AcademicYear::SCENARIO_CREATE;
-        } else {
-            $model = $this->findModel($id);
-        }
-
-        if ($model->load(Yii::$app->request->post())) {
-            $response = Yii::$app->response;
-            $response->format = Response::FORMAT_JSON;
-
-            return ActiveForm::validate($model);
-        }
-    }
-
-    public function actionToggleStatus($id)
-    {
-        $model = $this->findModel($id);
-        $model->setAttribute('status', AcademicYear::STATUS_INACTIVE);
-        $model->update();
-
-        return $this->redirect(['index']);
-    }
-
     /**
-     * Finds the AcademicYear model based on its primary key value.
+     * Finds the Sale model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return AcademicYear the loaded model
+     * @return Sale the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = AcademicYear::findOne($id)) !== null) {
+        if (($model = Sale::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

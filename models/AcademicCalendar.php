@@ -18,7 +18,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $created_at
  * @property integer $created_by
  */
-class AcademicYear extends \yii\db\ActiveRecord
+class AcademicCalendar extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 5;
     const STATUS_INACTIVE = 10;
@@ -34,7 +34,7 @@ class AcademicYear extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%academic_year}}';
+        return '{{%academic_calendar}}';
     }
 
     /**
@@ -142,7 +142,7 @@ class AcademicYear extends \yii\db\ActiveRecord
         return $this->status === self::STATUS_ACTIVE;
     }
 
-    public static function findActiveAcademicYear()
+    public static function findActive()
     {
         return self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
     }

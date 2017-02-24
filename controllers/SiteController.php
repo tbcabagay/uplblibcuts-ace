@@ -158,8 +158,17 @@ class SiteController extends Controller
         if (isset($timezones[$timezone])) {
             $model = User::findOne(Yii::$app->user->identity->getId());
             $model->setAttribute('timezone', $timezones[$timezone]);
-            $model->update();
-            var_dump($this->goBack());
+            if ($model->update()/* !== false*/) {
+                $response = Yii::$app->response;
+                $response->format = Response::FORMAT_JSON;
+
+                return $response->data = [
+                    'result' => 'success',
+                    'message' => Yii::t('app', 'Successfully changed time zone to {timezone}', [
+                        'timezone' => $timezones[$timezone],
+                    ]),
+                ];
+            }
         }
     }
 

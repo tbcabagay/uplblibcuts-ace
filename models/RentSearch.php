@@ -12,15 +12,19 @@ use app\models\Rent;
  */
 class RentSearch extends Rent
 {
+    public $number;
+
+    public $name;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
-            [['topic'], 'safe'],
-            [['amount'], 'number'],
+            [['college', 'pc', 'service'], 'integer'],
+            [['number', 'name', 'time_in', 'time_out'], 'safe'],
+            ['time_diff', 'match', 'pattern' => '/^(\d+):(\d+):(\d+)$/'],
         ];
     }
 
@@ -43,41 +47,72 @@ class RentSearch extends Rent
     public function search($params)
     {
         $query = Rent::find();
+        $query->leftJoin('{{%student}}', '{{%student}}.id = {{%rent}}.student');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'time_in' => SORT_DESC,
+                ],
+            ],
         ]);
+
+        $dataProvider->sort->attributes['number'] = [
+            'asc' => ['{{%student}}.number' => SORT_ASC],
+            'desc' => ['{{%student}}.number' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['name'] = [
+            'asc' => ['{{%student}}.lastname' => SORT_ASC],
+            'desc' => ['{{%student}}.lastname' => SORT_DESC],
+        ];
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'student' => $this->student,
             'college' => $this->college,
-            'degree' => $this->degree,
             'pc' => $this->pc,
             'service' => $this->service,
-            'amount' => $this->amount,
-            'status' => $this->status,
-            'time_in' => $this->time_in,
-            'time_out' => $this->time_out,
-            'rent_time' => $this->rent_time,
-            'time_diff' => $this->time_diff,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'topic', $this->topic]);
+        $query->andFilterWhere(['like', '{{%student}}.number', $this->number]);
+
+        if (!empty($this->time_in)) {
+            $query->andFilterWhere(['<=', 'time_in', strtotime($this->time_in . ' Asia/Manila')]);
+        }
+
+        if (!empty($this->time_out)) {
+            $query->andFilterWhere(['<=', 'time_out', strtotime($this->time_out . ' Asia/Manila')]);
+        }
+
+        if (!empty($this->time_diff)) {
+            $query->andFilterWhere(['<=', 'time_diff', $this->formatTimeDiffAsInteger()]);
+        }
+
+        foreach (explode(' ', $this->name) as $name) {
+            $query->andFilterWhere(['or', ['like', '{{%student}}.lastname', $name], ['like', '{{%student}}.firstname', $name]]);
+        }
 
         return $dataProvider;
+    }
+
+    protected function formatTimeDiffAsInteger()
+    {
+        $timeDiff = null;
+        $pieces = explode(':', $this->time_diff);
+        if (is_array($pieces) && (count($pieces) === 3)) {
+            $timeDiff = (($pieces[0] * 3600) + ($pieces[1] * 60) + $pieces[2]);
+        }
+        return $timeDiff;
     }
 }

@@ -10,18 +10,13 @@ use kartik\grid\GridView;
 $this->title = Yii::t('app', 'Rents');
 $this->params['breadcrumbs'][] = $this->title;
 
-$session = Yii::$app->session;
 $formatter = Yii::$app->formatter;
 ?>
 <div class="col-xs-12">
 
     <div class="page-header">
         <h1>
-            Settings
-            <small>
-                <i class="ace-icon fa fa-angle-double-right"></i>
-                <?= Html::encode($this->title) ?>
-            </small>        
+            <?= Html::encode($this->title) ?>
         </h1>
     </div>
 
@@ -33,21 +28,27 @@ $formatter = Yii::$app->formatter;
 
             // 'id',
             [
-                'attribute' => 'student',
+                'attribute' => 'number',
                 'value' => function($model, $key, $index, $column) {
                     $student = $model->getStudent();
-                    return '<strong>' . Html::encode($student->number) . '</strong>
-                        ' . Html::encode($student->getFullname());
+                    return $student->number;
                 },
-                'format' => 'html',
             ],
             [
+                'attribute' => 'name',
+                'value' => function($model, $key, $index, $column) {
+                    $student = $model->getStudent();
+                    return $student->getFullname();
+                },
+            ],
+            /*[
                 'attribute' => 'college',
                 'value' => function($model, $key, $index, $column) {
                     $college = $model->getCollege();
                     return Html::encode($college->code);
                 },
-            ],
+                'filter' => $colleges,
+            ],*/
             // 'degree',
             [
                 'attribute' => 'pc',
@@ -55,6 +56,7 @@ $formatter = Yii::$app->formatter;
                     $pc = $model->getPc();
                     return Html::encode($pc->code);
                 },
+                'filter' => $pcs,
             ],
             [
                 'attribute' => 'service',
@@ -62,23 +64,37 @@ $formatter = Yii::$app->formatter;
                     $service = $model->getService();
                     return Html::encode($service->name);
                 },
+                'filter' => $services,
             ],
             // 'topic',
-            // 'amount',
+            // 'amount:currency',
             // 'status',
-            /*[
+            [
                 'attribute' => 'time_in',
-                'value' => function($model, $key, $index, $column) use ($session, $formatter) {
-                    $time_in = date('Y-m-d H:i:s', $model->time_in);
-
-                    if ($session->has('time_zone')) {
-                        $time_in = $time_in . ' Asia/Manila'; // . $session->get('time_zone');
-                    }
-                    return $formatter->asDateTime($time_in);
+                'value' => function($model, $key, $index, $column) use ($formatter) {
+                    return $formatter->asDateTime($model->time_in);
                 },
-            ],*/
-            // 'time_in:datetime',
-            'time_out:datetime',
+                'filterType' => GridView::FILTER_DATETIME,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'yyyy-mm-dd hh:ii:ss',
+                    ],
+                ],
+            ],
+            [
+                'attribute' => 'time_out',
+                'value' => function($model, $key, $index, $column) use ($formatter) {
+                    return $formatter->asDateTime($model->time_out);
+                },
+                'filterType' => GridView::FILTER_DATETIME,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'yyyy-mm-dd hh:ii:ss',
+                    ],
+                ],
+            ],
             // 'rent_time:datetime',
             [
                 'attribute' => 'time_diff',
@@ -91,14 +107,15 @@ $formatter = Yii::$app->formatter;
 
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template' => '{delete}',
+                'template' => '{view} {delete}',
+                'viewOptions' => ['class' => 'btn-modal'],
             ],
         ],
-        'rowOptions' => function ($model, $key, $index, $grid) {
-            /*if ($model->isFeatured()) {
+        /*'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->isFeatured()) {
                 return ['class' => 'success'];
-            }*/
-        },
+            }
+        },*/
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [
@@ -110,7 +127,7 @@ $formatter = Yii::$app->formatter;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add Service'), 
+                    'title' => Yii::t('app', 'Add Rent'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .

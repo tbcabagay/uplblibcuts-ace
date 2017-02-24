@@ -6,11 +6,11 @@ use kartik\widgets\DatePicker;
 use kartik\widgets\TouchSpin;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\AcademicYear */
+/* @var $model app\models\AcademicCalendar */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="academic-year-form">
+<div class="academic-calendar-form">
 
     <?php $form = ActiveForm::begin([
         'id' => 'app-form',
@@ -24,7 +24,7 @@ use kartik\widgets\TouchSpin;
 
     <?= $form->field($model, 'semester')->radioButtonGroup($semesters, [
         'class' => 'btn-group-sm',
-        'itemOptions' => ['labelOptions' => ['class' => 'btn btn-warning']]
+        'itemOptions' => ['labelOptions' => ['class' => 'btn btn-warning']],
     ]) ?>
 
     <?= $form->field($model, 'date_start')->widget(DatePicker::className(), [

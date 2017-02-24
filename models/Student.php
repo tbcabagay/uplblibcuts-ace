@@ -152,12 +152,15 @@ class Student extends \yii\db\ActiveRecord
 
     public function getRentTime()
     {
-        $rentTime = null;
-        $seconds = abs($this->rent_time);
-        $hours = str_pad(floor($seconds / 3600), 2, '0', STR_PAD_LEFT);
-        $mins = str_pad(floor($seconds / 60 % 60), 2, '0', STR_PAD_LEFT);
+        $rentTime = '00:00:00';
+        $time = abs($this->rent_time);
+        if ($time > 0) {
+            $hours = str_pad(floor($time / 3600), 2, '0', STR_PAD_LEFT);
+            $minutes = str_pad(floor($time / 60 % 60), 2, '0', STR_PAD_LEFT);
+            $seconds = str_pad(floor($time % 60), 2, '0', STR_PAD_LEFT);
 
-        $rentTime = "{$hours}:{$mins}";
+            $rentTime = "{$hours}:{$minutes}:{$seconds}";
+        }
 
         return $rentTime;
     }
@@ -188,7 +191,7 @@ class Student extends \yii\db\ActiveRecord
 
     public function getDegree()
     {
-        return Degree::find()->where(['id' => $this->college])->limit(1)->one();
+        return Degree::find()->where(['id' => $this->degree])->limit(1)->one();
     }
 
     public function getFullname()

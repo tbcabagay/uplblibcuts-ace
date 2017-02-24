@@ -145,6 +145,8 @@ class PcController extends Controller
             $model = $this->findModel($id);
         }
 
+        $model->scenario = Pc::SCENARIO_VALIDATE_CODE;
+
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;

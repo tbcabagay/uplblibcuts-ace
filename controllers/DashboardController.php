@@ -7,9 +7,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\TimeInRentForm;
 use app\models\TimeOutRentForm;
+use app\models\SaleForm;
 use app\models\Pc;
 use app\models\Service;
-use app\models\AcademicYear;
+use app\models\AcademicCalendar;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
@@ -21,11 +22,14 @@ class DashboardController extends Controller
         $this->checkSettings();
         $timeInRentModel = new TimeInRentForm();
         $timeOutRentModel = new TimeOutRentForm();
+        $saleModel = new SaleForm();
 
         return $this->render('index', [
             'timeInRentModel' => $timeInRentModel,
             'timeOutRentModel' => $timeOutRentModel,
-            'services' => Service::getServiceList(Service::STATUS_FEATURED),
+            'saleModel' => $saleModel,
+            'featuredServices' => Service::getServiceList(Service::STATUS_FEATURED),
+            'regularServices' => Service::getServiceList(Service::STATUS_REGULAR),
         ]);
     }
 
@@ -87,15 +91,31 @@ class DashboardController extends Controller
         }
     }
 
+    public function actionValidateSale()
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new SaleForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
+    }
+
     protected function checkSettings()
     {
         $session = Yii::$app->session;
 
-        if (!AcademicYear::findActiveAcademicYear()) {
+        if (!AcademicCalendar::findActive()) {
             $session->setFlash('flashTitle', '<i class="ace-icon fa fa-exclamation-circle"></i>
                 ' . Yii::t('app', 'System Information'));
-            $session->setFlash('setAcademicYear', Yii::t('app', 'Academic Year has not been set. Please create a new one below.'));
-            $this->redirect(['/academic-year/index']);
+            $session->setFlash('setAcademicCalendar', Yii::t('app', 'Academic Calendar has not been set. Please create a new one below.'));
+            $this->redirect(['/academic-calendar/index']);
         }
     }
 }

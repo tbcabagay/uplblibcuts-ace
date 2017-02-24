@@ -4,16 +4,16 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Rent */
+/* @var $model app\models\Sale */
 
-$this->title = $model->getStudent()->number . ' - ' . $model->getStudent()->getFullname();
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Rents'), 'url' => ['index']];
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="rent-view">
+<div class="sale-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-<?php /*
+
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
@@ -24,24 +24,20 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-*/ ?>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'college',
-            'degree',
-            'pc',
+            'id',
+            'academic_calendar',
+            'library',
+            'student',
             'service',
-            'topic',
+            'quantity',
             'amount',
-            'status',
-            'time_in:datetime',
-            'time_out:datetime',
-            'rent_time:datetime',
-            'time_diff:datetime',
+            'total',
+            'created_at',
             'created_by',
-            'updated_by',
         ],
     ]) ?>
 

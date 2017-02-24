@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\AcademicYear;
+use app\models\AcademicCalendar;
 
 /**
- * AcademicYearSearch represents the model behind the search form about `app\models\AcademicYear`.
+ * AcademicCalendarSearch represents the model behind the search form about `app\models\AcademicCalendar`.
  */
-class AcademicYearSearch extends AcademicYear
+class AcademicCalendarSearch extends AcademicCalendar
 {
     /**
      * @inheritdoc
@@ -41,7 +41,7 @@ class AcademicYearSearch extends AcademicYear
      */
     public function search($params)
     {
-        $query = AcademicYear::find();
+        $query = AcademicCalendar::find();
 
         // add conditions that should always apply here
 

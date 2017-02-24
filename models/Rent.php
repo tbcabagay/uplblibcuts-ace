@@ -11,7 +11,7 @@ use yii\behaviors\BlameableBehavior;
  * This is the model class for table "{{%rent}}".
  *
  * @property integer $id
- * @property integer $academic_year
+ * @property integer $academic_calendar
  * @property integer $library
  * @property integer $student
  * @property integer $college
@@ -47,9 +47,9 @@ class Rent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['academic_year', 'library', 'student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
+            //[['academic_calendar', 'library', 'student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
             [['student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'rent_time', 'time_diff'], 'required'],
-            [['academic_year', 'library', 'student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
+            [['academic_calendar', 'library', 'student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
             [['amount'], 'number'],
             [['topic'], 'string', 'max' => 30],
             ['status', 'default', 'value' => self::STATUS_TIME_IN],
@@ -63,7 +63,7 @@ class Rent extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'academic_year' => Yii::t('app', 'Academic Year'),
+            'academic_calendar' => Yii::t('app', 'Academic Year'),
             'library' => Yii::t('app', 'Library'),
             'student' => Yii::t('app', 'Student'),
             'college' => Yii::t('app', 'College'),
@@ -76,7 +76,7 @@ class Rent extends \yii\db\ActiveRecord
             'time_in' => Yii::t('app', 'Time In'),
             'time_out' => Yii::t('app', 'Time Out'),
             'rent_time' => Yii::t('app', 'Rent Time'),
-            'time_diff' => Yii::t('app', 'Time Diff'),
+            'time_diff' => Yii::t('app', 'Time Expended'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),
         ];
@@ -106,24 +106,28 @@ class Rent extends \yii\db\ActiveRecord
     {
         $student = $this->getStudent();
         $service = $this->getService();
+        $timeDiff = null;
 
         if ($student->isChargeableByCollege()) {
-            $rentTime = $this->formatTimeDiffAsArray();
+            $timeDiff = $this->formatTimeDiffAsArray();
         } else if ($student->isChargeable()) {
-            $rentTime = $this->formatTimeDiffAsArray();
+            $timeDiff = $this->formatTimeDiffAsArray();
 
             if ($student->rent_time < 0) {
-                $rentTime = $student->formatRentTimeAsArray();
+                $timeDiff = $student->formatRentTimeAsArray();
                 $student->setAttribute('rent_time', 0);
                 $student->update();
             }
         }
 
-        if (is_array($rentTime) && !is_null($service)) {
+        /*
+         *  (({hours}*{service_amount})+(({service_amount}/60)*{minutes}))
+         */
+        if (is_array($timeDiff) && !is_null($service)) {
             $formula = $service->getFormula()->formula;
             $formula = str_replace('{service_amount}', $service->amount, $formula);
-            $formula = str_replace('{hours}', $rentTime['hours'], $formula);
-            $formula = str_replace('{minutes}', $rentTime['minutes'], $formula);
+            $formula = str_replace('{hours}', $timeDiff['hours'], $formula);
+            $formula = str_replace('{minutes}', $timeDiff['minutes'], $formula);
             $amount = eval("return {$formula};");
 
             $this->setAttribute('amount', round($amount));
@@ -133,28 +137,42 @@ class Rent extends \yii\db\ActiveRecord
 
     public function formatTimeDiffAsArray()
     {
-        $rentTime = $this->getTimeDiff();
-        $pieces = explode(':', $rentTime);
-        if (is_array($pieces)) {
-            $rentTime = [
+        $timeDiff = $this->getTimeDiff();
+        $pieces = explode(':', $timeDiff);
+        if (is_array($pieces) && (count($pieces) === 3)) {
+            $timeDiff = [
                 'hours' => $pieces[0],
                 'minutes' => $pieces[1],
+                'seconds'  => $pieces[2],
             ];
         }        
-        return $rentTime;
+        return $timeDiff;
     }
 
     public function getTimeDiff()
     {
-        $rentTime = null;
+        $timeDiff = null;
         if ($this->time_diff > 0) {
-            $seconds = $this->time_diff;
-            $hours = floor($seconds / 3600);
-            $minutes = str_pad(floor($seconds / 60 % 60), 2, '0', STR_PAD_LEFT);
+            $time = $this->time_diff;
+            $hours = str_pad(floor($time / 3600), 2, '0', STR_PAD_LEFT);
+            $minutes = str_pad(floor($time / 60 % 60), 2, '0', STR_PAD_LEFT);
+            $seconds = str_pad(floor($time % 60), 2, '0', STR_PAD_LEFT);
 
-            $rentTime = "{$hours}:{$minutes}";
+            $timeDiff = "{$hours}:{$minutes}:{$seconds}";
         }
-        return $rentTime;
+        return $timeDiff;
+    }
+
+    public function rentRollBack()
+    {
+        $student = $this->getStudent();
+        if (!$student->isChargeableByCollege() && ($this->rent_time > 0)) {
+            $student->setAttribute('status', Student::STATUS_REGULAR);
+            $student->setAttribute('rent_time', $this->rent_time);
+            $student->update();
+            $this->getPc()->setVacant();
+        }
+        return $this->delete();
     }
 
     public function getStudent()
@@ -164,7 +182,7 @@ class Rent extends \yii\db\ActiveRecord
 
     public function getPc()
     {
-        return Pc::find()->where(['id' => $this->student])->limit(1)->one();
+        return Pc::find()->where(['id' => $this->pc])->limit(1)->one();
     }
 
     public function getService()

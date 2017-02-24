@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\AcademicYear */
+/* @var $model app\models\AcademicCalendar */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Academic Years'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Academic Calendars'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="academic-year-view">
+<div class="academic-calendar-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -33,8 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'date_start',
             'date_end',
             'status',
+            'created_at',
             'created_by',
-            'updated_by',
         ],
     ]) ?>
 

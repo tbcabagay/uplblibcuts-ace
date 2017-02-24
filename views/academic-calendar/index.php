@@ -7,10 +7,10 @@ use yii\web\View;
 use kartik\widgets\Growl;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\AcademicYearSearch */
+/* @var $searchModel app\models\AcademicCalendarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Academic Years');
+$this->title = Yii::t('app', 'Academic Calendars');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-xs-12">
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons' => [
                     'toggle-status' => function ($url, $model, $key) {
                         if ($model->isActive()) {
-                            return Html::a('<i class="fa fa-toggle-off"></i>', ['/academic-year/toggle-status', 'id' => $model->id], ['data-pjax' => 'false', 'title' => Yii::t('app', 'Toggle Off'), 'class' => 'btn-toggle']);
+                            return Html::a('<i class="fa fa-toggle-off"></i>', ['/academic-calendar/toggle-status', 'id' => $model->id], ['data-pjax' => 'false', 'title' => Yii::t('app', 'Toggle Off'), 'class' => 'btn-toggle']);
                         }                        
                     },
                 ],
@@ -101,11 +101,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $session = Yii::$app->session;
 
-if ($session->hasFlash('setAcademicYear')) {
+if ($session->hasFlash('setAcademicCalendar')) {
     echo Growl::widget([
         'type' => Growl::TYPE_INFO,
         'title' => $session->getFlash('flashTitle'),
-        'body' => $session->getFlash('setAcademicYear'),
+        'body' => $session->getFlash('setAcademicCalendar'),
         'showSeparator' => true,
         'delay' => 0,
         'pluginOptions' => [
@@ -141,4 +141,4 @@ jQuery(".btn-toggle").on("click", function() {
 });
 ',
 View::POS_READY,
-'academic-year-index') ?>
+'academic-calendar-index') ?>

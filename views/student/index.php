@@ -35,8 +35,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'lastname',
             'firstname',
             'middlename',
-            // 'sex',
-            // 'degree',
+            'sex',
+            [
+                'attribute' => 'degree',
+                'value' => function($model, $key, $index, $column) {
+                    $degree = $model->getDegree();
+                    return Html::encode($degree->description);
+                },
+                'filter' => $degrees,
+            ],
             [
                 'attribute' => 'college',
                 'value' => function($model, $key, $index, $column) {
@@ -56,7 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'created_at',
                 'value' => function($model, $key, $index, $column) {
-                    // Yii::$app->formatter->timeZone = Yii::$app->session->get('timeZone');
                     return Yii::$app->formatter->asDateTime($model->created_at);
                 },
                 'filter' => false,
@@ -69,6 +75,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'updateOptions' => ['class' => 'btn-modal'],
             ],
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->isChargeableByCollege() || $model->isChargeable()) {
+                return ['class' => 'warning'];
+            }
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [
