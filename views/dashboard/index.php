@@ -166,8 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php $this->registerJs('
-timeIn.init({ numberId: "#' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "#' . Html::getInputId($timeInRentModel, 'pc') . '", pcAjaxUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", recentTabId: "#recent-box", recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '" });
-timeOut.init({ numberId: "#' . Html::getInputId($timeOutRentModel, 'number') . '" });
+cuts.dashboard.init({in:{ studentId: "' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "' . Html::getInputId($timeInRentModel, 'pc') . '", pcUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", recentTabId: "#recent-box", recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '" }, out: { studentId: "' . Html::getInputId($timeOutRentModel, 'number') . '" }});
 ',
 View::POS_READY,
 'dashboard-index') ?>

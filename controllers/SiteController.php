@@ -96,7 +96,7 @@ class SiteController extends Controller
                 'result' => 'success',
                 'href' => Url::toRoute(['/site/index'], true),
             ];
-        } else if (Yii::$app->request->isAjax && $loginModel->load(Yii::$app->request->post()) && $loginModel->login()) {
+        } else if (/*Yii::$app->request->isAjax && */$loginModel->load(Yii::$app->request->post()) && $loginModel->login()) {
             $response->format = Response::FORMAT_JSON;
             return $response->data = [
                 'result' => 'success',

@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use yii\web\View;
 use app\assets\AppAsset;
 use app\assets\FontAwesomeAsset;
 use app\assets\FlagIconAsset;
@@ -522,6 +523,11 @@ AceIeAsset::register($this);
     ],
 ]);
 Modal::end(); ?>
+<?php $this->registerJs('
+cuts.deleteTheme();
+',
+View::POS_READY,
+'main') ?>
 </body>
 </html>
 <?php $this->endPage() ?>
