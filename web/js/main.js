@@ -1,6 +1,6 @@
 var cuts = cuts || {};
-
-(function(cuts, $) {
+var store = store || {};
+(function(cuts, store, $) {
     'use strict';
 
     var themeHandler = ['btn-login-dark', 'btn-login-light', 'btn-login-blur'];
@@ -25,42 +25,25 @@ var cuts = cuts || {};
     var theme = undefined;
 
     cuts.initThemes = function() {
-        if (localStorage && (localStorage.getItem(themeKey) === null)) {
-            localStorage.setItem(themeKey, JSON.stringify(themeOptions['btn-login-light']));
-        }
         $.each(themeHandler, function(index, value) {
             $('#' + value).on('click', function() {
                 var opts = themeOptions[value];
-                if (localStorage) {
-                    localStorage.setItem(themeKey, JSON.stringify(opts));
-                }
+                store.set(themeKey, opts);
                 cuts.applyTheme();
                 return false;
             });
         });
-        cuts.applyTheme();
     };
 
     cuts.applyTheme = function() {
-        if (localStorage && (localStorage.getItem(themeKey) !== null)) {
-            theme = JSON.parse(localStorage.getItem(themeKey));
-        } else {
-            theme = themeOptions['btn-login-light'];
+        if (typeof undefined === store.get(themeKey)) {
+            return;
         }
+        theme = store.get(themeKey);
         $('body').attr('class', theme.bodyClass);
         $('#id-text2').attr('class', theme.textClass);
         $('#id-company-text').attr('class', theme.companyTextClass);
     };
-
-    cuts.deleteTheme = function() {
-        console.log(theme);
-        $('body').removeClass(theme.bodyClass);
-        $('#id-text2').removeClass(theme.textClass);
-        $('#id-company-text').removeClass(theme.companyTextClass);
-        if (localStorage && localStorage.getItem(themeKey)) {
-            localStorage.removeItem(themeKey);
-        }
-    }
 
     cuts.submitIndexForms = function(forms) {
         $.each(forms, function(index, value) {
@@ -96,12 +79,10 @@ var cuts = cuts || {};
     }
 
     function init() {
-        cuts.handleIndexToolbars();
-        cuts.initThemes();
-        cuts.submitIndexForms(['login-form', 'signup-form']);
+        
     }
     $(document).ready(init);
-})(cuts, window.jQuery);
+})(cuts, store, window.jQuery);
 
 /*function init() {
     jQuery(document).on('click', '.btn-modal', m.modalDisplay);

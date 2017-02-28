@@ -20,6 +20,7 @@ class AppAsset extends AssetBundle
     public $css = [
     ];
     public $js = [
+        'js/store.modern.min.js',
         'js/main.js',
     ];
     public $depends = [

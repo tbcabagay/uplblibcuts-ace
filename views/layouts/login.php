@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use yii\web\View;
 use app\assets\AppAsset;
 use app\assets\FontAwesomeAsset;
 use app\assets\AceAsset;
@@ -76,6 +77,9 @@ AceIeAsset::register($this);
         </div>
     </div>
 <?php $this->endBody() ?>
+<?php $this->registerJs('cuts.handleIndexToolbars();cuts.initThemes();cuts.submitIndexForms(["login-form", "signup-form"]);',
+View::POS_READY,
+'main') ?>
 </body>
 </html>
 <?php $this->endPage() ?>
