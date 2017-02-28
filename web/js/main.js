@@ -5,21 +5,9 @@ var store = store || {};
 
     var themeHandler = ['btn-login-dark', 'btn-login-light', 'btn-login-blur'];
     var themeOptions = {
-        'btn-login-dark': {
-            bodyClass: 'login-layout',
-            textClass: 'white',
-            companyTextClass: 'blue'
-        },
-        'btn-login-light': {
-            bodyClass: 'login-layout light-login',
-            textClass: 'grey',
-            companyTextClass: 'blue'
-        },
-        'btn-login-blur': {
-            bodyClass: 'login-layout blur-login',
-            textClass: 'white',
-            companyTextClass: 'light-blue'
-        }
+        'btn-login-dark': ['login-layout', 'white', 'blue'],
+        'btn-login-light': ['login-layout light-login', 'grey', 'blue'],
+        'btn-login-blur': ['login-layout blur-login', 'white', 'light-blue'],
     };
     var themeKey = 'cuts-theme';
     var theme = undefined;
@@ -33,16 +21,20 @@ var store = store || {};
                 return false;
             });
         });
+        cuts.applyTheme();
     };
 
     cuts.applyTheme = function() {
-        if (typeof undefined === store.get(themeKey)) {
+        if (!(theme = store.get(themeKey))) {
             return;
         }
-        theme = store.get(themeKey);
-        $('body').attr('class', theme.bodyClass);
-        $('#id-text2').attr('class', theme.textClass);
-        $('#id-company-text').attr('class', theme.companyTextClass);
+
+        if (theme.length !== 3) {
+            return;
+        }
+        $('body').attr('class', theme[0]);
+        $('#id-text2').attr('class', theme[1]);
+        $('#id-company-text').attr('class', [2]);
     };
 
     cuts.submitIndexForms = function(forms) {
@@ -79,7 +71,7 @@ var store = store || {};
     }
 
     function init() {
-        
+
     }
     $(document).ready(init);
 })(cuts, store, window.jQuery);
