@@ -43,9 +43,8 @@ class College extends \yii\db\ActiveRecord
             [['code', 'description', 'switch'], 'required'],
             [['status'], 'integer'],
             [['code'], 'string', 'max' => 10],
-            [['description'], 'string', 'max' => 50],
+            [['description'], 'string', 'max' => 100],
             ['code', 'filter', 'filter' => 'strtoupper'],
-            ['description', 'filter', 'filter' => 'strtolower'],
             ['description', 'filter', 'filter' => 'ucwords'],
             ['status', 'default', 'value' => self::STATUS_REGULAR],
         ];

@@ -15,7 +15,7 @@ class m170117_002936_create_courses_table extends Migration
         $this->createTable('{{%college}}', [
             'id' => $this->primaryKey(),
             'code' => $this->string(10)->notNull(),
-            'description' => $this->string(50)->notNull(),
+            'description' => $this->string(100)->notNull(),
             'status' => $this->smallInteger()->notNull(),
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
 

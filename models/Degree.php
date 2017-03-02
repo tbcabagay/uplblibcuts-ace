@@ -39,7 +39,6 @@ class Degree extends \yii\db\ActiveRecord
             [['code'], 'string', 'max' => 15],
             [['description'], 'string', 'max' => 50],
             ['code', 'filter', 'filter' => 'strtoupper'],
-            ['description', 'filter', 'filter' => 'strtolower'],
             ['description', 'filter', 'filter' => 'ucwords'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
         ];

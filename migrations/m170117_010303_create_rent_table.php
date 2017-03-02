@@ -21,7 +21,7 @@ class m170117_010303_create_rent_table extends Migration
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->createTable('{{%service}}', [
             'id' => $this->primaryKey(),
-            'name' => $this->string(30)->notNull(),
+            'name' => $this->string(100)->notNull(),
             'amount' => $this->money(7, 2)->notNull(),
             'status' => $this->smallInteger()->notNull(),
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
@@ -74,7 +74,7 @@ class m170117_010303_create_rent_table extends Migration
     {
         $this->dropTable('{{%pc}}');
         $this->dropTable('{{%service}}');
-        $this->dropTable('{{%academic_year}}');
+        $this->dropTable('{{%academic_calendar}}');
         $this->dropTable('{{%rent}}');
         $this->dropTable('{{%sale}}');
     }

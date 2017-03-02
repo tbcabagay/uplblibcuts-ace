@@ -37,7 +37,7 @@ class Service extends \yii\db\ActiveRecord
             [['name', 'amount', 'status', 'formula'], 'required'],
             [['amount'], 'number'],
             [['status', 'formula'], 'integer'],
-            [['name'], 'string', 'max' => 30],
+            [['name'], 'string', 'max' => 100],
             ['name', 'filter', 'filter' => 'ucwords'],
         ];
     }
