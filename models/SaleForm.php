@@ -16,7 +16,9 @@ class SaleForm extends Model
     public $service;
     public $quantity;
 
+    private $_academic_calendar = false;
     private $_student = false;
+    private $_service = false;
 
     /**
      * @return array the validation rules.
@@ -52,11 +54,6 @@ class SaleForm extends Model
 
             if (!$student) {
                 $this->addError($attribute, Yii::t('app', 'Student number does not exist.'));
-            } else {
-                $rent = $this->getRent();
-                if ($rent) {
-                    $this->addError($attribute, Yii::t('app', 'Student is already logged in.'));
-                }
             }
         }
     }
@@ -69,25 +66,45 @@ class SaleForm extends Model
         return $this->_student;
     }
 
-    public function signin()
+    public function getService()
     {
+        if ($this->_service === false) {
+            $this->_service = Service::findOne($this->service);
+        }
+        return $this->_service;
+    }
+
+    public function getAcademicCalendar()
+    {
+        if ($this->_academic_calendar === false) {
+            $this->_academic_calendar = AcademicCalendar::findActive();
+        }
+        return $this->_academic_calendar;
+    }
+
+    public function bill()
+    {
+        $academicCalendar = $this->getAcademicCalendar();
         $student = $this->getStudent();
-        $service = Service::findOne($this->service);
-        $academicCalendar = AcademicCalendar::findActive();
+        $service = $this->getService();
+        $formula = $service->getFormula()->formula;
 
-        $rent = new Rent();
-        $rent->setAttribute('student', $student->id);
-        $rent->setAttribute('college', $student->college);
-        $rent->setAttribute('degree', $student->degree);
-        $rent->setAttribute('pc', $this->pc);
-        $rent->setAttribute('service', $this->service);
-        $rent->setAttribute('topic', !$this->topic ? $service->name : $this->topic);
-        $rent->setAttribute('amount', 0);
-        $rent->setAttribute('rent_time', $student->rent_time);
-        $rent->setAttribute('time_diff', 0);
-        $rent->setAttribute('academic_calendar', $academicCalendar->id);
-        $rent->setAttribute('library', Yii::$app->user->identity->library);
+        $sale = new Sale();
+        $sale->setAttribute('academic_calendar', $academicCalendar->id);
+        $sale->setAttribute('library', Yii::$app->user->identity->library);
+        $sale->setAttribute('student', $student->id);
+        $sale->setAttribute('service', $service->id);
+        $sale->setAttribute('quantity', $this->quantity);
+        $sale->setAttribute('amount', $service->amount);
 
-        return $rent->save() && ($rent->getPc()->setOccupied() !== false);
+        if ($formula === '(0)') {
+            $sale->setAttribute('total', 0);
+        } else {
+            $formula = str_replace('{service_amount}', $service->amount, $formula);
+            $formula = str_replace('{quantity}', $this->quantity, $formula);
+            $total = eval("return {$formula};");
+            $sale->setAttribute('total', round($total));
+        }
+        return $sale->save();
     }
 }

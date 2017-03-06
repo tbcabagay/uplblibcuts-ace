@@ -26,13 +26,13 @@ class AjaxController extends Controller
         ];
     }
 
-    public function actionListPc($library = null, $status = null)
+    public function actionListVacantPc($library = null)
     {
         if (!Yii::$app->request->isAjax) {
             $this->redirect(['/dashboard/index']);
         }
 
-        $model = Pc::getPcList($library, $status);
+        $model = Pc::getPcList(Pc::STATUS_VACANT, $library);
         $response = Yii::$app->response;
         $response->format = Response::FORMAT_JSON;
 

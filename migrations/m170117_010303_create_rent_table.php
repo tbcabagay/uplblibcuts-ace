@@ -57,7 +57,7 @@ class m170117_010303_create_rent_table extends Migration
             'id' => $this->primaryKey(),
             'academic_calendar' => $this->integer()->notNull(),
             'library' => $this->integer()->notNull(),
-            'student' => $this->char(10)->notNull(),
+            'student' => $this->bigInteger()->notNull(),
             'service' => $this->integer()->notNull(),
             'quantity' => $this->smallInteger()->notNull(),
             'amount' => $this->money(7, 2)->notNull(),

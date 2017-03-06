@@ -13,7 +13,7 @@ class m170117_004352_create_student_table extends Migration
     public function up()
     {
         $this->createTable('{{%student}}', [
-            'id' => $this->primaryKey(),
+            'id' => $this->bigPrimaryKey(),
             'number' => $this->char(10)->notNull(),
             'firstname' => $this->string(40)->notNull(),
             'middlename' => $this->string(40)->notNull(),

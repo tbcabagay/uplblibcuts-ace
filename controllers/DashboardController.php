@@ -10,6 +10,7 @@ use app\models\TimeOutRentForm;
 use app\models\SaleForm;
 use app\models\Pc;
 use app\models\Service;
+use app\models\Sale;
 use app\models\AcademicCalendar;
 
 use yii\web\Response;
@@ -35,6 +36,10 @@ class DashboardController extends Controller
 
     public function actionTimeIn()
     {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
         $model = new TimeInRentForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->signin()) {
@@ -48,9 +53,30 @@ class DashboardController extends Controller
 
     public function actionTimeOut()
     {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
         $model = new TimeOutRentForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->signout()) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+            return $response->data = [
+                'result' => 'success',
+            ];
+        }
+    }
+
+    public function actionSale()
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new SaleForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->bill()) {
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;
             return $response->data = [

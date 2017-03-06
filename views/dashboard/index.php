@@ -13,7 +13,7 @@ $this->title = Yii::t('app', 'Dashboards');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-xs-12">
-    
+
     <div class="page-header">
         <h1>
             <?= Html::encode($this->title) ?>
@@ -166,7 +166,27 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php $this->registerJs('
-cuts.dashboard.init({in:{ studentId: "' . Html::getInputId($timeInRentModel, 'number') . '", pcId: "' . Html::getInputId($timeInRentModel, 'pc') . '", pcUrl: "' . Url::toRoute(['/ajax/list-pc']) . '", recentTabId: "#recent-box", recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '" }, out: { studentId: "' . Html::getInputId($timeOutRentModel, 'number') . '" }});
+dashboard.init({
+    in: {
+        formId: "time-in-rent-form",
+        studentId: "' . Html::getInputId($timeInRentModel, 'number') . '",
+        serviceName: "' . Html::getInputName($timeInRentModel, 'service') . '",
+        pcId: "' . Html::getInputId($timeInRentModel, 'pc') . '",
+        pcUrl: "' . Url::toRoute(['/ajax/list-vacant-pc']) . '",
+        recentTabId: "recent-box",
+        recentTabUrl: "' . Url::toRoute(['/ajax/recent']) . '"
+    },
+    out: {
+        formId: "time-out-rent-form",
+        studentId: "' . Html::getInputId($timeOutRentModel, 'number') . '",
+    },
+    service: {
+        formId: "sale-form",
+        studentId: "' . Html::getInputId($saleModel, 'number') . '",
+        quantityId: "' . Html::getInputId($saleModel, 'quantity') . '",
+        serviceName: "' . Html::getInputName($saleModel, 'service') . '",
+    }
+});
 ',
 View::POS_READY,
 'dashboard-index') ?>

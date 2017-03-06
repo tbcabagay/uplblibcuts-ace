@@ -506,8 +506,11 @@ class AppController extends Controller
             }
         }
 
-        echo "Done.\n\n";
+        echo "Done.\n";
+    }
 
+    public function actionInitRbac()
+    {
         echo "Initializing RBAC...\n\n";
         $auth = Yii::$app->authManager;
 
@@ -530,7 +533,7 @@ class AppController extends Controller
         $auth->addChild($administrator, $staff);
         echo "Administrator role added...\n\n";
 
-        echo "Done.\n\n";
+        echo "Done.\n";
     }
 
 }

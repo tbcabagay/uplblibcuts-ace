@@ -138,15 +138,13 @@ class Pc extends \yii\db\ActiveRecord
 
         if (!is_null($status) && isset($statuses[$status])) {
             $model->where(['status' => $status]);
-        }/* else {
-            $model->where(['status' => self::STATUS_VACANT]);
-        }*/
+        }
 
         if (!is_null($library)) {
             $model->andWhere(['library' => $library]);
-        }/* else {
+        } else {
             $model->andWhere(['library' => Yii::$app->user->identity->library]);
-        }*/
+        }
 
         $list = ArrayHelper::map($model->all(), 'id', 'code');
         return $list;

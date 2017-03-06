@@ -1,6 +1,7 @@
 var cuts = cuts || {};
+var dashboard = dashboard || {};
 var store = store || {};
-(function(cuts, store, $) {
+(function(dashboard, cuts, store, $) {
     'use strict';
 
     var themeHandler = ['btn-login-dark', 'btn-login-light', 'btn-login-blur'];
@@ -10,7 +11,7 @@ var store = store || {};
         'btn-login-blur': ['login-layout blur-login', 'white', 'light-blue'],
     };
     var themeKey = 'cuts-theme';
-    var theme = undefined;
+    var theme = null;
 
     var appModal = {
         class: 'modal',
@@ -18,6 +19,120 @@ var store = store || {};
         bodyClass: 'modal-body',
         headerClass: 'modal-header-content',
         headerTitle: 'Window',
+    };
+
+    var appFormId = 'app-form';
+    var appPjaxId = 'app-pjax-container';
+
+    var dashboardIn, dashboardOut, dashboardService = null;
+
+    dashboard.init = function(data) {
+        dashboardIn = data.in;
+        dashboardOut = data.out;
+        dashboardService = data.service;
+        dashboard.handleInForm();
+        dashboard.handleOutForm();
+        dashboard.handleServiceForm();
+        dashboard.populatePcData();
+        dashboard.handleRecentTab();
+        setInterval(function() {
+            dashboard.handleRecentTab();
+        }, 5000);
+    };
+
+    dashboard.handleInForm = function() {
+        if (dashboardIn == null) {
+            return;
+        }
+        $('input:radio[name="' + dashboardIn.serviceName + '"]:first').attr('checked', true);
+        $(document).on('beforeSubmit', '#' + dashboardIn.formId, function(e) {
+            var form = $(this);
+            $.post(
+                form.attr('action'),
+                form.serialize(),
+                function(r) {
+                    if (r.result == 'success') {
+                        $('#' + dashboardIn.studentId).val('');
+                        dashboard.populatePcData();
+                        dashboard.handleRecentTab();
+                    }
+                },
+                'json'
+            );
+            return false;
+        });
+    };
+
+    dashboard.handleOutForm = function() {
+        if (dashboardOut == null) {
+            return;
+        }
+        $(document).on('beforeSubmit', '#' + dashboardOut.formId, function(e) {
+            var form = $(this);
+            $.post(
+                form.attr('action'),
+                form.serialize(),
+                function(r) {
+                    if (r.result == 'success') {
+                        $('#' + dashboardOut.studentId).val('');
+                        dashboard.populatePcData();
+                        dashboard.handleRecentTab();
+                    }
+                },
+                'json'
+            );
+            return false;
+        });
+    };
+
+    dashboard.handleServiceForm = function() {
+        if (dashboardService == null) {
+            return;
+        }
+        $('input:radio[name="' + dashboardService.serviceName + '"]:first').attr('checked', true);
+        $(document).on('beforeSubmit', '#' + dashboardService.formId, function(e) {
+            var form = $(this);
+            $.post(
+                form.attr('action'),
+                form.serialize(),
+                function(r) {
+                    if (r.result == 'success') {
+                        $('#' + dashboardService.studentId).val('');
+                        $('#' + dashboardService.quantityId).val(1);
+                    }
+                },
+                'json'
+            );
+            return false;
+        });
+    };
+
+    dashboard.handleRecentTab = function() {
+        $.get(
+            dashboardIn.recentTabUrl,
+            function(r) {
+                $(document).find('#' + dashboardIn.recentTabId).html(r);
+            },
+            'html'
+        );
+    };
+
+    dashboard.populatePcData = function() {
+        $.get(
+            dashboardIn.pcUrl,
+            function(r) {
+                var pc = $('#' + dashboardIn.pcId);
+                pc.empty();
+                if (Object.keys(r.model).length) {
+                    $.each(r.model, function(v, k) {
+                        pc.append($('<option></option>').attr('value', v).text(k));
+                    });
+                } else {
+                    pc.append($('<option></option>').attr('value', '').text('- Select -'));
+                }
+            },
+            'json'
+        );
     };
 
     cuts.initThemes = function() {
@@ -82,8 +197,56 @@ var store = store || {};
         });
     };
 
+    cuts.handleModalClose = function() {
+        $(document).find('.' + appModal.class).modal('hide');
+    };
+
+    cuts.handlePjaxReload = function() {
+        if ($('#' + appPjaxId).length) {
+            $.pjax.reload({
+                container: '#' + appPjaxId,
+            });
+        }
+    };
+
+    cuts.handleModalForm = function() {
+        $(document).on('beforeSubmit', '#' + appFormId, function() {
+            var form = jQuery(this);
+            jQuery.ajax({
+                url: form.attr('action'),
+                type: 'post',
+                data: form.serialize(),
+                success: function(r) {
+                    cuts.handleModalClose();
+                    if (r.result == 'success') {
+                        cuts.handlePjaxReload();
+                    }
+                },
+            });
+
+            return false;
+        });
+    };
+
+    cuts.handleTimeZone = function() {
+        $(document).on('click', '.change-timezone', function(e) {
+            var link = jQuery(this);
+            $.post(
+                link.attr('href'),
+                function(r) {
+                    if (r.result == 'success') {
+                        cuts.handlePjaxReload();
+                    }
+                }
+            );
+            return false;
+        });
+    };
+
     function init() {
         cuts.handleModalDisplay();
+        cuts.handleModalForm();
+        cuts.handleTimeZone();
     }
     $(document).ready(init);
-})(cuts, store, window.jQuery);
+})(dashboard, cuts, store, window.jQuery);
