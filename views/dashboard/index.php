@@ -65,48 +65,69 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-4">
-            <div class="widget-box">
-                <div class="widget-header widget-header-flat widget-header-small">
-                    <h5 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Time Out') ?></h5>
+        <div class="col-xs-12 col-sm-8">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="widget-box">
+                        <div class="widget-header widget-header-flat widget-header-small">
+                            <h5 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Time Out') ?></h5>
 
-                    <div class="widget-toolbar">
-                        <?= Html::a('<i class="ace-icon fa fa-chevron-up"></i>', '#', ['data-action' => 'collapse']) ?>
-                    </div>
-                </div>
-
-                <div class="widget-body">
-                    <div class="widget-main no-padding">
-                        <?php $form = ActiveForm::begin([
-                            'id' => 'time-out-rent-form',
-                            'action' => ['/dashboard/time-out'],
-                            'enableAjaxValidation' => true,
-                            'enableClientValidation' => false,
-                            'validationUrl' => ['validate-time-out'],
-                            'options' => [
-                                'autocomplete' => 'off',
-                            ],
-                        ]); ?>
-
-                        <fieldset>
-                            <?= $form->field($timeOutRentModel, 'number')->textInput(['maxlength' => true]) ?>
-                        </fieldset>
-
-                        <div class="form-actions center">
-                            <?= Html::submitButton(Yii::t('app', 'Submit') . '
-                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-sm btn-success', 'name' => 'time-out-rent-button']) ?>
+                            <div class="widget-toolbar">
+                                <?= Html::a('<i class="ace-icon fa fa-chevron-up"></i>', '#', ['data-action' => 'collapse']) ?>
+                            </div>
                         </div>
 
-                        <?php ActiveForm::end(); ?>
+                        <div class="widget-body">
+                            <div class="widget-main no-padding">
+                                <?php $form = ActiveForm::begin([
+                                    'id' => 'time-out-rent-form',
+                                    'action' => ['/dashboard/time-out'],
+                                    'enableAjaxValidation' => true,
+                                    'enableClientValidation' => false,
+                                    'validationUrl' => ['validate-time-out'],
+                                    'options' => [
+                                        'autocomplete' => 'off',
+                                    ],
+                                ]); ?>
+
+                                <fieldset>
+                                    <?= $form->field($timeOutRentModel, 'number')->textInput(['maxlength' => true]) ?>
+                                </fieldset>
+
+                                <div class="form-actions center">
+                                    <?= Html::submitButton(Yii::t('app', 'Submit') . '
+                                        <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>', ['class' => 'btn btn-sm btn-success', 'name' => 'time-out-rent-button']) ?>
+                                </div>
+
+                                <?php ActiveForm::end(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div id="recent-box"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div class="widget-box transparent">
+                        <div class="widget-header widget-header-flat">
+                            <h4 class="widget-title lighter"><i class="ace-icon fa fa-signal"></i> Service Stats</h4>
+
+                            <div class="widget-toolbar">
+                                <a href="#" data-action="collapse">
+                                    <i class="ace-icon fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main padding-4">
+                                <div id="service-chart"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-4 widget-container-col">
-        <?php Pjax::begin(); ?>
-            <div id="recent-box"></div>
-        <?php Pjax::end(); ?>
         </div>
     </div>
 
@@ -116,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-xs-12 col-sm-4">
             <div class="widget-box">
                 <div class="widget-header widget-header-flat widget-header-small">
-                    <h5 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Sale') ?></h5>
+                    <h5 class="widget-title"><i class="ace-icon fa fa-sign-out"></i> <?= Yii::t('app', 'Sales') ?></h5>
 
                     <div class="widget-toolbar">
                         <?= Html::a('<i class="ace-icon fa fa-chevron-up"></i>', '#', ['data-action' => 'collapse']) ?>
@@ -162,6 +183,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
+        <div class="col-xs-12 col-sm-8">
+            <div class="widget-box transparent">
+                <div class="widget-header widget-header-flat">
+                    <h4 class="widget-title lighter"><i class="ace-icon fa fa-signal"></i> Sale Stats</h4>
+
+                    <div class="widget-toolbar">
+                        <a href="#" data-action="collapse">
+                            <i class="ace-icon fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="widget-main padding-4">
+                        <div id="sale-chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -178,13 +217,17 @@ dashboard.init({
     },
     out: {
         formId: "time-out-rent-form",
-        studentId: "' . Html::getInputId($timeOutRentModel, 'number') . '",
+        studentId: "' . Html::getInputId($timeOutRentModel, 'number') . '"
     },
     service: {
         formId: "sale-form",
         studentId: "' . Html::getInputId($saleModel, 'number') . '",
         quantityId: "' . Html::getInputId($saleModel, 'quantity') . '",
         serviceName: "' . Html::getInputName($saleModel, 'service') . '",
+        saleChartId: "sale-chart",
+        saleChartUrl: "' . Url::toRoute(['/ajax/sale-chart']) . '",
+        serviceChartId: "service-chart",
+        serviceChartUrl: "' . Url::toRoute(['/ajax/service-chart']) . '"
     }
 });
 ',

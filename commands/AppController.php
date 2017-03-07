@@ -14,6 +14,8 @@ use app\models\Degree;
 use app\models\Formula;
 use app\models\Service;
 use app\models\Library;
+use app\models\User;
+use app\models\Pc;
 
 /**
  * This command echoes the first argument that you have entered.
@@ -533,6 +535,82 @@ class AppController extends Controller
         $auth->addChild($administrator, $staff);
         echo "Administrator role added...\n\n";
 
+        echo "Done.\n";
+    }
+
+    public function actionInitAdmin($library, $role, $name, $username, $password)
+    {
+        echo "Initializing User data...\n\n";
+        $modelLibrary = Library::find()->where(['location' => $library])->limit(1)->one();
+
+        if (!$modelLibrary) {
+            echo "Error \"$library\" library not found.\n";
+            return Controller::EXIT_CODE_ERROR;
+        }
+
+        $model = new User();
+        $model->setAttribute('library', $modelLibrary->id);
+        $model->setAttribute('name', $name);
+        $model->setAttribute('username', $username);
+        $model->setAttribute('password_hash', $password);
+        $model->setAttribute('timezone', 'Asia/Manila');
+
+        $model->setAttribute('status', User::STATUS_ACTIVE);
+        $model->generatePassword($password);
+        $model->generateAuthKey();
+        $model->generateIpAddress();
+
+        echo "Saving \"$username\" user...\n";
+        if ($model->save()) {
+            echo "Saving \"$role\" role...\n";
+            $model->refresh();
+
+            $auth = Yii::$app->authManager;
+            $role = $auth->getRole($role);
+            $auth->assign($role, $model->getId());
+            echo "Done.\n";
+        }
+    }
+
+    public function actionInitPc()
+    {
+        echo "Initializing PC data...\n\n";
+        $prefix = 'PC';
+        $min = 1;
+        $max = 50;
+        $library = 'University Library';
+        $args = [];
+        $args = func_get_args();
+
+        if (isset($args[0])) {
+            $prefix = $args[0];
+        }
+        if (isset($args[1])) {
+            $min = $args[1];
+        }
+        if (isset($args[2])) {
+            $max = $args[2];
+        }
+        if (isset($args[3])) {
+            $library = $args[3];
+        }
+
+        $modelLibrary = Library::find()->where(['location' => $library])->limit(1)->one();
+
+        if (!$modelLibrary) {
+            echo "Error \"$args[3]\" library not found.\n";
+            return Controller::EXIT_CODE_ERROR;
+        }
+
+        for ($min; $min <= $max; $min++) {
+            $pc = $prefix . $min;
+            echo "Saving \"$pc\" PC...\n";
+            $model = new Pc();
+            $model->setAttribute('library', $modelLibrary->id);
+            $model->setAttribute('code', $pc);
+            $model->setAttribute('status', Pc::STATUS_VACANT);
+            $model->save();
+        }
         echo "Done.\n";
     }
 

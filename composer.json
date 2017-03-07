@@ -28,7 +28,8 @@
 
         "bower-asset/font-awesome": ">=4.6.3",
         "bower-asset/bootbox": "~4.4.0",
-        "bower-asset/flag-icon-css": "~2.8.0"
+        "bower-asset/flag-icon-css": "~2.8.0",
+        "2amigos/yii2-highcharts-widget": "~1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

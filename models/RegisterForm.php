@@ -49,11 +49,11 @@ class RegisterForm extends Model
     public function signup()
     {
         $model = new User();
-        $model->library = $this->library;
-        $model->name = $this->name;
-        $model->username = $this->username;
-        $model->password_hash = $this->password;
-        $model->timezone = 'Asia/Manila';
+        $model->setAttribute('library', $this->library);
+        $model->setAttribute('name', $this->name);
+        $model->setAttribute('username', $this->username);
+        $model->setAttribute('password_hash', $this->password);
+        $model->setAttribute('timezone', 'Asia/Manila');
 
         $model->setAttribute('status', (Yii::$app->params['autoConfirmAccount'])
             ? User::STATUS_ACTIVE : User::STATUS_NEW);

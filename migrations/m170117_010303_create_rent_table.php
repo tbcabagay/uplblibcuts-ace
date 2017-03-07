@@ -41,7 +41,7 @@ class m170117_010303_create_rent_table extends Migration
             'student' => $this->integer()->notNull(),
             'college' => $this->integer()->notNull(),
             'degree' => $this->integer()->notNull(),
-            'pc' => $this->integer()->notNull(),
+            'pc' => $this->integer(),
             'service' => $this->integer()->notNull(),
             'topic' => $this->string(30)->notNull(),
             'amount' => $this->money(7, 2)->notNull(),

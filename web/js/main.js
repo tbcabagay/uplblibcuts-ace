@@ -35,9 +35,31 @@ var store = store || {};
         dashboard.handleServiceForm();
         dashboard.populatePcData();
         dashboard.handleRecentTab();
+        dashboard.handleSaleChart();
+        dashboard.handleServiceChart();
         setInterval(function() {
             dashboard.handleRecentTab();
         }, 5000);
+    };
+
+    dashboard.handleSaleChart = function() {
+        $.get(
+            dashboardService.saleChartUrl,
+            function(r) {
+                $(document).find('#' + dashboardService.saleChartId).html(r);
+            },
+            'html'
+        );
+    };
+
+    dashboard.handleServiceChart = function() {
+        $.get(
+            dashboardService.serviceChartUrl,
+            function(r) {
+                $(document).find('#' + dashboardService.serviceChartId).html(r);
+            },
+            'html'
+        );
     };
 
     dashboard.handleInForm = function() {
@@ -77,6 +99,7 @@ var store = store || {};
                         $('#' + dashboardOut.studentId).val('');
                         dashboard.populatePcData();
                         dashboard.handleRecentTab();
+                        dashboard.handleServiceChart();
                     }
                 },
                 'json'
@@ -99,6 +122,7 @@ var store = store || {};
                     if (r.result == 'success') {
                         $('#' + dashboardService.studentId).val('');
                         $('#' + dashboardService.quantityId).val(1);
+                        dashboard.handleSaleChart();
                     }
                 },
                 'json'

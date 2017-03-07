@@ -32,7 +32,7 @@ use kartik\helpers\Enum;
                         <div class="itemdiv commentdiv">
                             <div class="user">
                                 <i class="ace-icon fa fa-desktop text-info"></i>
-                                <?= Html::encode($student->getPc()->code) ?>
+                                <?= ($student->pc) ? Html::encode($student->getPc()->code) : 'N/A' ?>
                             </div>
                             <div class="body">
                                 <div class="name">

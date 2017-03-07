@@ -89,13 +89,13 @@ class TimeInRentForm extends Model
     {
         $student = $this->getStudent();
         $service = Service::findOne($this->service);
+        $formula = $service->getFormula()->formula;
         $academicCalendar = AcademicCalendar::findActive();
 
         $rent = new Rent();
         $rent->setAttribute('student', $student->id);
         $rent->setAttribute('college', $student->college);
         $rent->setAttribute('degree', $student->degree);
-        $rent->setAttribute('pc', $this->pc);
         $rent->setAttribute('service', $this->service);
         $rent->setAttribute('topic', !$this->topic ? $service->name : $this->topic);
         $rent->setAttribute('amount', 0);
@@ -104,6 +104,12 @@ class TimeInRentForm extends Model
         $rent->setAttribute('academic_calendar', $academicCalendar->id);
         $rent->setAttribute('library', Yii::$app->user->identity->library);
 
-        return $rent->save() && ($rent->getPc()->setOccupied() !== false);
+        $pc = true;
+        if ($formula !== '(0)') {
+            $rent->setAttribute('pc', $this->pc);
+            $pc = ($rent->getPc()->setOccupied() !== false);
+        }
+
+        return $rent->save() && $pc;
     }
 }

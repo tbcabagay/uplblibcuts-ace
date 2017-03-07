@@ -43,7 +43,7 @@ class Pc extends \yii\db\ActiveRecord
             ['code', 'filter', 'filter' => 'strtoupper'],
             ['code', 'validateUnique', 'on' => self::SCENARIO_VALIDATE_CODE],
             ['status', 'default', 'value' => self::STATUS_VACANT],
-            ['library', 'default', 'value' => Yii::$app->user->identity->library],
+            //['library', 'default', 'value' => Yii::$app->user->identity->library],
         ];
     }
 
@@ -69,6 +69,13 @@ class Pc extends \yii\db\ActiveRecord
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_VALIDATE_CODE] = ['code'];
         return $scenarios;
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->setAttribute('library', Yii::$app->user->identity->library);
+
+        return parent::beforeSave($insert);
     }
 
     public function validateUnique($attribute, $params)

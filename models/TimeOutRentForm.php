@@ -88,7 +88,9 @@ class TimeOutRentForm extends Model
         $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
 
         $student->updateRentTime($rent->time_diff);
-        $rent->getPc()->setVacant();
+        if (!is_null($rent->pc)) {
+            $rent->getPc()->setVacant();
+        }
         $rent->update();
         $rent->updateAmount();
         return true;

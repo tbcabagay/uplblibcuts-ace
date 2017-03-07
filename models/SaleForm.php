@@ -97,14 +97,13 @@ class SaleForm extends Model
         $sale->setAttribute('quantity', $this->quantity);
         $sale->setAttribute('amount', $service->amount);
 
-        if ($formula === '(0)') {
-            $sale->setAttribute('total', 0);
-        } else {
+        $total = 0;
+        if ($formula !== '(0)') {
             $formula = str_replace('{service_amount}', $service->amount, $formula);
             $formula = str_replace('{quantity}', $this->quantity, $formula);
             $total = eval("return {$formula};");
-            $sale->setAttribute('total', round($total));
         }
+        $sale->setAttribute('total', round($total));
         return $sale->save();
     }
 }

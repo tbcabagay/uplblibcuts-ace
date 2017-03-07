@@ -47,8 +47,7 @@ class Rent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['academic_calendar', 'library', 'student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'required'],
-            [['student', 'college', 'degree', 'pc', 'service', 'topic', 'amount', 'rent_time', 'time_diff'], 'required'],
+            [['student', 'college', 'degree', 'service', 'topic', 'amount', 'rent_time', 'time_diff'], 'required'],
             [['academic_calendar', 'library', 'student', 'college', 'degree', 'pc', 'service', 'status', 'time_in', 'time_out', 'rent_time', 'time_diff', 'created_by', 'updated_by'], 'integer'],
             [['amount'], 'number'],
             [['topic'], 'string', 'max' => 30],
@@ -125,11 +124,13 @@ class Rent extends \yii\db\ActiveRecord
          */
         if (is_array($timeDiff) && !is_null($service)) {
             $formula = $service->getFormula()->formula;
-            $formula = str_replace('{service_amount}', $service->amount, $formula);
-            $formula = str_replace('{hours}', $timeDiff['hours'], $formula);
-            $formula = str_replace('{minutes}', $timeDiff['minutes'], $formula);
-            $amount = eval("return {$formula};");
-
+            $amount = 0;
+            if ($formula !== '(0)') {
+                $formula = str_replace('{service_amount}', $service->amount, $formula);
+                $formula = str_replace('{hours}', $timeDiff['hours'], $formula);
+                $formula = str_replace('{minutes}', $timeDiff['minutes'], $formula);
+                $amount = eval("return {$formula};");
+            }
             $this->setAttribute('amount', round($amount));
             return $this->update();
         }
