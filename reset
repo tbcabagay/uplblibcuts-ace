@@ -1,0 +1,9 @@
+php yii migrate/down 7 --interactive=0
+php yii migrate/down --migrationPath=@yii/rbac/migrations --interactive=0
+
+php yii migrate --migrationPath=@yii/rbac/migrations --interactive=0
+php yii migrate --interactive=0
+php yii app/init
+php yii app/init-rbac
+php yii app/init-admin 'University Library' 'Administrator' 'tomas cabagay jr' 'admin' 'admin'
+php yii app/init-pc Computer
