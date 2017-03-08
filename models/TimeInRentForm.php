@@ -87,6 +87,7 @@ class TimeInRentForm extends Model
 
     public function signin()
     {
+        $result = true;
         $student = $this->getStudent();
         $service = Service::findOne($this->service);
         $formula = $service->getFormula()->formula;
@@ -104,12 +105,11 @@ class TimeInRentForm extends Model
         $rent->setAttribute('academic_calendar', $academicCalendar->id);
         $rent->setAttribute('library', Yii::$app->user->identity->library);
 
-        $pc = true;
         if ($formula !== '(0)') {
             $rent->setAttribute('pc', $this->pc);
-            $pc = ($rent->getPc()->setOccupied() !== false);
+            $result = $result && ($rent->getPc()->setOccupied() !== false);
         }
-
-        return $rent->save() && $pc;
+        $result = $result && $rent->save();
+        return $result;
     }
 }

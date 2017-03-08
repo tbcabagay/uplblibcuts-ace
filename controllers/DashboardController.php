@@ -7,6 +7,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\TimeInRentForm;
 use app\models\TimeOutRentForm;
+use app\models\ChangePcForm;
 use app\models\SaleForm;
 use app\models\Pc;
 use app\models\Service;
@@ -23,11 +24,13 @@ class DashboardController extends Controller
         $this->checkSettings();
         $timeInRentModel = new TimeInRentForm();
         $timeOutRentModel = new TimeOutRentForm();
+        $changePcModel = new ChangePcForm();
         $saleModel = new SaleForm();
 
         return $this->render('index', [
             'timeInRentModel' => $timeInRentModel,
             'timeOutRentModel' => $timeOutRentModel,
+            'changePcModel' => $changePcModel,
             'saleModel' => $saleModel,
             'featuredServices' => Service::getServiceList(Service::STATUS_FEATURED),
             'regularServices' => Service::getServiceList(Service::STATUS_REGULAR),
@@ -60,6 +63,23 @@ class DashboardController extends Controller
         $model = new TimeOutRentForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->signout()) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+            return $response->data = [
+                'result' => 'success',
+            ];
+        }
+    }
+
+    public function actionChangePc()
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new ChangePcForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->change()) {
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;
             return $response->data = [
@@ -108,6 +128,22 @@ class DashboardController extends Controller
         }
 
         $model = new TimeOutRentForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
+    }
+
+    public function actionValidateChangePc()
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new ChangePcForm();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

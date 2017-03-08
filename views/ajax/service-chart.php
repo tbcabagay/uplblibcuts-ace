@@ -7,6 +7,7 @@ use dosamigos\highcharts\HighCharts;
 ?>
 
 <?= HighCharts::widget([
+    'id' => 'service-chart-widget',
     'clientOptions' => [
         'title' => [
              'text' => 'Service Stats'

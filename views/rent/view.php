@@ -29,19 +29,34 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'college',
-            'degree',
-            'pc',
-            'service',
+            [
+                'attribute' => 'college',
+                'value' => $model->getCollege()->code,
+            ],
+            [
+                'attribute' => 'degree',
+                'value' => $model->getDegree()->code,
+            ],
+            [
+                'attribute' => 'pc',
+                'value' => ($model->pc) ? $model->getPc()->code : 'N/A',
+            ],
+            [
+                'attribute' => 'service',
+                'value' => $model->getService()->name,
+            ],
             'topic',
-            'amount',
-            'status',
+            [
+                'attribute' => 'amount',
+                'value' => Yii::$app->formatter->asCurrency($model->amount),
+            ],
             'time_in:datetime',
             'time_out:datetime',
-            'rent_time:datetime',
-            'time_diff:datetime',
-            'created_by',
-            'updated_by',
+            // 'rent_time:datetime',
+            [
+                'attribute' => 'time_diff',
+                'value' => $model->getTimeDiff(),
+            ],
         ],
     ]) ?>
 

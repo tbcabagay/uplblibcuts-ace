@@ -24,22 +24,48 @@ var store = store || {};
     var appFormId = 'app-form';
     var appPjaxId = 'app-pjax-container';
 
-    var dashboardIn, dashboardOut, dashboardService = null;
+    var dashboardIn, dashboardOut, dashboardChangePc, dashboardService = null;
 
     dashboard.init = function(data) {
         dashboardIn = data.in;
         dashboardOut = data.out;
+        dashboardChangePc = data.changePc;
         dashboardService = data.service;
         dashboard.handleInForm();
         dashboard.handleOutForm();
+        dashboard.handleChangePcForm();
         dashboard.handleServiceForm();
-        dashboard.populatePcData();
         dashboard.handleRecentTab();
         dashboard.handleSaleChart();
         dashboard.handleServiceChart();
         setInterval(function() {
             dashboard.handleRecentTab();
         }, 5000);
+    };
+
+    dashboard.handleChangePcForm = function() {
+        if (dashboardChangePc == null) {
+
+            return;
+        }
+        dashboard.populatePcData(dashboardChangePc);
+        $(document).on('beforeSubmit', '#' + dashboardChangePc.formId, function(e) {
+            var form = $(this);
+            $.post(
+                form.attr('action'),
+                form.serialize(),
+                function(r) {
+                    if (r.result == 'success') {
+                        $('#' + dashboardChangePc.studentId).val('');
+                        dashboard.populatePcData(dashboardIn);
+                        dashboard.populatePcData(dashboardChangePc);
+                        dashboard.handleRecentTab();
+                    }
+                },
+                'json'
+            );
+            return false;
+        });
     };
 
     dashboard.handleSaleChart = function() {
@@ -66,6 +92,7 @@ var store = store || {};
         if (dashboardIn == null) {
             return;
         }
+        dashboard.populatePcData(dashboardIn);
         $('input:radio[name="' + dashboardIn.serviceName + '"]:first').attr('checked', true);
         $(document).on('beforeSubmit', '#' + dashboardIn.formId, function(e) {
             var form = $(this);
@@ -75,7 +102,8 @@ var store = store || {};
                 function(r) {
                     if (r.result == 'success') {
                         $('#' + dashboardIn.studentId).val('');
-                        dashboard.populatePcData();
+                        dashboard.populatePcData(dashboardIn);
+                        dashboard.populatePcData(dashboardChangePc);
                         dashboard.handleRecentTab();
                     }
                 },
@@ -97,7 +125,8 @@ var store = store || {};
                 function(r) {
                     if (r.result == 'success') {
                         $('#' + dashboardOut.studentId).val('');
-                        dashboard.populatePcData();
+                        dashboard.populatePcData(dashboardIn);
+                        dashboard.populatePcData(dashboardChangePc);
                         dashboard.handleRecentTab();
                         dashboard.handleServiceChart();
                     }
@@ -141,11 +170,11 @@ var store = store || {};
         );
     };
 
-    dashboard.populatePcData = function() {
+    dashboard.populatePcData = function(target) {
         $.get(
-            dashboardIn.pcUrl,
+            target.pcUrl,
             function(r) {
-                var pc = $('#' + dashboardIn.pcId);
+                var pc = $('#' + target.pcId);
                 pc.empty();
                 if (Object.keys(r.model).length) {
                     $.each(r.model, function(v, k) {
@@ -188,17 +217,16 @@ var store = store || {};
         $.each(forms, function(index, value) {
             $(document).on('beforeSubmit', '#' + value, function(e) {
                 var form = jQuery(this);
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'post',
-                    data: form.serialize(),
-                    success: function(r) {
+                $.post(
+                    form.attr('action'),
+                    form.serialize(),
+                    function(r) {
                         if (r.result == 'success') {
                             location.href = r.href;
                         }
                     },
-                });
+                    'json'
+                );
                 return false;
             });
         });
@@ -215,7 +243,7 @@ var store = store || {};
 
     cuts.handleModalDisplay =  function() {
         $(document).on('click', '.' + appModal.buttonClass, function(e) {
-            $('.' + appModal.headerClass).text('.' + appModal.headerTitle);
+            $('.' + appModal.headerClass).text(appModal.headerTitle);
             $('.' + appModal.class).modal('show').find('.' + appModal.bodyClass).load($(this).attr('href'));
             return false;
         });
@@ -236,18 +264,17 @@ var store = store || {};
     cuts.handleModalForm = function() {
         $(document).on('beforeSubmit', '#' + appFormId, function() {
             var form = jQuery(this);
-            jQuery.ajax({
-                url: form.attr('action'),
-                type: 'post',
-                data: form.serialize(),
-                success: function(r) {
+            $.post(
+                form.attr('action'),
+                form.serialize(),
+                function(r) {
                     cuts.handleModalClose();
                     if (r.result == 'success') {
                         cuts.handlePjaxReload();
                     }
                 },
-            });
-
+                'json'
+            );
             return false;
         });
     };
@@ -259,9 +286,25 @@ var store = store || {};
                 link.attr('href'),
                 function(r) {
                     if (r.result == 'success') {
-                        cuts.handlePjaxReload();
+                        location.reload();
                     }
                 }
+            );
+            return false;
+        });
+    };
+
+    cuts.handleVacatePc = function() {
+        jQuery(document).on('click', '#vacate-pcs', function(e) {
+            var button = jQuery(this);
+            $.post(
+                button.data('value'),
+                function(r) {
+                    if (r.result == 'success') {
+                        cuts.handlePjaxReload();
+                    }
+                },
+                'json'
             );
             return false;
         });
@@ -271,6 +314,7 @@ var store = store || {};
         cuts.handleModalDisplay();
         cuts.handleModalForm();
         cuts.handleTimeZone();
+        cuts.handleVacatePc();
     }
     $(document).ready(init);
 })(dashboard, cuts, store, window.jQuery);

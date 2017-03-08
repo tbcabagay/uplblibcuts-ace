@@ -195,4 +195,9 @@ class Rent extends \yii\db\ActiveRecord
     {
         return College::find()->where(['id' => $this->college])->limit(1)->one();
     }
+
+    public function getDegree()
+    {
+        return Degree::find()->where(['id' => $this->degree])->limit(1)->one();
+    }
 }

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use kartik\widgets\Growl;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -10,35 +11,60 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-view">
+<div class="col-xs-12">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="page-header">
+        <h1>
+            User Profile
+            <small>
+                <i class="ace-icon fa fa-angle-double-right"></i>
+                <?= Html::encode($this->title) ?>
+            </small>        
+        </h1>
+    </div>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('<i class="ace-icon fa fa-lock"></i> ' . Yii::t('app', 'Change Password'), ['change-password', 'id' => $model->id], ['class' => 'btn btn-success btn-modal']) ?>
+        <?= Html::a('<i class="ace-icon fa fa-retweet"></i> ' . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-default btn-modal']) ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'library_id',
+            [
+                'attribute' => 'library',
+                'value' => $model->getLibrary()->location,
+            ],
             'name',
             'username',
-            'password_hash',
+            /*'password_hash',
             'auth_key',
             'registration_ip',
-            'status',
-            'created_at',
-            'updated_at',
+            'status',*/
+            'created_at:datetime',
+            'updated_at:datetime',
+            //'timezone',
         ],
     ]) ?>
 
 </div>
+
+<?php
+$session = Yii::$app->session;
+
+if ($session->hasFlash('successChangePassword')) {
+    echo Growl::widget([
+        'type' => Growl::TYPE_SUCCESS,
+        'title' => $session->getFlash('flashTitle'),
+        'body' => $session->getFlash('successChangePassword'),
+        'showSeparator' => true,
+        'delay' => 0,
+        'pluginOptions' => [
+            'placement' => [
+                'from' => 'top',
+                'align' => 'right',
+            ],
+            'timer' => 5000,
+        ],
+    ]);
+} ?>

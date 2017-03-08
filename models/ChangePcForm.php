@@ -10,9 +10,10 @@ use app\components\StudentNumberValidator;
  * TimeInRentForm is the model behind the login form.
  *
  */
-class TimeOutRentForm extends Model
+class ChangePcForm extends Model
 {
     public $number;
+    public $pc;
 
     private $_student = false;
     private $_rent = false;
@@ -23,11 +24,12 @@ class TimeOutRentForm extends Model
     public function rules()
     {
         return [
-            ['number', 'required'],
+            [['number', 'pc'], 'required'],
             ['number', 'string', 'max' => 10],
             ['number', StudentNumberValidator::classname()],
             ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/'],
             ['number', 'validateStudent'],
+            ['pc', 'integer'],
         ];
     }
 
@@ -38,6 +40,7 @@ class TimeOutRentForm extends Model
     {
         return [
             'number' => Yii::t('app', 'Student Number'),
+            'pc' => Yii::t('app', 'PC'),
         ];
     }
 
@@ -77,20 +80,18 @@ class TimeOutRentForm extends Model
         return $this->_student;
     }
 
-    public function signout()
+    public function change()
     {
+        $result = true;
         $rent = $this->getRent();
-        $student = $this->getStudent();
+        $formula = $rent->getService()->getFormula()->formula;
+        $result = $result && ($rent->getPc()->setVacant() !== false);
 
-        $rent->touch('time_out');
-
-        $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
-        $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
-
-        $student->updateRentTime($rent->time_diff);
-        if (!is_null($rent->pc)) {
-            $rent->getPc()->setVacant();
+        if ($formula !== '(0)') {
+            $rent->setAttribute('pc', $this->pc);
+            $result = $result && ($rent->update() !== false);
+            $result = $result && ($rent->getPc()->setOccupied() !== false);
         }
-        return ($rent->update() !== false) && ($rent->updateAmount() !== false);
+        return $result;
     }
 }

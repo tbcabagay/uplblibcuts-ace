@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'kartik\grid\SerialColumn'],
 
             // 'id',
             // [
@@ -51,9 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
-            if ($model->isVacant()) {
-                return ['class' => 'success'];
-            } else if ($model->isOccupied()) {
+            if ($model->isOccupied()) {
                 return ['class' => 'danger'];
             }
         },

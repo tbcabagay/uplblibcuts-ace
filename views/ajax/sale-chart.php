@@ -7,6 +7,7 @@ use dosamigos\highcharts\HighCharts;
 ?>
 
 <?= HighCharts::widget([
+    'id' => 'sale-chart-widget',
     'clientOptions' => [
         'title' => [
              'text' => 'Sale Stats'

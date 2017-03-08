@@ -53,8 +53,12 @@ $formatter = Yii::$app->formatter;
             [
                 'attribute' => 'pc',
                 'value' => function($model, $key, $index, $column) {
-                    $pc = $model->getPc();
-                    return Html::encode($pc->code);
+                    if ($model->pc !== null) {
+                        $pc = $model->getPc();
+                        return Html::encode($pc->code);
+                    } else {
+                        return 'N/A';
+                    }
                 },
                 'filter' => $pcs,
             ],

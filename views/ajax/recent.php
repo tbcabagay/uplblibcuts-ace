@@ -31,12 +31,12 @@ use kartik\helpers\Enum;
                     <?php foreach ($students as $student): ?>
                         <div class="itemdiv commentdiv">
                             <div class="user">
-                                <i class="ace-icon fa fa-desktop text-info"></i>
-                                <?= ($student->pc) ? Html::encode($student->getPc()->code) : 'N/A' ?>
+                                <i class="ace-icon fa fa-desktop fa-3x text-primary"></i>
                             </div>
                             <div class="body">
                                 <div class="name">
                                     <?= Html::encode($student->getStudent()->number) ?>
+                                    (<?= ($student->pc) ? Html::encode($student->getPc()->code) : 'N/A' ?>)
                                 </div>
                                 <div class="time">
                                     <i class="ace-icon fa fa-clock-o"></i>
