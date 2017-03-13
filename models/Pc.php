@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\web\Application as WebApplication;
 
 /**
  * This is the model class for table "{{%pc}}".
@@ -73,8 +74,9 @@ class Pc extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-        $this->setAttribute('library', Yii::$app->user->identity->library);
-
+        if ($this instanceof WebApplication) {
+            $this->setAttribute('library', Yii::$app->user->identity->library);
+        }
         return parent::beforeSave($insert);
     }
 

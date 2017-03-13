@@ -25,6 +25,8 @@ use app\components\StudentNumberValidator;
  */
 class Student extends \yii\db\ActiveRecord
 {
+    public $name;
+
     const STATUS_REGULAR = 5;
     const STATUS_CHARGE = 10;    
     const STATUS_DELETE = 15;
@@ -197,5 +199,30 @@ class Student extends \yii\db\ActiveRecord
     public function getFullname()
     {
         return "{$this->lastname}, {$this->firstname} {$this->middlename}";
+    }
+
+    public function fields()
+    {
+        return [
+            'id',
+            'number',
+            'name' => function($model) {
+                return $model->firstname . ' ' . $model->lastname;
+            },
+            'sex',
+            'college' => function($model) {
+                return [
+                    'code' => $model->getCollege()->code,
+                    'description' => $model->getCollege()->description,
+                ];
+            },
+            'degree' => function($model) {
+                return [
+                    'code' => $model->getDegree()->code,
+                    'description' => $model->getDegree()->description,
+                ];
+            },
+            'created_at',
+        ];
     }
 }

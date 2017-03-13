@@ -59,6 +59,7 @@ class RegisterForm extends Model
             ? User::STATUS_ACTIVE : User::STATUS_NEW);
         $model->generatePassword($this->password);
         $model->generateAuthKey();
+        $model->generateAccessToken();
         $model->generateIpAddress();
 
         if ($model->save()) {

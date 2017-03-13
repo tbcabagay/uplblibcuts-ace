@@ -24,6 +24,7 @@ class m170113_062904_create_user_table extends Migration
             'username' => $this->string(60)->notNull(),
             'password_hash' => $this->char(60)->notNull(),
             'auth_key' => $this->string(32)->notNull(),
+            'access_token' => $this->string(32)->notNull(),
             'registration_ip' => $this->string(15),
             'status' => $this->smallInteger()->notNull(),
             'created_at' => $this->integer()->notNull(),

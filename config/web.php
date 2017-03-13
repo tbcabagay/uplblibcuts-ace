@@ -43,6 +43,17 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'api/student',
+                    'only' => ['view'],
+                    'tokens' => [
+                        '{number}' => '<number:\\d{4}-\\d{5}>',
+                    ],
+                    'patterns' => [
+                        'GET {number}' => 'view',
+                    ],
+                ],
             ],
         ],
         'authManager' => [
@@ -67,7 +78,10 @@ $config = [
     'modules' => [
         'gridview' =>  [
             'class' => '\kartik\grid\Module',
-        ]
+        ],
+        'api' => [
+            'class' => 'app\modules\api\Module',
+        ],
     ],
     'on beforeRequest' => function () {        
         $user = Yii::$app->user->getIdentity();

@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property string $username
  * @property string $password_hash
  * @property string $auth_key
+ * @property string $access_token
  * @property string $registration_ip
  * @property integer $status
  * @property integer $created_at
@@ -45,11 +46,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             // [['library', 'name', 'username', 'password_hash', 'auth_key', 'status', 'created_at', 'updated_at'], 'required'],
-            [['library', 'name', 'username', 'password_hash', 'auth_key', 'status', 'timezone'], 'required'],
+            [['library', 'name', 'username', 'password_hash', 'auth_key', 'access_token', 'status', 'timezone'], 'required'],
             [['library', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 80],
             [['username', 'password_hash'], 'string', 'max' => 60],
-            [['auth_key'], 'string', 'max' => 32],
+            [['auth_key', 'access_token'], 'string', 'max' => 32],
             [['registration_ip'], 'string', 'max' => 15],
             [['timezone'], 'string', 'max' => 40],
             ['name', 'filter', 'filter' => 'strtolower'],
@@ -70,6 +71,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'username' => Yii::t('app', 'Username'),
             'password_hash' => Yii::t('app', 'Password Hash'),
             'auth_key' => Yii::t('app', 'Auth Key'),
+            'access_token' => Yii::t('app', 'Access Token'),
             'registration_ip' => Yii::t('app', 'Registration Ip'),
             'status' => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),
@@ -91,10 +93,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne([
-            'access_token' => $token,
-            'status' => self::STATUS_NEW,
-        ]);
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
@@ -129,6 +128,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function generateAuthKey()
     {
         $this->setAttribute('auth_key', \Yii::$app->security->generateRandomString());
+    }
+
+    public function generateAccessToken()
+    {
+        $this->setAttribute('access_token', \Yii::$app->security->generateRandomString());
     }
 
     public function generatePassword($password)

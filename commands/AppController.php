@@ -558,6 +558,7 @@ class AppController extends Controller
         $model->setAttribute('status', User::STATUS_ACTIVE);
         $model->generatePassword($password);
         $model->generateAuthKey();
+        $model->generateAccessToken();
         $model->generateIpAddress();
 
         echo "Saving \"$username\" user...\n";
