@@ -107,7 +107,7 @@ class AcademicCalendar extends \yii\db\ActiveRecord
         }
     }
 
-    public function getSemesterList()
+    public static function getSemesterList()
     {
         $semester = [
             self::SEMESTER_FIRST => 'First',

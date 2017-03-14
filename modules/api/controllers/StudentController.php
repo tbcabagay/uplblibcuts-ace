@@ -22,15 +22,9 @@ class StudentController extends ActiveController
 
     public function actions()
     {
-        /*return array_merge(parent::actions(), [
-            'index' => null,
-            'view' => null,
-            'create' => null,
-            'update' => null,
-            'delete' => null,
-        ]);*/
         $actions = parent::actions();
-        $actions['view']['findModel'] = [$this, 'findModel', 1];
+        unset($actions['view'], $actions['create'], $actions['update'], $actions['delete']);
+
         return $actions;
     }
 
@@ -39,10 +33,10 @@ class StudentController extends ActiveController
         return $this->findModel($number);
     }
 
-    public function findModel($id)
+    public function findModel($number)
     {
-        //$model = $this->modelClass::findOne(['number' => $number]);
-        $model = $this->modelClass::findOne($id);
+        $modelClass = $this->modelClass;
+        $model = $modelClass::findOne(['number' => $number]);
         if (!$model) {
             throw new NotFoundHttpException("Object not found: $number");
         }

@@ -71,7 +71,7 @@ class Service extends \yii\db\ActiveRecord
         return $this->status === self::STATUS_REGULAR;
     }
 
-    public function getStatusList()
+    public static function getStatusList()
     {
         $status = [
             self::STATUS_FEATURED => 'FEATURED',

@@ -46,12 +46,17 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'api/student',
-                    'only' => ['view'],
                     'tokens' => [
-                        '{number}' => '<number:\\d{4}-\\d{5}>',
+                        '{number}' => '<number:[\\w+-]*>',
                     ],
                     'patterns' => [
-                        'GET {number}' => 'view',
+                        'PUT,PATCH {number}' => 'update',
+                        'DELETE {number}' => 'delete',
+                        'GET,HEAD {number}' => 'view',
+                        'POST' => 'create',
+                        'GET,HEAD' => 'index',
+                        '{number}' => 'options',
+                        '' => 'options',
                     ],
                 ],
             ],
