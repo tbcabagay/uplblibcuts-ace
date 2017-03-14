@@ -310,11 +310,36 @@ var store = store || {};
         });
     };
 
+    cuts.handleToggleAcademicCalendar = function() {
+        $(document).on("click", ".btn-toggle", function() {
+            var $btn = $(this);
+            BootstrapDialog.confirm({
+                title: "Confirmation",
+                message: "Are you sure you want to deactivate this item?",
+                type: BootstrapDialog.TYPE_INFO,
+                callback: function(result) {
+                    if (result) {
+                        $.post(
+                            $btn.attr("href"),
+                            function(r) {
+                                if (r.result == 'success') {
+                                    cuts.handlePjaxReload();
+                                }
+                            }
+                        );
+                    }
+                },
+            });
+            return false;
+        });
+    };
+
     function init() {
         cuts.handleModalDisplay();
         cuts.handleModalForm();
         cuts.handleTimeZone();
         cuts.handleVacatePc();
+        cuts.handleToggleAcademicCalendar();
     }
     $(document).ready(init);
 })(dashboard, cuts, store, window.jQuery);

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use app\components\StudentNumberValidator;
@@ -181,6 +182,19 @@ class Student extends \yii\db\ActiveRecord
         return $rentTime;
     }*/
 
+    public static function resetRentTime()
+    {
+        $college = College::find()->where(['status' => College::STATUS_REGULAR])->asArray()->all();
+        if (!empty($college)) {
+            $collegeIds = ArrayHelper::getColumn($college, 'id');
+            return self::updateAll(
+                ['rent_time' => Yii::$app->params['studentRentTime'], 'status' => self::STATUS_REGULAR],
+                ['in', 'college', $collegeIds]
+            );
+        }
+        return null;
+    }
+
     public static function findByNumber($number)
     {
         return self::findOne(['number' => $number]);
@@ -188,12 +202,12 @@ class Student extends \yii\db\ActiveRecord
 
     public function getCollege()
     {
-        return College::find()->where(['id' => $this->college])->limit(1)->one();
+        return College::findOne($this->college);
     }
 
     public function getDegree()
     {
-        return Degree::find()->where(['id' => $this->degree])->limit(1)->one();
+        return Degree::findOne($this->degree);
     }
 
     public function getFullname()

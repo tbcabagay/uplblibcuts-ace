@@ -12,32 +12,52 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sale-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="page-header">
+        <h1>
+            Sale
+        </h1>
+    </div>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'academic_calendar',
-            'library',
-            'student',
-            'service',
+            // 'academic_calendar',
+            [
+                'attribute' => 'library',
+                'value' => $model->getLibrary()->location,
+            ],
+            [
+                'attribute' => 'number',
+                'value' => function ($model, $widget) {
+                    $student = $model->getStudent();
+                    return Html::encode($student->number);
+                },
+            ],
+            [
+                'attribute' => 'name',
+                'value' => function ($model, $widget) {
+                    $student = $model->getStudent();
+                    return Html::encode($student->getFullname());
+                },
+            ],
+            [
+                'attribute' => 'service',
+                'value' => function ($model, $widget) {
+                    $service = $model->getService();
+                    return Html::encode($service->name);
+                },
+            ],
             'quantity',
-            'amount',
-            'total',
-            'created_at',
-            'created_by',
+            'amount:currency',
+            'total:currency',
+            'created_at:datetime',
+            [
+                'attribute' => 'created_by',
+                'value' => function ($model, $widget) {
+                    $user = $model->getCreatedBy();
+                    return Html::encode($user->name);
+                },
+            ],
         ],
     ]) ?>
 

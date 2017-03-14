@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
                 <?= Html::encode($this->title) ?>
-            </small>        
+            </small>
         </h1>
     </div>
 

@@ -12,10 +12,6 @@ use app\models\Rent;
  */
 class RentSearch extends Rent
 {
-    public $number;
-
-    public $name;
-
     /**
      * @inheritdoc
      */
@@ -83,21 +79,13 @@ class RentSearch extends Rent
             'college' => $this->college,
             'pc' => $this->pc,
             'service' => $this->service,
+            'FROM_UNIXTIME(`time_in`, "%Y-%m-%d")' => $this->time_in,
+            'FROM_UNIXTIME(`time_out`, "%Y-%m-%d")' => $this->time_out,
         ]);
 
         $query->andFilterWhere(['like', '{{%student}}.number', $this->number]);
 
-        if (!empty($this->time_in)) {
-            $query->andFilterWhere(['<=', 'time_in', strtotime($this->time_in . ' Asia/Manila')]);
-        }
-
-        if (!empty($this->time_out)) {
-            $query->andFilterWhere(['<=', 'time_out', strtotime($this->time_out . ' Asia/Manila')]);
-        }
-
-        if (!empty($this->time_diff)) {
-            $query->andFilterWhere(['<=', 'time_diff', $this->formatTimeDiffAsInteger()]);
-        }
+        $query->andFilterWhere(['<=', 'time_diff', $this->formatTimeDiffAsInteger()]);
 
         foreach (explode(' ', $this->name) as $name) {
             $query->andFilterWhere(['or', ['like', '{{%student}}.lastname', $name], ['like', '{{%student}}.firstname', $name]]);

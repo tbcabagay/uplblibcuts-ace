@@ -23,6 +23,9 @@ use yii\behaviors\BlameableBehavior;
  */
 class Sale extends \yii\db\ActiveRecord
 {
+    public $name;
+    public $number;
+
     /**
      * @inheritdoc
      */
@@ -37,7 +40,7 @@ class Sale extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['academic_calendar', 'library', 'student', 'service', 'quantity', 'amount', 'total'], 'required'],
+            [['amount', 'service', 'quantity'], 'required'],
             [['academic_calendar', 'library', 'student', 'service', 'quantity', 'created_at', 'created_by'], 'integer'],
             [['amount', 'total'], 'number'],
         ];
@@ -59,6 +62,8 @@ class Sale extends \yii\db\ActiveRecord
             'total' => Yii::t('app', 'Total'),
             'created_at' => Yii::t('app', 'Created At'),
             'created_by' => Yii::t('app', 'Created By'),
+            'number' => Yii::t('app', 'Number'),
+            'name' => Yii::t('app', 'Name'),
         ];
     }
 
@@ -80,5 +85,56 @@ class Sale extends \yii\db\ActiveRecord
                 ],
             ],
         ];
+    }
+
+    public function setAmount()
+    {
+        $service = $this->getService();
+        $this->setAttribute('amount', $service->amount);
+    }
+
+    public function setAcademicCalendar()
+    {
+        $academicCalendar = $this->getAcademicCalendar();
+        $this->setAttribute('academic_calendar', $academicCalendar->id);
+    }
+
+    public function computeTotal()
+    {
+        $service = $this->getService();
+        $formula = $service->getFormula()->formula;
+        $total = 0;
+
+        if ($formula !== '(0)') {
+            $formula = str_replace('{service_amount}', $this->amount, $formula);
+            $formula = str_replace('{quantity}', $this->quantity, $formula);
+            $total = eval("return {$formula};");
+        }
+        $this->setAttribute('total', round($total));
+    }
+
+    public function getAcademicCalendar()
+    {
+        return AcademicCalendar::findActive();
+    }
+
+    public function getStudent()
+    {
+        return Student::findOne($this->student);
+    }
+
+    public function getService()
+    {
+        return Service::findOne($this->service);
+    }
+
+    public function getLibrary()
+    {
+        return Library::findOne($this->library);
+    }
+
+    public function getCreatedBy()
+    {
+        return User::findOne($this->created_by);
     }
 }

@@ -78,11 +78,11 @@ $formatter = Yii::$app->formatter;
                 'value' => function($model, $key, $index, $column) use ($formatter) {
                     return $formatter->asDateTime($model->time_in);
                 },
-                'filterType' => GridView::FILTER_DATETIME,
+                'filterType' => GridView::FILTER_DATE,
                 'filterWidgetOptions' => [
                     'pluginOptions' => [
                         'autoclose' => true,
-                        'format' => 'yyyy-mm-dd hh:ii:ss',
+                        'format' => 'yyyy-mm-dd',
                     ],
                 ],
             ],
@@ -91,11 +91,11 @@ $formatter = Yii::$app->formatter;
                 'value' => function($model, $key, $index, $column) use ($formatter) {
                     return $formatter->asDateTime($model->time_out);
                 },
-                'filterType' => GridView::FILTER_DATETIME,
+                'filterType' => GridView::FILTER_DATE,
                 'filterWidgetOptions' => [
                     'pluginOptions' => [
                         'autoclose' => true,
-                        'format' => 'yyyy-mm-dd hh:ii:ss',
+                        'format' => 'yyyy-mm-dd',
                     ],
                 ],
             ],

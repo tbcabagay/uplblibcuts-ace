@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use app\models\Student;
 use yii\web\Response;
 use kartik\form\ActiveForm;
 
@@ -71,6 +72,7 @@ class AcademicCalendarController extends Controller
         $model->scenario = AcademicCalendar::SCENARIO_CREATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Student::resetRentTime();
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;
 

@@ -18,9 +18,10 @@ class SaleSearch extends Sale
     public function rules()
     {
         return [
-            [['id', 'academic_calendar', 'library', 'service', 'quantity', 'created_at', 'created_by'], 'integer'],
-            [['student'], 'safe'],
-            [['amount', 'total'], 'number'],
+            [['service', 'quantity'], 'integer'],
+            [['name', 'number', 'created_by'], 'safe'],
+            ['created_at', 'date', 'format' => 'php:Y-m-d'],
+            ['total', 'number'],
         ];
     }
 
@@ -43,12 +44,37 @@ class SaleSearch extends Sale
     public function search($params)
     {
         $query = Sale::find();
+        $query->leftJoin('{{%student}}', '{{%student}}.id = {{%sale}}.student');
+        $query->leftJoin('{{%user}}', '{{%user}}.id = {{%sale}}.created_by');
+        $query->where([
+            '{{%sale}}.library' => Yii::$app->user->identity->library,
+        ]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                ],
+            ],
         ]);
+
+        $dataProvider->sort->attributes['number'] = [
+            'asc' => ['{{%student}}.number' => SORT_ASC],
+            'desc' => ['{{%student}}.number' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['name'] = [
+            'asc' => ['{{%student}}.lastname' => SORT_ASC],
+            'desc' => ['{{%student}}.lastname' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['created_by'] = [
+            'asc' => ['{{%user}}.name' => SORT_ASC],
+            'desc' => ['{{%user}}.name' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -60,18 +86,21 @@ class SaleSearch extends Sale
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'academic_calendar' => $this->academic_calendar,
-            'library' => $this->library,
             'service' => $this->service,
             'quantity' => $this->quantity,
-            'amount' => $this->amount,
             'total' => $this->total,
-            'created_at' => $this->created_at,
-            'created_by' => $this->created_by,
+            'FROM_UNIXTIME({{%sale}}.`created_at`, "%Y-%m-%d")' => $this->created_at,
         ]);
 
-        $query->andFilterWhere(['like', 'student', $this->student]);
+        $query->andFilterWhere(['like', '{{%student}}.number', $this->number]);
+
+        foreach (explode(' ', $this->name) as $name) {
+            $query->andFilterWhere(['or', ['like', '{{%student}}.lastname', $name], ['like', '{{%student}}.firstname', $name]]);
+        }
+
+        foreach (explode(' ', $this->created_by) as $name) {
+            $query->andFilterWhere(['like', '{{%user}}.name', $name]);
+        }
 
         return $dataProvider;
     }

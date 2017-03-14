@@ -167,7 +167,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public function getLibrary()
     {
-        return Library::find()->where(['id' => $this->library])->limit(1)->one();
+        return Library::findOne($this->library);
     }
 
     public static function getRoleList()

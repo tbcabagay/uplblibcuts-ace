@@ -90,7 +90,7 @@ class Pc extends \yii\db\ActiveRecord
 
     public function getLibrary()
     {
-        return Library::find()->where(['id' => $this->library])->limit(1)->one();
+        return Library::findOne($this->library);
     }
 
     public function getStatusValue()
@@ -111,7 +111,7 @@ class Pc extends \yii\db\ActiveRecord
         return $this->status === self::STATUS_OCCUPIED;
     }
 
-    public function getStatusList()
+    public static function getStatusList()
     {
         $status = [
             self::STATUS_VACANT => 'VACANT',

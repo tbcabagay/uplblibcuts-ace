@@ -30,6 +30,9 @@ use yii\behaviors\BlameableBehavior;
  */
 class Rent extends \yii\db\ActiveRecord
 {
+    public $number;
+    public $name;
+
     const STATUS_TIME_IN = 5;
     const STATUS_TIME_OUT = 10;
 
@@ -78,6 +81,8 @@ class Rent extends \yii\db\ActiveRecord
             'time_diff' => Yii::t('app', 'Time Expended'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),
+            'number' => Yii::t('app', 'Number'),
+            'name' => Yii::t('app', 'Name'),
         ];
     }
 
@@ -176,28 +181,33 @@ class Rent extends \yii\db\ActiveRecord
         return $this->delete();
     }
 
+    public function getLibrary()
+    {
+        return Library::findOne($this->library);
+    }
+
     public function getStudent()
     {
-        return Student::find()->where(['id' => $this->student])->limit(1)->one();
+        return Student::findOne($this->student);
     }
 
     public function getPc()
     {
-        return Pc::find()->where(['id' => $this->pc])->limit(1)->one();
+        return Pc::findOne($this->pc);
     }
 
     public function getService()
     {
-        return Service::find()->where(['id' => $this->service])->limit(1)->one();
+        return Service::findOne($this->service);
     }
 
     public function getCollege()
     {
-        return College::find()->where(['id' => $this->college])->limit(1)->one();
+        return College::findOne($this->college);
     }
 
     public function getDegree()
     {
-        return Degree::find()->where(['id' => $this->degree])->limit(1)->one();
+        return Degree::findOne($this->degree);
     }
 }

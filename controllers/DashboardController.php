@@ -176,7 +176,7 @@ class DashboardController extends Controller
         if (!AcademicCalendar::findActive()) {
             $session->setFlash('flashTitle', '<i class="ace-icon fa fa-exclamation-circle"></i>
                 ' . Yii::t('app', 'System Information'));
-            $session->setFlash('setAcademicCalendar', Yii::t('app', 'Academic Calendar has not been set. Please create a new one below.'));
+            $session->setFlash('setAcademicCalendar', Yii::t('app', 'Either the Academic Calendar has not been set or it has already ended.'));
             $this->redirect(['/academic-calendar/index']);
         }
     }

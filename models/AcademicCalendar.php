@@ -144,6 +144,16 @@ class AcademicCalendar extends \yii\db\ActiveRecord
 
     public static function findActive()
     {
-        return self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
+        $model = self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
+        if (!is_null($model)) {
+            $now = date('Y-m-d');
+            if ($now > $model->date_end) {
+                $model->setAttribute('status', self::STATUS_INACTIVE);
+                $model->update();
+                return null;
+            }
+            return $model;
+        }
+        return null;
     }
 }

@@ -211,6 +211,12 @@ AceIeAsset::register($this);
 
                     <b class="arrow"></b>
                 </li>
+                <li class="<?= ($this->context->id === 'sale') ? 'active' : null ?>">
+                    <?= Html::a('<i class="menu-icon fa fa-money"></i>
+                        <span class="menu-text"> Sales </span>', ['/sale/index']) ?>
+
+                    <b class="arrow"></b>
+                </li>
             </ul>
 
             <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

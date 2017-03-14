@@ -9,6 +9,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\web\Response;
+use kartik\form\ActiveForm;
+use app\models\Service;
+
 /**
  * SaleController implements the CRUD actions for Sale model.
  */
@@ -41,6 +45,7 @@ class SaleController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'services' => Service::getServiceList(Service::STATUS_REGULAR),
         ]);
     }
 
@@ -51,27 +56,9 @@ class SaleController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
-    }
-
-    /**
-     * Creates a new Sale model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Sale();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
     }
 
     /**
@@ -84,11 +71,22 @@ class SaleController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->setAmount();
+            $model->computeTotal();
+            if ($model->update() !== false) {
+                $response = Yii::$app->response;
+                $response->format = Response::FORMAT_JSON;
+
+                return $response->data = [
+                    'result' => 'success',
+                ];
+            }
         } else {
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
+                'student' => $model->getStudent(),
+                'services' => Service::getServiceList(Service::STATUS_REGULAR),
             ]);
         }
     }
@@ -104,6 +102,22 @@ class SaleController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionValidate($id)
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
     }
 
     /**

@@ -54,11 +54,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{toggle-status} {update} {delete}',
                 'viewOptions' => ['class' => 'btn-modal'],
                 'updateOptions' => ['class' => 'btn-modal'],
+                'visibleButtons' => [
+                    'toggle-status' => function ($model, $key, $index) {
+                        return $model->isActive();
+                    },
+                    'update' => function ($model, $key, $index) {
+                        return $model->isActive();
+                    },
+                ],
                 'buttons' => [
                     'toggle-status' => function ($url, $model, $key) {
-                        if ($model->isActive()) {
-                            return Html::a('<i class="fa fa-toggle-off"></i>', ['/academic-calendar/toggle-status', 'id' => $model->id], ['data-pjax' => 'false', 'title' => Yii::t('app', 'Toggle Off'), 'class' => 'btn-toggle']);
-                        }                        
+                        return Html::a('<i class="fa fa-toggle-off"></i>', ['/academic-calendar/toggle-status', 'id' => $model->id], ['data-pjax' => 'false', 'title' => Yii::t('app', 'Toggle Off'), 'class' => 'btn-toggle']);
                     },
                 ],
             ],
@@ -66,6 +72,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'rowOptions' => function ($model, $key, $index, $grid) {
             if ($model->isActive()) {
                 return ['class' => 'success'];
+            } else {
+                return ['class' => 'danger'];
             }
         },
         'pjax' => true,
@@ -117,28 +125,3 @@ if ($session->hasFlash('setAcademicCalendar')) {
         ],
     ]);
 } ?>
-
-<?php $this->registerJs('
-jQuery(".btn-toggle").on("click", function() {
-    var $btn = jQuery(this);
-    BootstrapDialog.confirm({
-        title: "Confirmation",
-        message: "Are you sure you want to deactivate this item?",
-        type: BootstrapDialog.TYPE_WARNING,
-        callback: function(result) {
-            if (result) {
-                jQuery.ajax({
-                    url: $btn.attr("href"),
-                    type: "post",
-
-                }).done(function (data) {
-                    jQuery.pjax.reload({ container: "#app-pjax-container" });
-                });
-            }
-        },
-    });
-    return false;
-});
-',
-View::POS_READY,
-'academic-calendar-index') ?>

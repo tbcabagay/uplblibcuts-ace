@@ -16,9 +16,7 @@ class SaleForm extends Model
     public $service;
     public $quantity;
 
-    private $_academic_calendar = false;
     private $_student = false;
-    private $_service = false;
 
     /**
      * @return array the validation rules.
@@ -66,44 +64,19 @@ class SaleForm extends Model
         return $this->_student;
     }
 
-    public function getService()
-    {
-        if ($this->_service === false) {
-            $this->_service = Service::findOne($this->service);
-        }
-        return $this->_service;
-    }
-
-    public function getAcademicCalendar()
-    {
-        if ($this->_academic_calendar === false) {
-            $this->_academic_calendar = AcademicCalendar::findActive();
-        }
-        return $this->_academic_calendar;
-    }
-
     public function bill()
     {
-        $academicCalendar = $this->getAcademicCalendar();
         $student = $this->getStudent();
-        $service = $this->getService();
-        $formula = $service->getFormula()->formula;
 
         $sale = new Sale();
-        $sale->setAttribute('academic_calendar', $academicCalendar->id);
         $sale->setAttribute('library', Yii::$app->user->identity->library);
         $sale->setAttribute('student', $student->id);
-        $sale->setAttribute('service', $service->id);
+        $sale->setAttribute('service', $this->service);
         $sale->setAttribute('quantity', $this->quantity);
-        $sale->setAttribute('amount', $service->amount);
+        $sale->setAcademicCalendar();
+        $sale->setAmount();
+        $sale->computeTotal();
 
-        $total = 0;
-        if ($formula !== '(0)') {
-            $formula = str_replace('{service_amount}', $service->amount, $formula);
-            $formula = str_replace('{quantity}', $this->quantity, $formula);
-            $total = eval("return {$formula};");
-        }
-        $sale->setAttribute('total', round($total));
         return $sale->save();
     }
 }

@@ -12,23 +12,33 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rent-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-<?php /*
-    <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-*/ ?>
+    <div class="page-header">
+        <h1>
+            Rent
+        </h1>
+    </div>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            [
+                'attribute' => 'library',
+                'value' => $model->getLibrary()->location,
+            ],
+            [
+                'attribute' => 'number',
+                'value' => function ($model, $widget) {
+                    $student = $model->getStudent();
+                    return Html::encode($student->number);
+                },
+            ],
+            [
+                'attribute' => 'name',
+                'value' => function ($model, $widget) {
+                    $student = $model->getStudent();
+                    return Html::encode($student->getFullname());
+                },
+            ],
             [
                 'attribute' => 'college',
                 'value' => $model->getCollege()->code,
