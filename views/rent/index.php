@@ -72,7 +72,13 @@ $formatter = Yii::$app->formatter;
             ],
             // 'topic',
             // 'amount:currency',
-            // 'status',
+            [
+                'attribute' => 'status',
+                'value' => function($model, $key, $index, $column) {
+                    return $model->getStatusValue();
+                },
+                'filter' => $searchModel->getStatusList(),
+            ],
             [
                 'attribute' => 'time_in',
                 'value' => function($model, $key, $index, $column) use ($formatter) {
@@ -115,11 +121,13 @@ $formatter = Yii::$app->formatter;
                 'viewOptions' => ['class' => 'btn-modal'],
             ],
         ],
-        /*'rowOptions' => function ($model, $key, $index, $grid) {
-            if ($model->isFeatured()) {
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->isTimeOut()) {
                 return ['class' => 'success'];
+            } else if ($model->isTimeIn()) {
+                return ['class' => 'warning'];
             }
-        },*/
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [
@@ -130,7 +138,7 @@ $formatter = Yii::$app->formatter;
         'export' => false,
         'toolbar' => [
             ['content' =>
-                Html::a('<i class="fa fa-plus"></i>', ['create'], [
+                Html::a('<i class="fa fa-plus"></i>', ['time-in'], [
                     'title' => Yii::t('app', 'Add Rent'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
@@ -146,6 +154,7 @@ $formatter = Yii::$app->formatter;
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
             'heading' => 'Grid View',
+            'after' => '<em><span class="label label-success label-white middle">* Status is time out.</span></em><div class="space-6"></div><em><span class="label label-warning label-white middle">* Status is time in.</span></em>',
         ],
     ]); ?>
 </div>

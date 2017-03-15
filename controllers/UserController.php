@@ -29,6 +29,7 @@ class UserController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'activate' => ['POST'],
                 ],
             ],
         ];
@@ -60,24 +61,6 @@ class UserController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
-
-    /**
-     * Creates a new User model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new User();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
     }
 
     /**
@@ -155,6 +138,18 @@ class UserController extends Controller
 
             return ActiveForm::validate($model);
         }
+    }
+
+    /**
+     * Activate Account action.
+     *
+     * @return string
+     */
+    public function actionActivate($id)
+    {
+        $this->findModel($id)->activate();
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**

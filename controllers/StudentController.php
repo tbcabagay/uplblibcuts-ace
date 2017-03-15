@@ -135,17 +135,13 @@ class StudentController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate($id = null)
+    public function actionValidate()
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($id === null) {
-            $model = new Student();
-        } else {
-            $model = $this->findModel($id);
-        }
+        $model = new Student();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

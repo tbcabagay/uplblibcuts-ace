@@ -18,7 +18,7 @@ class RentSearch extends Rent
     public function rules()
     {
         return [
-            [['college', 'pc', 'service'], 'integer'],
+            [['college', 'pc', 'service', 'status'], 'integer'],
             [['number', 'name', 'time_in', 'time_out'], 'safe'],
             ['time_diff', 'match', 'pattern' => '/^(\d+):(\d+):(\d+)$/'],
         ];
@@ -79,6 +79,7 @@ class RentSearch extends Rent
             'college' => $this->college,
             'pc' => $this->pc,
             'service' => $this->service,
+            '{{%rent}}.status' => $this->status,
             'FROM_UNIXTIME(`time_in`, "%Y-%m-%d")' => $this->time_in,
             'FROM_UNIXTIME(`time_out`, "%Y-%m-%d")' => $this->time_out,
         ]);

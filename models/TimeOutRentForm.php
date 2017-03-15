@@ -82,8 +82,7 @@ class TimeOutRentForm extends Model
         $rent = $this->getRent();
         $student = $this->getStudent();
 
-        $rent->touch('time_out');
-
+        $rent->setAttribute('time_out', time());
         $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
         $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
 

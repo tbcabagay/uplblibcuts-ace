@@ -53,11 +53,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template' => '{update} {delete}',
-                'viewOptions' => ['class' => 'btn-modal'],
-                'updateOptions' => ['class' => 'btn-modal'],
+                'template' => '{view}',
             ],
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->isNew()) {
+                return ['class' => 'warning'];
+            }
+        },
         'pjax' => true,
         'pjaxSettings' => [
             'options' => [
@@ -84,6 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
             'heading' => 'Grid View',
+            'after' => '<em><span class="label label-warning label-white middle">* Users that are not yet activated.</span></em>',
         ],
     ]); ?>
 </div>

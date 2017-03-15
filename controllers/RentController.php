@@ -68,15 +68,23 @@ class RentController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionTimeIn()
     {
         $model = new Rent();
+        $model->scenario = Rent::SCENARIO_TIME_IN;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->signin()) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return $response->data = [
+                'result' => 'success',
+            ];
         } else {
-            return $this->render('create', [
+            return $this->renderAjax('time-in', [
                 'model' => $model,
+                'featuredServices' => Service::getServiceList(Service::STATUS_FEATURED),
+                'pcs' => Pc::getPcList(Pc::STATUS_VACANT),
             ]);
         }
     }
@@ -111,6 +119,22 @@ class RentController extends Controller
         $this->findModel($id)->rentRollBack();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionValidate()
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new Rent();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
     }
 
     /**

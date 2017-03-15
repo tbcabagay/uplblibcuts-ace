@@ -14,7 +14,7 @@ use kartik\form\ActiveForm;
         'id' => 'app-form',
         'enableAjaxValidation' => true,
         'enableClientValidation' => false,
-        'validationUrl' => ['validate', ($model->isNewRecord) ? null : 'id' => $model->id],
+        'validationUrl' => ['validate'],
         'options' => [
             'autocomplete' => 'off',
         ],

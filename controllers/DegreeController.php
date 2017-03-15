@@ -48,18 +48,6 @@ class DegreeController extends Controller
     }
 
     /**
-     * Displays a single Degree model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Degree model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -119,17 +107,13 @@ class DegreeController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate($id = null)
+    public function actionValidate()
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($id === null) {
-            $model = new Degree();
-        } else {
-            $model = $this->findModel($id);
-        }
+        $model = new Degree();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

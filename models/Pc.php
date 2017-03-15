@@ -44,7 +44,7 @@ class Pc extends \yii\db\ActiveRecord
             ['code', 'filter', 'filter' => 'strtoupper'],
             ['code', 'validateUnique', 'on' => self::SCENARIO_VALIDATE_CODE],
             ['status', 'default', 'value' => self::STATUS_VACANT],
-            //['library', 'default', 'value' => Yii::$app->user->identity->library],
+            ['ip_address', 'default', 'value' => null],
         ];
     }
 
@@ -82,7 +82,7 @@ class Pc extends \yii\db\ActiveRecord
 
     public function validateUnique($attribute, $params)
     {
-        $model = self::find()->where(['code' => $this->$attribute, 'library' => Yii::$app->user->identity->library])->limit(1)->one();
+        $model = self::findOne(['code' => $this->$attribute, 'library' => Yii::$app->user->identity->library]);
         if (!is_null($model)) {
             $this->addError($attribute, Yii::t('app', 'Code "{code}" has already been taken.', ['code' => $this->$attribute]));
         }

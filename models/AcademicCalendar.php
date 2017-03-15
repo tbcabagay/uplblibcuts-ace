@@ -22,8 +22,9 @@ class AcademicCalendar extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 5;
     const STATUS_INACTIVE = 10;
-    const SEMESTER_FIRST = 1;
-    const SEMESTER_SECOND = 2;
+    const SEMESTER_FIRST = '1';
+    const SEMESTER_SECOND = '2';
+    const SEMESTER_MIDYEAR ='M';
     const SCENARIO_CREATE = 'create';
 
     private static $_list = [];
@@ -47,7 +48,7 @@ class AcademicCalendar extends \yii\db\ActiveRecord
             [['date_start', 'date_end'], 'safe'],
             [['status', 'created_at', 'created_by'], 'integer'],
             [['semester'], 'string', 'max' => 1],
-            ['semester', 'in', 'range' => [1, 2, 3]],
+            ['semester', 'in', 'range' => [self::SEMESTER_FIRST, self::SEMESTER_SECOND, self::SEMESTER_MIDYEAR]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['semester', 'validateStatus', 'on' => self::SCENARIO_CREATE],
             ['date_start', 'date', 'format' => 'php:Y-m-d'],
@@ -101,7 +102,7 @@ class AcademicCalendar extends \yii\db\ActiveRecord
 
     public function validateStatus($attribute, $params)
     {
-        $model = self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
+        $model = self::findOne(['status' => self::STATUS_ACTIVE]);
         if (!is_null($model)) {
             $this->addError($attribute, Yii::t('app', 'Please change the status of the active academic year first.'));
         }
@@ -112,6 +113,7 @@ class AcademicCalendar extends \yii\db\ActiveRecord
         $semester = [
             self::SEMESTER_FIRST => 'First',
             self::SEMESTER_SECOND => 'Second',
+            self::SEMESTER_MIDYEAR => 'Midyear',
         ];
         return $semester;
     }
@@ -144,7 +146,7 @@ class AcademicCalendar extends \yii\db\ActiveRecord
 
     public static function findActive()
     {
-        $model = self::find()->where(['status' => self::STATUS_ACTIVE])->limit(1)->one();
+        $model = self::findOne(['status' => self::STATUS_ACTIVE]);
         if (!is_null($model)) {
             $now = date('Y-m-d');
             if ($now > $model->date_end) {

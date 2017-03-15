@@ -58,7 +58,7 @@ class Student extends \yii\db\ActiveRecord
             ['middlename', 'string', 'max' => 10],
             ['number', 'unique'],
             ['number', StudentNumberValidator::classname()],
-            ['number', 'match', 'pattern' => '/^[0-9]{4}-[0-9]{5}$/'],
+            ['number', 'match', 'pattern' => '/^[\d]{4}-[\d]{5}$/'],
             ['status', 'default', 'value' => self::STATUS_REGULAR],
             ['rent_time', 'default', 'value' => Yii::$app->params['studentRentTime']]
         ];

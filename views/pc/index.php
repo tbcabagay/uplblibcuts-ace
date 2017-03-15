@@ -88,7 +88,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'data-value' => Url::to(['vacate']),
                 'value' => 0,
                 'disabled' => ($searchModel->countByStatus(Pc::STATUS_OCCUPIED) < 1) ? true : false,
-            ])
+            ]),
+            'after' => '<em><span class="label label-danger label-white middle">* PCs that are occupied.</span></em>',
         ],
     ]); ?>
 </div>

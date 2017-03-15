@@ -14,13 +14,15 @@ use kartik\form\ActiveForm;
         'id' => 'app-form',
         'enableAjaxValidation' => true,
         'enableClientValidation' => false,
-        'validationUrl' => ['validate', ($model->isNewRecord) ? null : 'id' => $model->id],
+        'validationUrl' => ['validate'],
         'options' => [
             'autocomplete' => 'off',
         ],
     ]); ?>
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'ip_address')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

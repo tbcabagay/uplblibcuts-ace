@@ -36,7 +36,7 @@ use kartik\helpers\Enum;
                             <div class="body">
                                 <div class="name">
                                     <?= Html::encode($student->getStudent()->number) ?>
-                                    (<?= ($student->pc) ? Html::encode($student->getPc()->code) : 'N/A' ?>)
+                                    <?= ($student->pc) ? '<span class="label label-danger arrowed-in">' . Html::encode($student->getPc()->code) . '</span>' : 'N/A' ?>
                                 </div>
                                 <div class="time">
                                     <i class="ace-icon fa fa-clock-o"></i>

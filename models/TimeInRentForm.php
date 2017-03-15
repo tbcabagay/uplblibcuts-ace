@@ -97,6 +97,7 @@ class TimeInRentForm extends Model
         $rent->setAttribute('student', $student->id);
         $rent->setAttribute('college', $student->college);
         $rent->setAttribute('degree', $student->degree);
+        $rent->setAttribute('time_in', time());
         $rent->setAttribute('service', $this->service);
         $rent->setAttribute('topic', !$this->topic ? $service->name : $this->topic);
         $rent->setAttribute('amount', 0);

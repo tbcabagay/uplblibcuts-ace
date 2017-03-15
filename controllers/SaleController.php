@@ -104,13 +104,13 @@ class SaleController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate($id)
+    public function actionValidate()
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model = $this->findModel($id);
+        $model = new Sale();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

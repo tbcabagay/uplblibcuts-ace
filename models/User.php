@@ -165,6 +165,22 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
+    public function activate()
+    {
+        $this->setAttribute('status', self::STATUS_ACTIVE);
+        return ($this->update() !== false);
+    }
+
+    public function isNew()
+    {
+        return $this->status === self::STATUS_NEW;
+    }
+
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
     public function getLibrary()
     {
         return Library::findOne($this->library);

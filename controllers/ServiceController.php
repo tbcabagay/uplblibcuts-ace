@@ -50,18 +50,6 @@ class ServiceController extends Controller
     }
 
     /**
-     * Displays a single Service model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Service model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -124,17 +112,13 @@ class ServiceController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate($id = null)
+    public function actionValidate()
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($id === null) {
-            $model = new Service();
-        } else {
-            $model = $this->findModel($id);
-        }
+        $model = new Service();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

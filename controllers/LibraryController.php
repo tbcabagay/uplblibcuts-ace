@@ -48,18 +48,6 @@ class LibraryController extends Controller
     }
 
     /**
-     * Displays a single Library model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Library model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -127,17 +115,13 @@ class LibraryController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate($id = null)
+    public function actionValidate()
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($id === null) {
-            $model = new Library();
-        } else {
-            $model = $this->findModel($id);
-        }
+        $model = new Library();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

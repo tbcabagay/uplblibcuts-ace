@@ -80,6 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
             'heading' => 'Grid View',
+            'after' => '<em><span class="label label-success label-white middle">* Colleges that do not have free computer usage hours.</span></em>',
         ],
     ]); ?>
 </div>

@@ -51,18 +51,6 @@ class PcController extends Controller
     }
 
     /**
-     * Displays a single Pc model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Pc model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -133,17 +121,13 @@ class PcController extends Controller
         }
     }
 
-    public function actionValidate($id = null)
+    public function actionValidate()
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($id === null) {
-            $model = new Pc();
-        } else {
-            $model = $this->findModel($id);
-        }
+        $model = new Pc();
 
         $model->scenario = Pc::SCENARIO_VALIDATE_CODE;
 

@@ -1,7 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use kartik\form\ActiveForm;
+use kartik\widgets\DatePicker;
+use kartik\widgets\TimePicker;
+use app\models\Rent;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Rent */
@@ -10,38 +13,45 @@ use yii\widgets\ActiveForm;
 
 <div class="rent-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'app-form',
+        'enableAjaxValidation' => true,
+        'enableClientValidation' => false,
+        'validationUrl' => ['validate', 'id' => $model->id],
+        'options' => [
+            'autocomplete' => 'off',
+        ],
+    ]); ?>
 
-    <?= $form->field($model, 'student')->textInput() ?>
+    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'college')->textInput() ?>
+    <?php if ($model->scenario === Rent::SCENARIO_TIME_IN): ?>
 
-    <?= $form->field($model, 'degree')->textInput() ?>
+    <?= $form->field($model, 'service')->radioList($featuredServices) ?>
 
-    <?= $form->field($model, 'pc')->textInput() ?>
+    <?= $form->field($model, 'in_date')->widget(DatePicker::className(), [
+        'pluginOptions' => [
+            'autoclose'=>true,
+            'format' => 'yyyy-mm-dd'
+        ]
+    ]) ?>
 
-    <?= $form->field($model, 'service')->textInput() ?>
+    <?= $form->field($model, 'in_time')->widget(TimePicker::className(), [
+        'pluginOptions' => [
+            'showMeridian' => false,
+            'showSeconds' => true,
+        ],
+    ]) ?>
+
+    <?= $form->field($model, 'pc')->dropDownList($pcs) ?>
 
     <?= $form->field($model, 'topic')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'time_in')->textInput() ?>
-
-    <?= $form->field($model, 'time_out')->textInput() ?>
-
-    <?= $form->field($model, 'rent_time')->textInput() ?>
-
-    <?= $form->field($model, 'time_diff')->textInput() ?>
-
-    <?= $form->field($model, 'created_by')->textInput() ?>
-
-    <?= $form->field($model, 'updated_by')->textInput() ?>
+    <?php elseif ($model->scenario === Rent::SCENARIO_TIME_OUT): ?>
+    <?php endif; ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Create'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

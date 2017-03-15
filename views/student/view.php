@@ -3,9 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-use app\models\College;
-use app\models\Degree;
-
 /* @var $this yii\web\View */
 /* @var $model app\models\Student */
 
@@ -15,15 +12,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="student-view">
 
-    <div class="page-header">
-        <h1>
-            Student
-            <small>
-                <i class="ace-icon fa fa-angle-double-right"></i>
-                <?= Html::encode($this->title) ?>
-            </small>        
-        </h1>
-    </div>
+    <h3 class="header smaller lighter orange">
+        <?= Html::encode($this->title) ?>
+    </h3>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -36,34 +27,25 @@ $this->params['breadcrumbs'][] = $this->title;
             'sex',
             [
                 'attribute' => 'college',
-                'value' => call_user_func(function ($data) {
-                    return College::findById($data->college);
-                }, $model),
+                'value' => function ($model, $widget) {
+                    $college = $model->getCollege();
+                    return Html::encode($college->code);
+                },
             ],
             [
                 'attribute' => 'degree',
-                'value' => call_user_func(function ($data) {
-                    return Degree::findById($data->degree);
-                }, $model),
+                'value' => function ($model, $widget) {
+                    $degree = $model->getDegree();
+                    return Html::encode($degree->code);
+                },
             ],
             // 'status',
             [
                 'attribute' => 'rent_time',
-                'value' => $model->formatRentTime(),
+                'value' => $model->getRentTime(),
             ],
-            [
-                'attribute' => 'created_at',
-                'value' => call_user_func(function ($data) {
-                    return Yii::$app->formatter->asDateTime($data->created_at);
-                }, $model),
-            ],
-            [
-                'attribute' => 'updated_at',
-                'value' => call_user_func(function ($data) {
-                    // Yii::$app->formatter->timeZone = 'Asia/Manila';
-                    return Yii::$app->formatter->asDateTime($data->updated_at);
-                }, $model),
-            ],
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 
