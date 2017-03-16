@@ -138,11 +138,6 @@ $formatter = Yii::$app->formatter;
         'export' => false,
         'toolbar' => [
             ['content' =>
-                Html::a('<i class="fa fa-plus"></i>', ['time-in'], [
-                    'title' => Yii::t('app', 'Add Rent'), 
-                    'class' => 'btn btn-success btn-modal',
-                    'data-pjax' => 0,
-                ]) . ' ' .
                 Html::a('<i class="fa fa-repeat"></i>', ['index'], [
                     'class' => 'btn btn-default', 
                     'title' => Yii::t('app', 'Reset Grid'),
@@ -154,6 +149,16 @@ $formatter = Yii::$app->formatter;
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
             'heading' => 'Grid View',
+            'before' => Html::a('<i class="fa fa-user"></i> Backlog (Individual)', ['backlog'], [
+                'title' => Yii::t('app', 'Backlog (Individual)'), 
+                'class' => 'btn btn-info btn-modal',
+                'data-pjax' => 0,
+            ]) . ' ' .
+            Html::a('<i class="fa fa-users"></i> Backlog (Batch)', ['backlog-batch'], [
+                'title' => Yii::t('app', 'Backlog (Batch)'), 
+                'class' => 'btn btn-danger',
+                'data-pjax' => 0,
+            ]),
             'after' => '<em><span class="label label-success label-white middle">* Status is time out.</span></em><div class="space-6"></div><em><span class="label label-warning label-white middle">* Status is time in.</span></em>',
         ],
     ]); ?>

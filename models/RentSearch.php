@@ -95,6 +95,36 @@ class RentSearch extends Rent
         return $dataProvider;
     }
 
+    public function searchBacklog()
+    {
+        $query = Rent::find();
+        $query->leftJoin('{{%student}}', '{{%student}}.id = {{%rent}}.student');
+        $query->where(['{{%rent}}.status' => Rent::STATUS_TIME_IN]);
+
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'time_in' => SORT_ASC,
+                ],
+            ],
+        ]);
+
+        $dataProvider->sort->attributes['number'] = [
+            'asc' => ['{{%student}}.number' => SORT_ASC],
+            'desc' => ['{{%student}}.number' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['name'] = [
+            'asc' => ['{{%student}}.lastname' => SORT_ASC],
+            'desc' => ['{{%student}}.lastname' => SORT_DESC],
+        ];
+
+        return $dataProvider;
+    }
+
     protected function formatTimeDiffAsInteger()
     {
         $timeDiff = null;

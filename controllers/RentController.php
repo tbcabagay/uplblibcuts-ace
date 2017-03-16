@@ -13,6 +13,8 @@ use yii\web\Response;
 use kartik\form\ActiveForm;
 use app\models\Pc;
 use app\models\Service;
+use app\models\BacklogForm;
+use app\models\BacklogBatchForm;
 
 /**
  * RentController implements the CRUD actions for Rent model.
@@ -68,12 +70,11 @@ class RentController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionTimeIn()
+    public function actionBacklog()
     {
-        $model = new Rent();
-        $model->scenario = Rent::SCENARIO_TIME_IN;
+        $model = new BacklogForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->signin()) {
+        if ($model->load(Yii::$app->request->post()) && $model->backlog()) {
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;
 
@@ -81,10 +82,33 @@ class RentController extends Controller
                 'result' => 'success',
             ];
         } else {
-            return $this->renderAjax('time-in', [
+            return $this->renderAjax('backlog', [
                 'model' => $model,
                 'featuredServices' => Service::getServiceList(Service::STATUS_FEATURED),
                 'pcs' => Pc::getPcList(Pc::STATUS_VACANT),
+            ]);
+        }
+    }
+
+    /**
+     * Creates a new Rent model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionBacklogBatch()
+    {
+        $searchModel = new RentSearch();
+        $dataProvider = $searchModel->searchBacklog(Yii::$app->request->queryParams);
+        $model = new BacklogBatchForm();
+
+        if ($model->load(Yii::$app->request->post()) && ($result = $model->backlogBatch())) {
+            var_dump($result); die();
+            return $this->refresh();
+        } else {
+            return $this->render('backlog-batch', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'model' => $model,
             ]);
         }
     }
@@ -121,13 +145,29 @@ class RentController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidate()
+    public function actionValidateBacklog() 
     {
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model = new Rent();
+        $model = new BacklogForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $response = Yii::$app->response;
+            $response->format = Response::FORMAT_JSON;
+
+            return ActiveForm::validate($model);
+        }
+    }
+
+    public function actionValidateBacklogBatch() 
+    {
+        if (!Yii::$app->request->isAjax) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model = new BacklogBatchForm();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;
