@@ -13,6 +13,8 @@ use yii\web\Response;
 use kartik\form\ActiveForm;
 use app\models\College;
 use app\models\Degree;
+use app\models\Service;
+use app\models\RentSearch;
 
 /**
  * StudentController implements the CRUD actions for Student model.
@@ -149,6 +151,19 @@ class StudentController extends Controller
 
             return ActiveForm::validate($model);
         }
+    }
+
+    public function actionRentHistory($number)
+    {
+        $searchModel = new RentSearch();
+        $dataProvider = $searchModel->searchHistory(Yii::$app->request->queryParams);
+
+        return $this->render('rent-history', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'studentModel' => Student::findByNumber($number),
+            'services' => Service::getServiceList(),
+        ]);
     }
 
     /**

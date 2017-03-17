@@ -5,12 +5,14 @@ use kartik\grid\GridView;
 use kartik\form\ActiveForm;
 use kartik\widgets\DatePicker;
 use kartik\widgets\TimePicker;
+use kartik\widgets\Growl;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\RentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Rents');
+$this->title = Yii::t('app', 'Backlog Batch');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Rents'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $formatter = Yii::$app->formatter;
@@ -50,6 +52,7 @@ $formatter = Yii::$app->formatter;
                             'secondStep' => 1,
                             'showMeridian' => false,
                             'showSeconds' => true,
+                            'defaultTime' => false,
                         ],
                     ]) ?>
                 </div>
@@ -132,3 +135,23 @@ $formatter = Yii::$app->formatter;
 
     <?php ActiveForm::end(); ?>
 </div>
+
+<?php
+$session = Yii::$app->session;
+
+if ($session->hasFlash('backlogBatch')) {
+    echo Growl::widget([
+        'type' => Growl::TYPE_SUCCESS,
+        'title' => $session->getFlash('flashTitle'),
+        'body' => $session->getFlash('backlogBatch'),
+        'showSeparator' => true,
+        'delay' => 0,
+        'pluginOptions' => [
+            'placement' => [
+                'from' => 'top',
+                'align' => 'right',
+            ],
+            'timer' => 5000,
+        ],
+    ]);
+} ?>

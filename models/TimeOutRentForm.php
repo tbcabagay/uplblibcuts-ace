@@ -79,17 +79,24 @@ class TimeOutRentForm extends Model
 
     public function signout()
     {
+        $result = true;
         $rent = $this->getRent();
         $student = $this->getStudent();
+        $service = $rent->getService();
 
         $rent->setAttribute('time_out', time());
         $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
         $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
 
-        $student->updateRentTime($rent->time_diff);
-        if (!is_null($rent->pc)) {
-            $rent->getPc()->setVacant();
+        if ($service->charge) {
+            $result = $result && ($student->updateRentTime($rent->time_diff) !== false);
         }
-        return ($rent->update() !== false) && ($rent->updateAmount() !== false);
+        if (!is_null($rent->pc)) {
+            $result = $result && ($rent->getPc()->setVacant() !== false);
+        }
+
+        $result = $result && ($rent->update() !== false);
+        $result = $result && ($rent->updateAmount() !== false);
+        return $result;
     }
 }

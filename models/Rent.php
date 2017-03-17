@@ -78,7 +78,7 @@ class Rent extends \yii\db\ActiveRecord
             'status' => Yii::t('app', 'Status'),
             'time_in' => Yii::t('app', 'Time In'),
             'time_out' => Yii::t('app', 'Time Out'),
-            'rent_time' => Yii::t('app', 'Rent Time'),
+            'rent_time' => Yii::t('app', 'Time Rent'),
             'time_diff' => Yii::t('app', 'Time Expended'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),
@@ -149,18 +149,35 @@ class Rent extends \yii\db\ActiveRecord
         return $timeDiff;
     }
 
+    public function getRentTime()
+    {
+        $rentTime = null;
+        if ($this->rent_time > 0) {
+            $time = $this->rent_time;
+            $rentTime = $this->formatTime($time);
+        }
+        return $rentTime;
+    }
+
     public function getTimeDiff()
     {
         $timeDiff = null;
         if ($this->time_diff > 0) {
             $time = $this->time_diff;
-            $hours = str_pad(floor($time / 3600), 2, '0', STR_PAD_LEFT);
-            $minutes = str_pad(floor($time / 60 % 60), 2, '0', STR_PAD_LEFT);
-            $seconds = str_pad(floor($time % 60), 2, '0', STR_PAD_LEFT);
-
-            $timeDiff = "{$hours}:{$minutes}:{$seconds}";
+            $timeDiff = $this->formatTime($time);
         }
         return $timeDiff;
+    }
+
+    protected function formatTime($time)
+    {
+        $formatTime = null;
+        $hours = str_pad(floor($time / 3600), 2, '0', STR_PAD_LEFT);
+        $minutes = str_pad(floor($time / 60 % 60), 2, '0', STR_PAD_LEFT);
+        $seconds = str_pad(floor($time % 60), 2, '0', STR_PAD_LEFT);
+
+        $formatTime = "{$hours}:{$minutes}:{$seconds}";
+        return $formatTime;
     }
 
     public function getStatusList()

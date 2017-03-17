@@ -105,14 +105,19 @@ class BacklogForm extends Model
         $rent->setAttribute('amount', 0);
         $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
         $rent->setAttribute('rent_time', $student->rent_time);
-        $student->updateRentTime($rent->time_diff);
+
+        if ($service->charge) {
+            $result = $result && $student->updateRentTime($rent->time_diff);
+        }
 
         if ($formula !== '(0)') {
             $rent->setAttribute('pc', $this->pc);
         }
 
         $result = $result && $rent->save();
-        $result = $result && ($rent->updateAmount() !== false);
+        if ($service->charge) {
+            $result = $result && ($rent->updateAmount() !== false);
+        }
         return $result;
     }
 }

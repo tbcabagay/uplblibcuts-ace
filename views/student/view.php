@@ -16,6 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::encode($this->title) ?>
     </h3>
 
+    <p class="clearfix">
+        <?= Html::a('<i class="ace-icon fa fa-history"></i> Rent History', ['rent-history', 'number' => $model->number], ['class' => 'btn btn-default btn-white btn-primary btn-xs pull-right']) ?>
+    </p>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [

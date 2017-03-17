@@ -18,9 +18,10 @@ class RentSearch extends Rent
     public function rules()
     {
         return [
-            [['college', 'pc', 'service', 'status'], 'integer'],
-            [['number', 'name', 'time_in', 'time_out'], 'safe'],
-            ['time_diff', 'match', 'pattern' => '/^(\d+):(\d+):(\d+)$/'],
+            [['library', 'college', 'pc', 'service', 'status'], 'integer'],
+            [['amount'], 'number'],
+            [['number', 'name', 'time_in', 'time_out', 'time_diff', 'rent_time'], 'safe'],
+            [['time_diff', 'rent_time'], 'match', 'pattern' => '/^(\d+):(\d+):(\d+)$/'],
         ];
     }
 
@@ -121,6 +122,50 @@ class RentSearch extends Rent
             'asc' => ['{{%student}}.lastname' => SORT_ASC],
             'desc' => ['{{%student}}.lastname' => SORT_DESC],
         ];
+
+        return $dataProvider;
+    }
+
+    public function searchHistory($params)
+    {
+        $query = Rent::find();
+        $query->leftJoin('{{%student}}', '{{%student}}.id = {{%rent}}.student');
+        $query->where(['{{%student}}.number' => Yii::$app->request->get('number')]);
+
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'time_in' => SORT_DESC,
+                ],
+            ],
+        ]);
+
+        $dataProvider->sort->attributes['number'] = [
+            'asc' => ['{{%student}}.number' => SORT_ASC],
+            'desc' => ['{{%student}}.number' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['name'] = [
+            'asc' => ['{{%student}}.lastname' => SORT_ASC],
+            'desc' => ['{{%student}}.lastname' => SORT_DESC],
+        ];
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'service' => $this->service,
+            'FROM_UNIXTIME(`time_in`, "%Y-%m-%d")' => $this->time_in,
+            'FROM_UNIXTIME(`time_out`, "%Y-%m-%d")' => $this->time_out,
+        ]);
 
         return $dataProvider;
     }

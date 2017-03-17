@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\money\MaskMoney;
+use kartik\widgets\SwitchInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Service */
@@ -28,6 +29,8 @@ use kartik\money\MaskMoney;
     <?= $form->field($model, 'formula')->dropDownList(['' => '- Select -'] + $formulas) ?>
 
     <?= $form->field($model, 'status')->dropDownList(['' => '- Select -'] + $model->getStatusList()) ?>
+
+    <?= $form->field($model, 'switch')->widget(SwitchInput::classname())->label('Charge to Computer Usage Hours?') ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -8,7 +8,7 @@ use kartik\widgets\TimePicker;
 /* @var $this yii\web\View */
 /* @var $model app\models\Rent */
 
-$this->title = Yii::t('app', 'Time In');
+$this->title = Yii::t('app', 'Backlog');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Rents'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
-use kartik\widgets\SwitchInput
+use kartik\widgets\SwitchInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\College */

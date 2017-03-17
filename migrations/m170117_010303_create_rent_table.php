@@ -24,6 +24,7 @@ class m170117_010303_create_rent_table extends Migration
             'name' => $this->string(100)->notNull(),
             'amount' => $this->money(7, 2)->notNull(),
             'status' => $this->smallInteger()->notNull(),
+            'charge' => $this->boolean()->notNull(),
         ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->createTable('{{%academic_calendar}}', [
             'id' => $this->bigPrimaryKey(),

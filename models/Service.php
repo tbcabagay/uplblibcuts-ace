@@ -12,13 +12,18 @@ use yii\helpers\ArrayHelper;
  * @property string $name
  * @property string $amount
  * @property integer $status
+ * @property integer $charge
  * @property integer $formula
  */
 class Service extends \yii\db\ActiveRecord
 {
+    public $switch;
+
     const STATUS_FEATURED = 5;
     const STATUS_REGULAR = 10;
     const STATUS_DELETE = 15;
+    const SWITCH_ON = 1;
+    const SWITCH_OFF = 0;
 
     /**
      * @inheritdoc
@@ -34,10 +39,12 @@ class Service extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'amount', 'status', 'formula'], 'required'],
+            [['name', 'amount', 'status', 'formula', 'switch'], 'required'],
             [['amount'], 'number'],
-            [['status', 'formula'], 'integer'],
+            [['status', 'charge', 'formula'], 'integer'],
             [['name'], 'string', 'max' => 100],
+            ['switch', 'boolean'],
+            ['charge', 'default', 'value' => 1],
             ['name', 'filter', 'filter' => 'ucwords'],
         ];
     }
@@ -52,8 +59,25 @@ class Service extends \yii\db\ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'amount' => Yii::t('app', 'Amount'),
             'status' => Yii::t('app', 'Status'),
+            'charge' => Yii::t('app', 'Charge'),
             'formula' => Yii::t('app', 'Formula'),
+            'charge' => Yii::t('app', 'Charge'),
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        $charge = (intval($this->switch)) ? self::SWITCH_ON : self::SWITCH_OFF;
+        $this->setAttribute('charge', $charge);
+
+        return parent::beforeSave($insert);
+    }
+
+    public function afterFind()
+    {
+        $this->switch = ($this->charge) ? self::SWITCH_ON : self::SWITCH_OFF;
+
+        return parent::afterFind();
     }
 
     public function getFormula()

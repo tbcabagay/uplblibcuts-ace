@@ -102,7 +102,13 @@ class RentController extends Controller
         $model = new BacklogBatchForm();
 
         if ($model->load(Yii::$app->request->post()) && ($result = $model->backlogBatch())) {
-            var_dump($result); die();
+            if ($result['count'] > 0) {
+                $session = Yii::$app->getSession();
+                $session->setFlash('flashTitle', '<i class="ace-icon fa fa-check-circle"></i>
+                ' . Yii::t('app', 'Backlog Batch'));
+                $session->setFlash('backlogBatch', Yii::t('app', '{result} rent {count,plural,=1{record} other{records}} has been successfully backlog.', ['result' => $result['count'], 'count' => $result['count']]));
+                $this->refresh();
+            }
             return $this->refresh();
         } else {
             return $this->render('backlog-batch', [

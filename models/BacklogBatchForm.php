@@ -23,6 +23,7 @@ class BacklogBatchForm extends Model
         return [
             [['date_out', 'time_out'], 'required'],
             ['date_out', 'date', 'format' => 'php:Y-m-d'],
+            ['date_out', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>='],
             ['time_out', 'date', 'format' => 'php:H:i:s'],
         ];
     }
@@ -42,7 +43,7 @@ class BacklogBatchForm extends Model
     public function backlogBatch()
     {
         $result = ['result' => true];
-        $count = 1;
+        $count = 0;
         $selections = Yii::$app->request->post('selection');
 
         if (!empty($selections)) {
@@ -53,17 +54,24 @@ class BacklogBatchForm extends Model
             foreach ($selections as $selection) {
                 $rent = $this->findRent($selection);
                 $student = $rent->getStudent();
+                $service = $rent->getService();
 
                 $rent->setAttribute('time_out', $timestampOut);
                 $rent->setAttribute('status', Rent::STATUS_TIME_OUT);
                 $rent->setAttribute('time_diff', ($rent->time_out - $rent->time_in));
 
-                $student->updateRentTime($rent->time_diff);
+                if ($service->charge) {
+                    $student->updateRentTime($rent->time_diff);
+                }
                 if (!is_null($rent->pc)) {
                     $rent->getPc()->setVacant();
                 }
-                $rent->updateAmount();
-                $count = $count + $rent->update();
+                if ($service->charge) {
+                    $rent->updateAmount();
+                }
+                if ($rent->update() !== false) {
+                    $count = $count + 1;
+                }
             }
         }
         $result['count'] = $count;
