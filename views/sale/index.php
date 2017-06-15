@@ -14,11 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="page-header">
         <h1>
-            Settings
-            <small>
-                <i class="ace-icon fa fa-angle-double-right"></i>
-                <?= Html::encode($this->title) ?>
-            </small>        
+            <?= Html::encode($this->title) ?>
         </h1>
     </div>
 

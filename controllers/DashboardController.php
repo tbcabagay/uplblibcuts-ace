@@ -5,6 +5,9 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\filters\AccessControl;
+
 use app\models\TimeInRentForm;
 use app\models\TimeOutRentForm;
 use app\models\ChangePcForm;
@@ -14,11 +17,28 @@ use app\models\Service;
 use app\models\Sale;
 use app\models\AcademicCalendar;
 
-use yii\web\Response;
 use kartik\form\ActiveForm;
 
 class DashboardController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['viewDashboard'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $this->checkSettings();

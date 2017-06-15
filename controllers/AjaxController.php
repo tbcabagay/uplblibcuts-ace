@@ -3,10 +3,11 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use app\models\Pc;
 use app\models\Rent;
@@ -24,6 +25,15 @@ class AjaxController extends Controller
                     'list-vacant-pc' => ['get'],
                     'recent' => ['get'],
                     'sale-chart' => ['get'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

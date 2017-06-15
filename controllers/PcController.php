@@ -8,6 +8,7 @@ use app\models\PcSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
@@ -29,6 +30,15 @@ class PcController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'vacate' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['configSetting'],
+                    ],
                 ],
             ],
         ];

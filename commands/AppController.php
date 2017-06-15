@@ -354,94 +354,109 @@ class AppController extends Controller
                 'amount' => 20,
                 'formula' => 2,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 1,
             ],
             [
                 'name' => 'Typing',
                 'amount' => 15,
                 'formula' => 2,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 1,
             ],
             [
                 'name' => 'CD-ROM/Database',
                 'amount' => 0,
                 'formula' => 3,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 0,
             ],
             [
                 'name' => 'Microfilm',
                 'amount' => 0,
                 'formula' => 3,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 0,
             ],
             [
                 'name' => 'Others (Service Only)',
                 'amount' => 0,
                 'formula' => 3,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 0,
             ],
             [
                 'name' => 'eJournals',
                 'amount' => 0,
                 'formula' => 3,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 0,
             ],
             [
                 'name' => 'eBooks',
                 'amount' => 0,
                 'formula' => 3,
                 'status' => Service::STATUS_FEATURED,
+                'switch' => 0,
             ],
             [
                 'name' => 'Colored Printing (Half-Page)',
                 'amount' => 5,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'Colored Printing (Full-Page)',
                 'amount' => 10,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'Black Laser Printing',
                 'amount' => 5,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'Dot Matrix Printing',
                 'amount' => 1,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'Scanning',
                 'amount' => 5,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'CD Burning',
                 'amount' => 10,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'Colored/black Printing (Samsung)',
                 'amount' => 5,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
             [
                 'name' => 'Black Printing (Epson)',
                 'amount' => 1,
                 'formula' => 1,
                 'status' => Service::STATUS_REGULAR,
+                'switch' => 1,
             ],
         ];
 
-        echo "Saving formula data...\n";
+        echo "Saving service data...\n";
 
         foreach ($this->_services as $service) {
             $model = new Service();
@@ -449,6 +464,7 @@ class AppController extends Controller
             $model->amount = $service['amount'];
             $model->status = $service['status'];
             $model->formula = $service['formula'];
+            $model->switch = $service['switch'];
 
             if ($model->validate()) {
                 echo "Inserting $model->name $model->amount...\n";
@@ -493,7 +509,7 @@ class AppController extends Controller
             ],
         ];
 
-        echo "Saving formula data...\n";
+        echo "Saving library data...\n";
 
         foreach ($this->_libraries as $library) {
             $model = new Library();
@@ -516,22 +532,59 @@ class AppController extends Controller
         echo "Initializing RBAC...\n\n";
         $auth = Yii::$app->authManager;
 
-        $student = $auth->createRole('Student');
+        $configSetting = $auth->createPermission('configSetting');
+        $configSetting->description = 'Configure administrator settings';
+        $auth->add($configSetting);
+
+        /*$accessBacklog = $auth->createPermission('accessBacklog');
+        $accessBacklog->description = 'Access backlog';
+        $auth->add($accessBacklog);*/
+
+        $accessRent = $auth->createPermission('accessRent');
+        $accessRent->description = 'Access rent time in/out functions';
+        $auth->add($accessRent);
+
+        $accessSale = $auth->createPermission('accessSale');
+        $accessSale->description = 'Access sale';
+        $auth->add($accessSale);
+
+        $createStudent = $auth->createPermission('createStudent');
+        $createStudent->description = 'Create a student account';
+        $auth->add($createStudent);
+
+        $setAcademicCalendar = $auth->createPermission('setAcademicCalendar');
+        $setAcademicCalendar->description = 'Set the academic calendar';
+        $auth->add($setAcademicCalendar);
+
+        $viewDashboard = $auth->createPermission('viewDashboard');
+        $viewDashboard->description = 'View dashboard';
+        $auth->add($viewDashboard);
+
+        
+
+
+        /*$student = $auth->createRole('Student');
         $auth->add($student);
-        echo "Student role added...\n";
+        echo "Student role added...\n";*/
 
         $studentAssistant = $auth->createRole('Student Assistant');
         $auth->add($studentAssistant);
-        $auth->addChild($studentAssistant, $student);
+        /*$auth->addChild($studentAssistant, $accessBacklog);*/
+        $auth->addChild($studentAssistant, $accessRent);
+        $auth->addChild($studentAssistant, $accessSale);
+        $auth->addChild($studentAssistant, $viewDashboard);
+        $auth->addChild($studentAssistant, $createStudent);
         echo "Student Assistant role added...\n";
 
         $staff = $auth->createRole('Staff');
         $auth->add($staff);
+        $auth->addChild($staff, $setAcademicCalendar);
         $auth->addChild($staff, $studentAssistant);
         echo "Staff role added...\n";
 
         $administrator = $auth->createRole('Administrator');
         $auth->add($administrator);
+        $auth->addChild($administrator, $configSetting);
         $auth->addChild($administrator, $staff);
         echo "Administrator role added...\n\n";
 

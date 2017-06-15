@@ -8,6 +8,7 @@ use app\models\AcademicCalendarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use app\models\Student;
 use yii\web\Response;
@@ -29,6 +30,15 @@ class AcademicCalendarController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'toggle-status' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['setAcademicCalendar'],
+                    ],
                 ],
             ],
         ];

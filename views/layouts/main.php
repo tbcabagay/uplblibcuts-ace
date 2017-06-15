@@ -100,6 +100,7 @@ AceIeAsset::register($this);
             <script type="text/javascript">
                 try{ace.settings.loadState('sidebar')}catch(e){}
             </script>
+            <?php /*
             <div class="sidebar-shortcuts" id="sidebar-shortcuts">
                 <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
                     <button class="btn btn-success">
@@ -129,15 +130,19 @@ AceIeAsset::register($this);
                     <span class="btn btn-danger"></span>
                 </div>
             </div>
+            */ ?>
 
             <ul class="nav nav-list">
+                <?php if (\Yii::$app->user->can('viewDashboard')): ?>
                 <li class="<?= ($this->context->id === 'dashboard') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-tachometer"></i>
                         <span class="menu-text"> Dashboard </span>', ['dashboard/index']) ?>
 
                     <b class="arrow"></b>
                 </li>
+                <?php endif; ?>
 
+                <?php if (\Yii::$app->user->can('configSetting')): ?>
                 <li class="<?= (in_array($this->context->id, ['college', 'degree', 'library', 'service', 'formula', 'pc', 'student', 'user'])) ? 'open active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-cogs"></i>
                         <span class="menu-text">
@@ -199,24 +204,34 @@ AceIeAsset::register($this);
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if (\Yii::$app->user->can('setAcademicCalendar')): ?>
                 <li class="<?= ($this->context->id === 'academic-calendar') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-calendar"></i>
                         <span class="menu-text"> Academic Calendars </span>', ['academic-calendar/index']) ?>
 
                     <b class="arrow"></b>
                 </li>
+                <?php endif; ?>
+
+                <?php if (\Yii::$app->user->can('accessRent')): ?>
                 <li class="<?= ($this->context->id === 'rent') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-sign-in"></i>
                         <span class="menu-text"> Rents </span>', ['/rent/index']) ?>
 
                     <b class="arrow"></b>
                 </li>
+                <?php endif; ?>
+
+                <?php if (\Yii::$app->user->can('accessSale')): ?>
                 <li class="<?= ($this->context->id === 'sale') ? 'active' : null ?>">
                     <?= Html::a('<i class="menu-icon fa fa-money"></i>
                         <span class="menu-text"> Sales </span>', ['/sale/index']) ?>
 
                     <b class="arrow"></b>
                 </li>
+                <?php endif; ?>
             </ul>
 
             <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

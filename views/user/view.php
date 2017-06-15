@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('<i class="ace-icon fa fa-lock"></i> ' . Yii::t('app', 'Change Password'), ['change-password', 'id' => $model->id], ['class' => 'btn btn-primary btn-modal']) ?>
         <?= ($model->isNew()) ? Html::a('<i class="ace-icon fa fa-unlock"></i> ' . Yii::t('app', 'Activate'), ['activate', 'id' => $model->id], ['class' => 'btn btn-success', 'data' => ['method' => 'post']]) : '' ?>
-        <?= Html::a('<i class="ace-icon fa fa-retweet"></i> ' . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-default btn-modal']) ?>
+        <?php // Html::a('<i class="ace-icon fa fa-retweet"></i> ' . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-default btn-modal']) ?>
     </p>
 
     <?= DetailView::widget([

@@ -8,6 +8,7 @@ use app\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
@@ -30,6 +31,21 @@ class UserController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'activate' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'delete', 'activate'],
+                        'roles' => ['configSetting'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['view', 'update', 'change-password', 'validate-change-password'],
+                        'roles' => ['@']
+                    ],
                 ],
             ],
         ];
