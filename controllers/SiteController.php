@@ -76,12 +76,6 @@ class SiteController extends Controller
         $loginModel = new LoginForm();
         $registerModel = new RegisterForm();
 
-        $registerModel->library = 1;
-        $registerModel->name = 'tomas cabagay jr';
-        $registerModel->username = 'student';
-        $registerModel->password = 'student';
-        $registerModel->confirm_password = 'student';
-
         $response = Yii::$app->response;
 
         if (Yii::$app->request->isAjax && $registerModel->load(Yii::$app->request->post()) && $registerModel->signup()) {
